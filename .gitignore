@@ -11,3 +11,4 @@ hexo-org-cache
 .*
 *~
 !.gitignore
+*.org\[\**
