@@ -119,11 +119,12 @@ font:
   # Font settings for <code> and code blocks.
   codes:
     external: true
-    family:
+    family: monospace
     size:
 
-
-
+  example:
+    external: true
+    family: monospace
 
 # ---------------------------------------------------------------
 # Sidebar Settings
@@ -161,6 +162,7 @@ social_icons:
 # Table Of Contents in the Sidebar
 toc:
   enable: true
+  maxDepth: 3
 
   # Automatically add list number to toc.
   # number: true
