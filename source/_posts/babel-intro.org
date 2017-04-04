@@ -117,9 +117,9 @@
     #+end_src
 
     - language :: 代码块中代码的语言标示。 有效值必须是 =org-babel-interpreters= 的成员。
-    - header-arguments :: =header-arguments= 控制源代码块的评估(evaluation)和输出的许多方面。
+    - header-arguments :: =header-arguments= 控制源代码块的执行和输出的许多方面。
     请参阅[[http://orgmode.org/manual/Header-arguments.html#Header-arguments][Header Arguments]]部分，以查看可用的 =header-arguments== 。
-    - body :: 要被评估(to be evaluated)的源代码。 一个重要的键绑定 =C-c '= , 调用 =org-edit-src-code= ，打开一个包含适合于该语言 =major mode= 的编辑缓冲区。
+    - body :: 等待被执行的源代码。 一个重要的键绑定 =C-c '= , 调用 =org-edit-src-code= ，打开一个包含适合于该语言 =major mode= 的编辑缓冲区。
     然后你就可以像往常在emacs编辑代码那样来编辑你的代码块。
 
 * 源代码执行
@@ -176,9 +176,9 @@
     #+end_src
 
     #+RESULTS:
-    | code | org-mode | #+end_src | #+begin_src | block | #+name: | babel | that | this | with |
-    |------+----------+-----------+-------------+-------+---------+-------+------+------+------|
-    |   68 |       51 |        46 |          44 |    37 |      36 |    28 |   26 |   26 |   25 |
+    | #+end_src | #+begin_src | org-mode | code | #+name: | babel | html | that | block | pass |
+    |-----------+-------------+----------+------+---------+-------+------+------+-------+------|
+    |        45 |          42 |       36 |   33 |      33 |    21 |   20 |   18 |    17 |   17 |
 
 *** [[http://ditaa.sourceforge.net/][ditaa]]
     在 =Org-mode= 文件中:
@@ -207,58 +207,42 @@
     #+RESULTS:
     [[http://orgmode.org/worg/images/babel/blue.png]]
 
-** Capturing the Results of Code Evaluation
+** 捕获代码执行结果
    :PROPERTIES:
    :CUSTOM_ID: results
    :END:
-   Babel provides two fundamentally different modes for capturing
-   the results of code evaluation: functional mode and scripting
-   mode.  The choice of mode is specified by the =:results= header
-   argument.
+   *Babel* 提供了两种根本不同的模式来捕获代码执行的结果： /functional mode/ 和 /scripting mode/ 。 模式的选择可以通过配置 =:results= 头参数来指定。
 *** =:results value= (functional mode)
    :PROPERTIES:
    :CUSTOM_ID: results-value
    :END:
-     The 'result' of code evaluation is the *value* of the last
-     statement in the code block. In functional mode, the
-     code block is a function with a return value. The return
-     value of one code block can be used as input for another
-     code block, even one in a different language.  In this
-     way, Babel becomes a meta-programming language. If the block
-     returns tabular data (a vector, array or table of some sort) then
-     this will be held as an Org-mode table in the buffer. This
-     setting is the default.
+   代码执行的结果是代码块中最后一个语句的值。
+   在 /functional mode/ 下，代码块是具有返回值的函数。 一个代码块的返回值可以用作另一代码块的输入，即使是不同语言的输入。
+   这样的话，Babel成为一种[[http://orgmode.org/worg/org-contrib/babel/intro.html#meta-programming-language][元编程语言]]。 如果块返回表格数据（某种类型的向量，数组或表），那么将可以作为 =Org-mode= 的表格保存在缓冲区中。
+   /functional mode/ 是默认设置。
 
-     For example, consider the following block of python code and its
-     output.
+   作为示例，观察以下python代码块及其输出。
+   #+begin_src python :results value
+   import time
+   print("Hello, today's date is %s" % time.ctime())
+   print("Two plus two is")
+   return 2 + 2
+   #+end_src
 
-#+begin_src python :results value
-import time
-print("Hello, today's date is %s" % time.ctime())
-print('Two plus two is')
-return 2 + 2
-#+end_src
+   #+resname:
+   : 4
 
-#+resname:
-: 4
-
-Notice that, in functional mode, the output consists of the value of
-the last statement and nothing else.
+   请注意，在 /functional mode/ 下，输出只由最后一个语句返回，没有其他情况。
 
 *** =:results output= (scripting mode)
    :PROPERTIES:
    :CUSTOM_ID: results-output
    :END:
-   In scripting mode, Babel captures the text output of the
-   code block and places it in the Org-mode buffer. It is
-   called scripting mode because the code block contains a series of
-   commands, and the output of each command is returned. Unlike
-   functional mode, the code block itself has no return value
-   apart from the output of the commands it contains.[fn:2]
+   在 /scripting mode/ 中，Babel捕获代码块的文本输出并将其放置在 =Org-mode= 的缓冲区中。
+   它被称为 /scripting mode/ ，因为代码块包含一系列命令，并返回每个命令的输出。
+   与功能模式不同，代码块本身除了其包含的命令的输出之外没有返回值。[fn:2]
 
-   Consider the result of evaluating this code block with
-   scripting mode.
-
+   观察以下使用 /scripting mode/ 执行代码块的结果。
    #+name: name
    #+begin_src python :results output
    import time
@@ -267,50 +251,39 @@ the last statement and nothing else.
    2 + 2
    #+end_src
 
-   #+resname: name
-   : Hello, today's date is Wed Nov 11 18:50:36 2009
+   #+RESULTS: name
+   : Hello, today's date is Tue Apr  4 19:07:57 2017
    : Two plus two is
 
-   Here, scripting mode returned the text that python sent to =stdout=.  Because
-   the code block doesn't include a =print()= statement for the last
-   value, =(2 + 2)=, 4 does not appear in the results.
+   在这里， /scripting mode/ 返回了python写到 =stdout= 的文本。
+   因为代码块不包含最后一个语句 =(2 + 2)= 的 =print()= 语句，所以结果中不会出现4。
 
-** Session-based Evaluation
-   For some languages, such as python, R, ruby and shell, it is
-   possible to run an interactive session as an "inferior process"
-   within Emacs. This means that an environment is created containing
-   data objects that persist between different source code
-   blocks. Babel supports evaluation of code within such sessions
-   with the =:session= header argument. If the header argument is
-   given a value then that will be used as the name of the session.
-   Thus, it is possible to run separate simultaneous sessions in the
-   same language.
+** 基于会话的代码块
+   对于某些语言，例如Python，R，ruby和shell，可以在Emacs中运行一个不完备的交互式会话进程。
+   这意味着创建了一个不同源代码块之间共享数据对象的持久化环境。
+   *Babel* 支持使用 =:session= 头参数来 指定代码块运行于特定会话中。
+   如果头参数被赋予一个值，那么该参数将被用作会话的名称。
+   因此，可以并发的在不同的会话中运行同一语言的不同代码块。
 
-   Session-based evaluation is particularly useful for prototyping and
-   debugging.  The function =org-babel-pop-to-session= can be used to
-   switch to the session buffer.
+   基于特定会话的代码块对于原型设计和调试特别有用。 函数 =org-babel-pop-to-session= 可用于切换会话缓冲区。
 
-   Once a code block is finished, it is often best to execute it
-   outside of a session, so the state of the environment in which it
-   executes will be certain.
+   一旦代码块编辑完成，通常最好在会话之外执行它，因为这样它执行的环境将是确定的。
 
-   With R, the session will be under the control of Emacs Speaks
-   Statistics as usual, and the full power of ESS is thus still
-   available, both in the R session, and when switching to the R code
-   edit buffer with =​C-c '​=.
+   #+BEGIN_QUOTE
+   With R, the session will be under the control of [[http://ess.r-project.org/][Emacs Speaks Statistics]] as usual,
+   and the full power of ESS is thus still available,
+   both in the R session, and when switching to the R code edit buffer with =​C-c '​=.
+   #+END_QUOTE
 
-** Arguments to Code Blocks
+** 代码块的入参
    :PROPERTIES:
    :CUSTOM_ID: arguments-to-source-code-blocks
    :END:
-   Babel supports parameterisation of code blocks, i.e.,
-   arguments can be passed to code blocks, which gives them
-   the status of *functions*. Arguments can be passed to code blocks in
-   both functional and scripting modes.
+   *Babel* 支持代码块的参数化，即可以将参数传递给代码块，从而使它们函数化。
+   /functional mode/ 和 /scripting mode/ 都支持入参。
 
-*** Simple example of using a code block as a function
-    First let's look at a very simple example. The following source
-    code block defines a function, using python, that squares its argument.
+*** 代码块作为函数的简单示例
+    首先我们来看一个非常简单的例子。 以下源代码块使用Python定义了一个函数，求入参的平方。
 
     #+name: square
     #+header: :var x=0
@@ -318,7 +291,7 @@ the last statement and nothing else.
     return x*x
     #+end_src
 
-    In the Org-mode file, the function looks like this:
+    在 Org-mode 文件中, 函数定义如下:
     : #+name: square
     : #+header: :var x=0
     : #+begin_src python
@@ -326,47 +299,42 @@ the last statement and nothing else.
     : #+end_src
 
 
-    Now we use the source block:
+    调用函数如下:
+    : #+call: square(x=6,y=8)
 
-    : #+call: square(x=6)
-
-    (/for information on the/ =call= /syntax see/ Library of Babel)
+    (/对于/ =call= /语法细节请参阅/ [[http://orgmode.org/worg/org-contrib/babel/intro.html#library-of-babel][Library of Babel]])
 
     #+call: square(x=6)
 
     #+results: square(x=6)
     : 36
 
-*** A more complex example using an Org-mode table as input
-    In this example we define a function called =fibonacci-seq=, using
-    Emacs Lisp.  The function =fibonacci-seq= computes a Fibonacci
-    sequence.  The function takes a single argument, in this case, a
-    reference to an Org-mode table.
+*** =Org-mode= 表格作为入参的更复杂的示例
+    在本例中，使用Emacs Lisp定义的一个名为 =fibonacci-seq= 的函数。
+    函数 =fibonacci-seq= 计算斐波纳契序列。 该函数只需要一个参数，在当前情况下参数即为 =Org-mode= 表格的引用。
 
-    Here is the Org-mode table that is passed to =fibonacci-seq=:
-
+    下面即为传递给 =fibonacci-seq= 的 =Org-mode= 表格:
     #+name: fibonacci-inputs
     | 1 | 2 | 3 | 4 |  5 |  6 |  7 |  8 |  9 | 10 |
     | 2 | 4 | 6 | 8 | 10 | 12 | 14 | 16 | 18 | 20 |
 
-    The table looks like this in the Org-mode buffer:
+    表格在 =Org-mode= 的缓冲区中如下所示：
     : #+tblname: fibonacci-inputs
     : | 1 | 2 | 3 | 4 |  5 |  6 |  7 |  8 |  9 | 10 |
     : | 2 | 4 | 6 | 8 | 10 | 12 | 14 | 16 | 18 | 20 |
 
-    The Emacs Lisp source code:
+    Emacs Lisp的源代码:
     #+name: fibonacci-seq
     #+begin_src emacs-lisp :var fib-inputs=fibonacci-inputs
-    (defun fibonacci (n)
-    (if (or (= n 0) (= n 1))
-        n
-      (+ (fibonacci (- n 1)) (fibonacci (- n 2)))))
-
-      (mapcar (lambda (row)
-            (mapcar #'fibonacci row)) fib-inputs)
+      (defun fibonacci (n)
+      (if (or (= n 0) (= n 1))
+          n
+        (+ (fibonacci (- n 1)) (fibonacci (- n 2)))))
+        (mapcar (lambda (row)
+              (mapcar #'fibonacci row)) fib-inputs)
     #+end_src
 
-    In the Org-mode buffer the function looks like this:
+    在 =Org-mode= 中函数如下所示:
     : #+name: fibonacci-seq
     : #+begin_src emacs-lisp :var fib-inputs=fibonacci-inputs
     :   (defun fibonacci (n)
@@ -378,119 +346,110 @@ the last statement and nothing else.
     :             (mapcar #'fibonacci row)) fib-inputs)
     : #+end_src
 
-    The return value of =fibonacci-seq= is a table:
-    #+resname:
+    =fibonacci-seq= 的返回值，也是一个表格:
+    #+RESULTS: fibonacci-seq
     | 1 | 1 | 2 |  3 |  5 |   8 |  13 |  21 |   34 |   55 |
     | 1 | 3 | 8 | 21 | 55 | 144 | 377 | 987 | 2584 | 6765 |
 
-** In-line Code Blocks
-   Code can be evaluated in-line using the following syntax:
+** 内联(In-line)的代码块
+   可使用以下语法内联(In-line)的执行代码：
 
    : Without header args: src_lang{code} or with header args: src_lang[args]{code},
    : for example src_python[:session]{10*x}, where x is a variable existing in the
    : python session.
 
-** Code Block Body Expansion
-   Babel "expands" code blocks prior to evaluation, i.e., the
-   evaluated code comprises the code block contents augmented with
-   code that assigns referenced data to variables. It is possible to
-   preview expanded contents, and also to expand code during
-   tangling.  Expansion takes into account header arguments and
-   variables.
+   代码如下:
+   : src_python{return "Hello World!"}
 
-   - preview :: =C-c M-b p= is bound to =org-babel-expand-src-block=.  It
-                can be used inside a code block to preview the expanded
-                contents. This facility is useful for debugging.
+   执行结果： {{{results(=Hello World!=)}}}
 
-   - tangling :: The expanded body can be tangled.  Tangling this way includes
-                 variable values that  may be
-                 - the results of other code blocks,
-                 - variables stored in headline properties, or
-                 - tables.
+** 代码块扩展
+   *Babel* 在执行之前“扩展”代码块，即，执行代码包括把引用的数据(或代码)填充到代码块内容里。
+   可以预览展开的内容，还可以在 /tangling/ 期间展开代码。 扩展时，头参数和变量需要一并考虑进去。
 
-                 One possible use for tangling expanded code block is for emacs
-                 initialization.  Values such as user names and passwords can be
-                 stored in headline properties or in tables.  The =:no-expand=
-                 header argument can be used to inhibit expansion of a code block
-                 during tangling.
+   - preview :: =C-c M-b p= (=C-c C-v v=) 关联到 =org-babel-expand-src-block= 函数。它可用于在代码块中预览扩展的内容, 对调试很有用。
 
-   Here is an example of a code block and its resulting expanded body.
+   - tangling :: 扩展的的代码块可以被 /tangled/ 。 /tangling/ 可能包括的变量值
+                 - 其他代码的执行结果，
+                 - 存储在标题属性中变量，或者
+                 - 表格。
 
-   The data are kept in a table:
+   /tangling/ 扩展代码块的一个可能用途是用于emacs初始化。
+   用户名和密码等值可以存储在标题属性或表格中。
+   可以使用 =:no-expand= 头参数来阻止 /tangling/ 期间代码块的扩展。
+
+   下面是代码块及其生成的扩展的示例。
+
+   数据被存储在表格中:
    #+tblname: user-data
    | username | john-doe |
    | password | abc123   |
 
-   The code block refers to the data table:
+   引用数据表格的代码块:
    #+name: setup-my-account
    #+begin_src emacs-lisp :rownames yes :var data=user-data
-  (setq my-special-username (first (first data)))
-  (setq my-special-password (first (second data)))
+   (setq my-special-username (first (first data)))
+   (setq my-special-password (first (second data)))
    #+end_src
 
-   With point inside the code block,  =C-c M-b p= expands the contents:
+   在代码块内部， =C-c M-b p= (=C-c C-v v=)扩展内容如下：
    #+begin_src emacs-lisp
-  (let ((data (quote (("john-doe") ("abc123")))))
-  (setq my-special-username (first (first data)))
-  (setq my-special-password (first (second data)))
-  )
+   (let ((data (quote (("john-doe") ("abc123")))))
+   (setq my-special-username (first (first data)))
+   (setq my-special-password (first (second data))))
    #+end_src
 
-** A Meta-programming Language for Org-mode
+** =Org-mode= 的元编程语言
   :PROPERTIES:
   :CUSTOM_ID: meta-programming-language
   :END:
-  Because the return value of a function written in one language can be
-  passed to a function written in another language, or to an Org-mode
-  table, which is itself programmable, Babel can be used as a
-  meta-functional programming language.  With Babel, functions from
-  many languages can work together.  You can mix and match languages,
-  using each language for the tasks to which it is best suited.
+  因为用一种语言编写的函数的返回值可以被传递给另一种语言编写的函数，
+  或者传递到本身就可程序化的 =Org-mode= 的表格中， 所以可将 *Babel* 用作元功能编程语言。
+  *Bable* 可使许多语言一起工作, 混合使用各语言，每种语言可用于最合适的任务。
 
-  For example, let's take some system diagnostics in the shell and graph them with R.
+  例如，在shell中进行一些系统诊断，并用R图形化诊断结果.
 
-  1. Create a code block, using shell code, to list
-     directories in our home directory, together with their
-     sizes. Babel automatically converts the output into an Org-mode
-     table.
+  1. 使用shell代码创建一个代码块，列出我们的主目录中的目录以及它们的大小。
+  Babel自动将输出转换为 =Org-mode= 表格。
 
   : #+name: directories
   : #+begin_src sh :results replace
   :   cd ~ && du -sc * |grep -v total
   : #+end_src
 
-  #+resname: directories
-  |       72 | "Desktop"   |
-  | 12156104 | "Documents" |
-  |  3482440 | "Downloads" |
-  |  2901720 | "Library"   |
-  |    57344 | "Movies"    |
-  | 16548024 | "Music"     |
-  |      120 | "News"      |
-  |  7649472 | "Pictures"  |
-  |        0 | "Public"    |
-  |   152224 | "Sites"     |
-  |        8 | "System"    |
-  |       56 | "bin"       |
-  |  3821872 | "mail"      |
-  | 10605392 | "src"       |
-  |     1264 | "tools"     |
+  代码如下：
+  #+name: directories
+  #+begin_src sh :results replace
+  cd ~ && du -sh * |grep -v total
+  #+end_src
 
-  2. A function, written with a single line of R code, plots the data
-     in the Org-mode table as a
-     pie-chart. Note how this code block uses the =srcname=
-     of the previous code block to obtain the data.
+  结果如下：
+  #+RESULTS: directories
+  | 4.0K | Desktop          |
+  | 4.0K | Documents        |
+  | 7.0M | Downloads        |
+  | 4.0K | Music            |
+  | 4.0K | Pictures         |
+  | 4.0K | Public           |
+  | 4.0K | Templates        |
+  | 4.0K | Videos           |
+  | 12K  | examples.desktop |
+  | 293M | program          |
+  | 8.0K | spf13-vim.sh     |
 
-  In the Org-mode file:
+  2. 一行R语言编写的函数将 =Org-mode= 表中的数据绘制为饼形图。
+  请注意，当前代码块如何使用前一代码块的 =srcname= 来获取的数据。
+
+  在 =Org-mode= 文件中:
   : #+name: directory-pie-chart(dirs = directories)
-  : #+begin_src R :session R-pie-example :file ../../images/babel/dirs.png
+  : #+begin_src R :session R-pie-example :file ../images/babel/dirs.png
   :   pie(dirs[,1], labels = dirs[,2])
   : #+end_src
 
   HTML export of code:
   #+name: directory-pie-chart(dirs=directories)
-  #+begin_src R :session R-pie-example :file ../../images/babel/dirs.png
-  pie(dirs[,1], labels = dirs[,2])
+  #+begin_src R :session R-pie-example :file ../images/babel/dirs.png :var dirs=directories
+    pie(dirs[,1],labels=dirs[,2])
   #+end_src
   [[http://orgmode.org/worg/images/babel/dirs.png]]
 
