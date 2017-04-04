@@ -409,8 +409,7 @@
 
   例如，在shell中进行一些系统诊断，并用R图形化诊断结果.
 
-  1. 使用shell代码创建一个代码块，列出我们的主目录中的目录以及它们的大小。
-  Babel自动将输出转换为 =Org-mode= 表格。
+  1. 使用shell代码创建一个代码块，列出我们的主目录中的目录以及它们的大小。Babel自动将输出转换为 =Org-mode= 表格。
 
   : #+name: directories
   : #+begin_src sh :results replace
@@ -420,25 +419,24 @@
   代码如下：
   #+name: directories
   #+begin_src sh :results replace
-  cd ~ && du -sh * |grep -v total
+  cd ~ && du -sc * |grep -v total
   #+end_src
 
   结果如下：
-  #+RESULTS: directories
-  | 4.0K | Desktop          |
-  | 4.0K | Documents        |
-  | 7.0M | Downloads        |
-  | 4.0K | Music            |
-  | 4.0K | Pictures         |
-  | 4.0K | Public           |
-  | 4.0K | Templates        |
-  | 4.0K | Videos           |
-  | 12K  | examples.desktop |
-  | 293M | program          |
-  | 8.0K | spf13-vim.sh     |
+  : #+RESULTS: directories
+  : |      4 | Desktop          |
+  : |      4 | Documents        |
+  : |   7168 | Downloads        |
+  : |      4 | Music            |
+  : |      4 | Pictures         |
+  : |      4 | Public           |
+  : |      4 | Templates        |
+  : |      4 | Videos           |
+  : |     12 | examples.desktop |
+  : | 299668 | program          |
+  : |      8 | spf13-vim.sh     |
 
-  2. 一行R语言编写的函数将 =Org-mode= 表中的数据绘制为饼形图。
-  请注意，当前代码块如何使用前一代码块的 =srcname= 来获取的数据。
+  2. 一行R语言编写的函数将 =Org-mode= 表中的数据绘制为饼形图。请注意，当前代码块如何使用前一代码块的 =srcname= 来获取的数据。
 
   在 =Org-mode= 文件中:
   : #+name: directory-pie-chart(dirs = directories)
@@ -451,6 +449,7 @@
   #+begin_src R :session R-pie-example :file ../images/babel/dirs.png :var dirs=directories
     pie(dirs[,1],labels=dirs[,2])
   #+end_src
+
   [[http://orgmode.org/worg/images/babel/dirs.png]]
 
 * 在Org表格中使用代码块
