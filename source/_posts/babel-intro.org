@@ -1,4 +1,4 @@
-#+TITLE: Babel Introduction
+#+TITLE: Babel: org-mode的多语言编程环境
 #+AUTHOR: Eric Schulte, Dan Davison, Tom Dye
 #+DATE: <2017-04-01 Sat>
 #+LAYOUT: post
