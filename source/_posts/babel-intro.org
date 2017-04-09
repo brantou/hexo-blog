@@ -4,7 +4,7 @@
 #+LAYOUT: post
 #+OPTIONS: ':t author:nil ^:{}
 #+STARTUP: content
-#+TAGS: org-mode babel
+#+TAGS: org-mode, babel, source-code-tool, tutorial, literate programming
 #+CATEGORIES: org-mode
 #+HTML_HEAD: <style>pre, code {font-family: monospace;}</style>
 

@@ -4,7 +4,7 @@
 #+OPTIONS:    num:nil \n:nil ::t |:t ^:t -:t f:t *:t tex:t d:(HIDE)
 #+STARTUP:    align fold nodlcheck hidestars oddeven lognotestate
 #+SEQ_TODO:   TODO(t) INPROGRESS(i) WAITING(w@) | DONE(d) CANCELED(c@)
-#+TAGS:       org-mode table spreadsheet tutorial lookup
+#+TAGS:       org-mode, table, spreadsheet, tutorial, lookup
 #+AUTHOR:     Jarmo Hurri
 #+PRIORITIES: A C B
 #+CATEGORIES: org-mode

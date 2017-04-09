@@ -3,7 +3,7 @@
 #+DATE: <2017-03-11 Sat>
 #+LAYOUT: post
 #+TAGS: org-mode
-#+CATEGORIES: org-mode
+#+CATEGORIES: org-mode, org-syntax, org-internal-structure, tutorial
 #+OPTIONS: ':t author:nil ^:{}
 #+LANGUAGE: zh-CN
 #+STARTUP: content
