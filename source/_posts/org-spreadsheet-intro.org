@@ -1,0 +1,201 @@
+#+TITLE:      Org电子表格系统的简明教程
+#+AUTHOR:     worg people
+#+DATE:       <2017-04-06 Thu>
+#+LAYOUT:     post
+#+OPTIONS:    num:nil \n:nil ::t |:t ^:t -:t f:t *:t tex:t d:(hide)
+#+STARTUP:    align fold nodlcheck hidestars oddeven lognotestate
+#+SEQ_TODO:   todo(t) inprogress(i) waiting(w@) | done(d) canceled(c@)
+#+TAGS:       org-mode table spreadsheet tutorial
+#+PRIORITIES: a c b
+#+CATEGORIES: org-mode
+#+CONSTANTS:  pi=3.14159265358979323846
+
+#+BEGIN_QUOTE
+原文[[http://orgmode.org/worg/org-tutorials/org-spreadsheet-intro.html][Org as a spreadsheet system: a short introduction]], 由 *Bastien*  编辑，维护。本文只做学习之用。
+#+END_QUOTE
+
+* 序言
+  这篇简短的教程将介绍使用 =Org= 作为电子表格系统需要的基础知识。
+
+  从一个非常简单的表开始:
+  | student  | maths | physics |
+  |----------+-------+---------|
+  | bertrand |    13 |      09 |
+  | henri    |    15 |      14 |
+  | arnold   |    17 |      13 |
+
+  上面的表格在 =Org= 文件中的样式:
+  : | student  | maths | physics |
+  : |----------+-------+---------|
+  : | bertrand |    13 |      09 |
+  : | henri    |    15 |      14 |
+  : | arnold   |    17 |      13 |
+
+  本教程的目的是阐述如何从上面简单的表生成出如下所示的包含平均每个学生和每个学科的平均分的表：
+  | student  | maths | physics | mean |
+  |----------+-------+---------+------|
+  | bertrand |    13 |      09 |   11 |
+  | henri    |    15 |      14 | 14.5 |
+  | arnold   |    17 |      13 |   15 |
+  |----------+-------+---------+------|
+  | means    |    15 |      12 | 13.5 |
+
+  #+BEGIN_EXPORT html
+  <!-- more -->
+  #+END_EXPORT
+
+* 熟悉引用
+  先从每个学生的平均值开始。
+  : | student  | maths | physics | mean      |
+  : |----------+-------+---------+-----------|
+  : | bertrand |    13 |      09 | [formula] |
+  : | henri    |    15 |      14 |           |
+  : | arnold   |    17 |      13 |           |
+
+  在往 =[formula]= 中插入公式之前，需要知道如何引用 ( *refer* )一行，一列或一个单元格。
+
+  了解引用的最简单的方法是当你在一个单元格时，键入 =C-c ?= 。
+
+  例如，如果在 =[formula]= 单元格中， =C-c ?= 展示给你的信息是： =line @2, col $4, ref @2$4 or D2= ，
+  这表示在第四列的第二行上，而这个字段的引用是 =@2$4= 或 =D2= 。
+
+  在任何时刻，如果不清楚行和列，可以随时使用 =C-c }= 打开引用的可视化网格：
+  [[http://orgmode.org/worg/images/bzg/reference_visualization.jpg]]
+
+* 第一个公式
+  将光标放在（空） =[formula]= 单元格中, 然后在此字段中输入 =:=vmean（$2..$3）= 。
+  该公式意味着：计算此行中第二（ =$2= ）到 第三（ =$3= ）单元格的字段平均值。
+  如果喜欢其他符号，请输入 =:=vmean(B&..C&)= -- 其中 =&= 字符代表在这一行。
+
+  在上面键入公式的行中，键入 =C-c C-c= , 你将观察到两点变化： 1） =:=vmean（$2..$3）= 已被计算结果代替，2）以 =＃+TBLFM= 开头的新行已被插入到表的底部。
+
+  =＃+TBLFM= 行包含表的所有公式，在手动编辑时应小心。
+
+* 列公式和单元格公式
+  经过上面的操作，表格变成了:
+  : | student  | maths | physics | mean |
+  : |----------+-------+---------+------|
+  : | bertrand |    13 |      09 |   11 |
+  : | henri    |    15 |      14 |      |
+  : | arnold   |    17 |      13 |      |
+  : #+tblfm: @2$4=vmean($2..$3)
+
+  但是我们真正想要的是计算“Mean”列中所有单元格的公式。 换句话说，我们真的想要一个列公式，而不是单元格公式。
+
+  要使用列公式替换当前公式，请返回到已定义的单元格，然后键入 ~=vmean($2..$3)~ 。 请注意，与之前插入的唯一区别在于公式以 ~=~ 替代前缀 ~:=~ 。
+  完成后，在单元格中执行 =C-c C-c= ：列公式替换先前公式，这正是我们想要的。
+
+  一旦执行了上面步骤，该单元格中的值应该与以前相同（即11），现在可以通过键入 =C-u C-c *= (或者在 =#+TBLFM= 行键入 =C-c C-c= ) 重新应用公式来更新此列中的所有单元格。
+
+  经过上面的步骤，表格如下所示:
+  : | student  | maths | physics | mean |
+  : |----------+-------+---------+------|
+  : | bertrand |    13 |      09 |   11 |
+  : | henri    |    15 |      14 | 14.5 |
+  : | arnold   |    17 |      13 |   15 |
+  : #+tblfm: $4=vmean($2..$3)
+
+  由于在 =＃+TBLFM= 中的单个公式现在适用于整个列，所以它不包含任何对行的引用。 公式以前被应用于 =@2$4= 单元格，现在它被应用于 =$4= 列。
+
+  最后，为每个学科平均值添加一行。 此行包含两个字段公式，每个公式计算同一列中上面单元格的平均值:
+  : | student  | maths | physics | mean |
+  : |----------+-------+---------+------|
+  : | bertrand |    13 |      09 |   11 |
+  : | henri    |    15 |      14 | 14.5 |
+  : | arnold   |    17 |      13 |   15 |
+  : |----------+-------+---------+------|
+  : | means    |    15 |      12 |      |
+  : #+tblfm: $4=vmean($2..$3)::@5$2=vmean(@2$2..@4$2)::@5$3=vmean(@2$3..@4$3)
+
+  表格如下所示:
+  | student  | maths | physics | mean |
+  |----------+-------+---------+------|
+  | bertrand |    13 |      09 |   11 |
+  | henri    |    15 |      14 | 14.5 |
+  | arnold   |    17 |      13 |   15 |
+  |----------+-------+---------+------|
+  | means    |    15 |      12 |      |
+  #+tblfm: $4=vmean($2..$3)::@5$2=vmean(@2$2..@4$2)::@5$3=vmean(@2$3..@4$3)
+
+* 交互的编辑公式
+  我们可通过将公式直接插入到表格单元格的方式来定义它们：在一个字段中键入 ~=~ 开始列公式的定义，和键入 ~:=~ 开始一个单元格公式的定义。
+
+  如果你喜欢，可以在 /minibuffer/ 中编辑公式：使用 =C-c == 编辑列公式或 =C-u C-c == 用于字段公式。
+
+  但是也可以通过键入 =C-c '= 在专用缓冲区中交互式地编辑公式。 此新缓冲区列出了表的所有公式，并提供编辑引用的功能。
+
+  当光标在引用上方时，表中的相应字段将突出显示。 很好！ 但可以做的更多：可以使用 =S-<left/right/up/down>= 键实际选择引用。
+
+  [[http://orgmode.org/worg/images/bzg/formulas_editor.jpg]]
+
+  注：不用担心使用 =M-<left/right>= 左右移动列或 =M-<up/down>= 上下移动行会混淆 =＃+TBLFM= 行中的引用，因为每次移动都会自动更新引用。
+
+* Calc和Elisp公式
+  公式的默认语法是 /Calc/ ，用于进行计算的 /GNU Emacs/ 包。
+
+  以下是[[http://www.delorie.com/gnu/docs/calc/calc_21.html][Calc手册 ]]中关于代数式公式的摘录:
+  : Algebraic formulas use the operators `+', `-', `*', `/', and `^'. You
+  : can use parentheses to make the order of evaluation clear. In the
+  : absence of parentheses, `^' is evaluated first, then `*', then `/',
+  : then finally `+' and `-'. For example, the expression
+  :
+  : 2 + 3*4*5 / 6*7^8 - 9
+  :
+  : is equivalent to
+  :
+  : 2 + ((3*4*5) / (6*(7^8)) - 9
+
+  在 =Org= 表中，可使用引用而不是值来执行计算。
+
+  但是，如果需要使用 /Emacs lisp/ 代码而不是 /Calc/ ？
+
+  例如，将每个学生与Pi数字的十进制相关联，具体取决于他们在数学和物理学上的平均数。
+
+  为此，需要告诉 =Org= Pi数值的值。 可以通过添加以下行来实现：
+  : #+CONSTANTS: pi=3.14159265358979323846
+  (不要忘了在 =#+CONSTANTS= 行上 键入 =C-c C-c= 以刷新 /Local/ 设置)
+
+  你定义的 /Emacs lisp/ 公式可能如下所示:
+  : $5='(substring (number-to-string $pi) (round $4) (1+ (round $4)));N
+
+  Ahem.  Let's parse this:
+
+  - =(substring S A B)=: 获取 =S= 字符串  =A= 和 =B= 之间的子串
+  - =(number-to-string $pi)=:  把常量"Pi"转换成字符串
+  - =(round $4)=: 获取 =$4= 四舍五入后整数值
+  - =;N=: 把当前单元格的值当成整数，而不是字符串
+
+  如果学生的平均数是10，该公式返回的Pi中第十位数字。
+
+* 调试公式
+  现在表格如下所示:
+  | Student  | Maths | Physics | Mean | Pi number |
+  |----------+-------+---------+------+-----------|
+  | Bertrand |    13 |      09 |   11 |         5 |
+  | Henri    |    15 |      14 | 14.5 |         7 |
+  | Arnold   |    17 |      13 |   15 |         9 |
+  #+TBLFM: $4=vmean($2..$3)::$5='(substring (number-to-string $pi) (round $4) (1+ (round $4)));N
+
+  如果你回顾这个表，并试图了解 /Emacs Lisp/ 函数具体完成了那些计算;
+  这个时候，你会产生疑惑，你可能会想要调试公式，并按步骤一步一步进行计算。
+
+  在表格的任意地方键入 =C-c {= 或 在一个单元格中键入 =C-c C-c= （或 =C-u C-c *= 在这个表的任何地方）都会打开表格公式调试器。
+  然后将一个一个地执行公式的计算，并在一个单独的缓冲区显示关于每个公式的计算步骤的细节。
+  : Substitution history of formula
+  : Orig:   '(substring (number-to-string $pi) (round $4) (1+ (round $4)));N
+  : $xyz->  '(substring (number-to-string 3.14159265358979323846) (round $4) (1+ (round $4)))
+  : @r$c->  '(substring (number-to-string 3.14159265358979323846) (round $4) (1+ (round $4)))
+  : $1->    '(substring (number-to-string 3.14159265358979323846) (round 11) (1+ (round 11)))
+  : Result: 5
+  : Format: NONE
+  : Final:  5
+
+  一旦调试完成，再次键入 =C-c {= 关闭调试器。
+
+* 很多, 还有更多
+
+  使用 =Org= 作为电子表格系统非常容易上手。
+
+  本教程只是冰山一叫，你可以做的远不止于此！ 可以使用相对引用，为公式的列和参数定义名称，定义自动重新计算的单元格等。还可以在公式中使用 /Emacs lisp/ （[[http://orgmode.org/worg/org-tutorials/org-spreadsheet-lisp-formulas.html][请阅读本教程]]）。
+
+  浏览下 [[http://orgmode.org/org.html#Advanced-features][Org-mode手册]] 中的高级功能，它会给你一个更广阔的视角...
