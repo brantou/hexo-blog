@@ -1,8 +1,8 @@
 #+TITLE: Org-mode 手册版
 #+DATE: <2017-03-21 Tue>
 #+LAYOUT: post
-#+TAGS: org-mode, tutorial
-#+CATEGORIES: org-mode, tutorial
+#+TAGS: org-mode, tutorial, manual
+#+CATEGORIES: org-mode
 #+STARTUP: content
 
   org-mode我用了两年，却未曾深入。
@@ -14,7 +14,7 @@
   #+END_EXPORT
 
 * org-mode的文档结构
-** Headlines
+** 标题
    Org 是在大纲模式之上实现的。
    大纲模式可以让我们用层次结构来组织文档，这（至少对我来说）是笔记和想法的最好实现方式。
    这种结构可以折叠（隐藏）文档的一部分而只显示文档的大概结构或者只显示我们正在处理的部分。
@@ -32,27 +32,27 @@
    #+END_EXAMPLE
 
 *** 视图命令
- #+NAME: table:visibility-cycling
- #+CAPTION: 视图命令
- #+ATTR_HTML: :border 2 :rules all :frame border
- |                 | <64>                                                             |                               |
- |-----------------+------------------------------------------------------------------+-------------------------------|
- | Key             | Desc                                                             | Command                       |
- |-----------------+------------------------------------------------------------------+-------------------------------|
- | =TAB=           | 子树循环,在下列状态之间转换当前子树: _,->folded->children->subtree--._ | ~org-cycle~                   |
- |-----------------+------------------------------------------------------------------+-------------------------------|
- | =S-TAB=         | 全局循环, 在下列状态之间转换当前的整个buffer： _,->overview->contents->show all--._ | ~org-global-cycle~            |
- |-----------------+------------------------------------------------------------------+-------------------------------|
- | =C-c= =C-r=     | 显示当前位置的上下文，展示当前条目，紧跟的标题和标题的层次结构。 适用于通过稀疏树命令或议程命令展露出来的位置附近工作。 | ~org-reveal~                  |
- |-----------------+------------------------------------------------------------------+-------------------------------|
- | =C-c= =C-k=     | 展开子树的所有标题，CONTENT视图只有一个子树。                    | ~outline-show-branches~       |
- |-----------------+------------------------------------------------------------------+-------------------------------|
- | =C-c= =TAB=     | 展开子树的所有直接子节点。                                       | ~outline-show-children~       |
- |-----------------+------------------------------------------------------------------+-------------------------------|
- | =C-c= =C-x= =b= | 在间接缓冲区中显示当前子树                                       | ~org-tree-to-indirect-buffer~ |
- |-----------------+------------------------------------------------------------------+-------------------------------|
- | =C-c= =C-x= =v= | 将区域中的可见文字复制到 [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Kill-Ring.html][kill ring]].                              | ~org-copy-visible~            |
- |-----------------+------------------------------------------------------------------+-------------------------------|
+    #+NAME: table:visibility-cycling
+    #+CAPTION: 视图命令
+    #+ATTR_HTML: :border 2 :rules all :frame border
+    |                 | <64>                                                             |                               |
+    |-----------------+------------------------------------------------------------------+-------------------------------|
+    | Key             | Desc                                                             | Command                       |
+    |-----------------+------------------------------------------------------------------+-------------------------------|
+    | =TAB=           | 子树循环,在下列状态之间转换当前子树: _,->folded->children->subtree--._ | ~org-cycle~                   |
+    |-----------------+------------------------------------------------------------------+-------------------------------|
+    | =S-TAB=         | 全局循环, 在下列状态之间转换当前的整个buffer： _,->overview->contents->show all--._ | ~org-global-cycle~            |
+    |-----------------+------------------------------------------------------------------+-------------------------------|
+    | =C-c= =C-r=     | 显示当前位置的上下文，展示当前条目，紧跟的标题和标题的层次结构。 适用于通过稀疏树命令或议程命令展露出来的位置附近工作。 | ~org-reveal~                  |
+    |-----------------+------------------------------------------------------------------+-------------------------------|
+    | =C-c= =C-k=     | 展开子树的所有标题，CONTENT视图只有一个子树。                    | ~outline-show-branches~       |
+    |-----------------+------------------------------------------------------------------+-------------------------------|
+    | =C-c= =TAB=     | 展开子树的所有直接子节点。                                       | ~outline-show-children~       |
+    |-----------------+------------------------------------------------------------------+-------------------------------|
+    | =C-c= =C-x= =b= | 在间接缓冲区中显示当前子树                                       | ~org-tree-to-indirect-buffer~ |
+    |-----------------+------------------------------------------------------------------+-------------------------------|
+    | =C-c= =C-x= =v= | 将区域中的可见文字复制到 [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Kill-Ring.html][kill ring]].                              | ~org-copy-visible~            |
+    |-----------------+------------------------------------------------------------------+-------------------------------|
     org-mode默认的视图模式是'OVERVIEW',即概览模式，只有顶层的标题可见。
     你可以通过配置变量 =org-startup-folded= 来改变视图模式，如下:
     #+BEGIN_SRC emacs-lisp
@@ -60,272 +60,271 @@
     (setq org-catch-invisible-edits nil) ;; prevent editing an invisible part of the bu↵er
     #+END_SRC
 
- 当然你也可以为每个文件指定视图模式，只要在文件buffer中任意位置包含以下语句（推荐配置在文件头）：
- #+BEGIN_EXAMPLE
- ,#+STARTUP: overview
- ,#+STARTUP: content
- ,#+STARTUP: showall
- ,#+STARTUP: showeverything
- #+END_EXAMPLE
+    当然你也可以为每个文件指定视图模式，只要在文件buffer中任意位置包含以下语句（推荐配置在文件头）：
+    #+BEGIN_EXAMPLE
+    ,#+STARTUP: overview
+    ,#+STARTUP: content
+    ,#+STARTUP: showall
+    ,#+STARTUP: showeverything
+    #+END_EXAMPLE
 
- 更进一步,任何条目都包含 =VISIBILITY= 属性，此属性定义了条目的视图模式，覆盖一般性设置。可接受的值为： *folded* *children* *content* *all*, 示例如下
- :    #+STARTUP: overview
- :    * A
- :    :PROPERTIES:
- :    :VISIBILITY: all
- :    :END:
+    更进一步,任何条目都包含 =VISIBILITY= 属性，此属性定义了条目的视图模式，覆盖一般性设置。可接受的值为： *folded* *children* *content* *all*, 示例如下
+    :    #+STARTUP: overview
+    :    * A
+    :    :PROPERTIES:
+    :    :VISIBILITY: all
+    :    :END:
 
 *** 跳转命令
- #+NAME: table:headline-motion
- #+CAPTION: 标题跳转命令
- #+ATTR_HTML: :border 2 :rules all :frame border
- | Key         | Desc                                                               | Command                        |
- |-------------+--------------------------------------------------------------------+--------------------------------|
- | =C-c= =C-n= | 跳转到下一个标题                                                   | ~org-next-visible-heading~     |
- | =C-c= =C-p= | 跳转到上一个标题                                                   | ~org-previous-visible-heading~ |
- | =C-c= =C-f= | 跳转到下一个同级标题                                               | ~org-forward-same-level~       |
- | =C-c= =C-b= | 跳转到上一个同级标题                                               | ~org-backward-same-level~      |
- | =C-c= =C-u= | 跳回更高一级的标题                                                 | ~outline-up-heading~           |
- | =C-c= =C-j= | 跳转到别处，不改变当前的视图模式，创建一个临时buffer来展示当前文档 | ~org-goto~                     |
+    #+NAME: table:headline-motion
+    #+CAPTION: 标题跳转命令
+    #+ATTR_HTML: :border 2 :rules all :frame border
+    | Key         | Desc                                                               | Command                        |
+    |-------------+--------------------------------------------------------------------+--------------------------------|
+    | =C-c= =C-n= | 跳转到下一个标题                                                   | ~org-next-visible-heading~     |
+    | =C-c= =C-p= | 跳转到上一个标题                                                   | ~org-previous-visible-heading~ |
+    | =C-c= =C-f= | 跳转到下一个同级标题                                               | ~org-forward-same-level~       |
+    | =C-c= =C-b= | 跳转到上一个同级标题                                               | ~org-backward-same-level~      |
+    | =C-c= =C-u= | 跳回更高一级的标题                                                 | ~outline-up-heading~           |
+    | =C-c= =C-j= | 跳转到别处，不改变当前的视图模式，创建一个临时buffer来展示当前文档 | ~org-goto~                     |
 
 
- 在 =C-c C-j= 触发的临时buffer中，可用的命令如下：
- : TAB      Cycle visibility.
- : down/up  Next/previous visible headline.
- : RET      Select this location.
- : /        Do a Sparse-tree search
- 若是关闭了 =org-goto-auto-isearch= ，以下命令可用：
- : n/p      Next/previous visible headline.
- : f/b      Next/previous headline same level.
- : u        One level up.
- : 0-9      数字参数
- : q        退出
+    在 =C-c C-j= 触发的临时buffer中，可用的命令如下：
+    : TAB      Cycle visibility.
+    : down/up  Next/previous visible headline.
+    : RET      Select this location.
+    : /        Do a Sparse-tree search
+    若是关闭了 =org-goto-auto-isearch= ，以下命令可用：
+    : n/p      Next/previous visible headline.
+    : f/b      Next/previous headline same level.
+    : u        One level up.
+    : 0-9      数字参数
+    : q        退出
 
 *** 编辑命令
- #+NAME: table:structure-editing
- #+CAPTION: 编辑命令
- #+ATTR_HTML: :border 2 :rules all :frame border
- |                   | <64>                                                              |                                         |
- | Key               | Desc                                                              | Command                                 |
- |-------------------+-------------------------------------------------------------------+-----------------------------------------|
- | =M-RET=           | 插入一个同级标题在当前位置(行首，把当前行转成标题；行中，截断余下文本，在下一行生成标题) | ~org-insert-heading~                    |
- | =M-S-RET=         | 在M-RET的基础上，添加了 =TODO= 标示                               | ~org-insert-todo-heading~               |
- | =C-RET=           | 在当前子树的结束位置插入同级标题                                  | ~org-insert-heading-respect-content~    |
- | =C-S-RET=         | 在C_RET的基础上，添加了 =TODO= 标示                               | org-insert-todo-heading-respect-content |
- | =TAB=             | 用于还未输入文本信息的标题，第一个TAB变为之前标题的子标题，第二个TAB变为父标题,第三个TAB恢复原有等级 (,->children->parent->initial)) | ~org-cycle~                             |
- | =M-left=          | 当前标题提升一个等级                                              | ~org-do-promote~                        |
- | =M-right=         | 当前标题降低一个等级                                              | ~org-do-demote~                         |
- | =M-S-left=        | 当前整个子树提升一个等级                                          | ~org-promote-subtree~                   |
- | =M-S-right=       | 当前整个子树降低一个等级                                          | ~org-demote-subtree~                    |
- | =M-up=            | 当前整个子树和前面同级子树交换位置                                | ~org-move-subtree-up~                   |
- | =M-down=          | 当前整个子树和后面同级子树交换位置                                | ~org-move-subtree-down~                 |
- | =M-h=             | Mark the element at point.                                        | ~org-mark-element~                      |
- | =C-c= =@=         | Mark the subtree at point. 目前看起来是可视化选中当前子树         | ~org-mark-subtree~                      |
- | =C-c= =C-x= =C-w= | 剪切子树到 [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Kill-Ring.html][kill ring]]                                              | ~org-cut-subtree~                       |
- | =C-c= =C-x= =M-w= | 拷贝子树到 [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Kill-Ring.html][kill ring]]                                              | ~org-copy-subtree~                      |
- | =C-c= =C-x= =C-y= | 从  [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Kill-Ring.html][kill ring]] 中粘贴子树                                          | ~org-paste-subtree~                     |
- | =C-y=             | Depending on the options org-yank-adjusted-subtrees and org-yank- folded-subtrees, Org’s internal yank command will paste subtrees folded and in a clever way, using the same command as C-c C-x C-y. | ~org-yank~                              |
- | =C-c= =C-x= =c=   | Clone a subtree by making a number of sibling copies of it. You will be prompted for the number of copies to make, and you can also specify if any timestamps in the entry should be shifted. | ~org-clone-subtree-with-time-shift~     |
- | =C-c= =C-w=       | 将条目或区域 /refile/ 到不同的位置。                              | ~org-refile~                            |
- | =C-c= =^=         | 排序相同级别的条目。                                              | ~org-sort~                              |
- | =C-x= =n= =s=     | 将缓冲区缩小到当前子树。                                          | ~org-narrow-to-subtree~                 |
- | =C-x= =n= =b=     | 将缓冲区缩小到当前 *block* 。                                     | ~org-narrow-to-block~                   |
- | =C-x= =n= =w=     | 加宽缓冲区以消除变窄。                                            | ~widen~                                 |
- | =C-c= =*=         | 使正常的文本行变为标题,重复操作可恢复成原样                       | ~org-toggle-heading~                    |
+    #+NAME: table:structure-editing
+    #+CAPTION: 编辑命令
+    #+ATTR_HTML: :border 2 :rules all :frame border
+    |                   | <64>                                                              |                                         |
+    | Key               | Desc                                                              | Command                                 |
+    |-------------------+-------------------------------------------------------------------+-----------------------------------------|
+    | =M-RET=           | 插入一个同级标题在当前位置(行首，把当前行转成标题；行中，截断余下文本，在下一行生成标题) | ~org-insert-heading~                    |
+    | =M-S-RET=         | 在M-RET的基础上，添加了 =TODO= 标示                               | ~org-insert-todo-heading~               |
+    | =C-RET=           | 在当前子树的结束位置插入同级标题                                  | ~org-insert-heading-respect-content~    |
+    | =C-S-RET=         | 在C_RET的基础上，添加了 =TODO= 标示                               | org-insert-todo-heading-respect-content |
+    | =TAB=             | 用于还未输入文本信息的标题，第一个TAB变为之前标题的子标题，第二个TAB变为父标题,第三个TAB恢复原有等级 (,->children->parent->initial)) | ~org-cycle~                             |
+    | =M-left=          | 当前标题提升一个等级                                              | ~org-do-promote~                        |
+    | =M-right=         | 当前标题降低一个等级                                              | ~org-do-demote~                         |
+    | =M-S-left=        | 当前整个子树提升一个等级                                          | ~org-promote-subtree~                   |
+    | =M-S-right=       | 当前整个子树降低一个等级                                          | ~org-demote-subtree~                    |
+    | =M-up=            | 当前整个子树和前面同级子树交换位置                                | ~org-move-subtree-up~                   |
+    | =M-down=          | 当前整个子树和后面同级子树交换位置                                | ~org-move-subtree-down~                 |
+    | =M-h=             | Mark the element at point.                                        | ~org-mark-element~                      |
+    | =C-c= =@=         | Mark the subtree at point. 目前看起来是可视化选中当前子树         | ~org-mark-subtree~                      |
+    | =C-c= =C-x= =C-w= | 剪切子树到 [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Kill-Ring.html][kill ring]]                                              | ~org-cut-subtree~                       |
+    | =C-c= =C-x= =M-w= | 拷贝子树到 [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Kill-Ring.html][kill ring]]                                              | ~org-copy-subtree~                      |
+    | =C-c= =C-x= =C-y= | 从  [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Kill-Ring.html][kill ring]] 中粘贴子树                                          | ~org-paste-subtree~                     |
+    | =C-y=             | Depending on the options org-yank-adjusted-subtrees and org-yank- folded-subtrees, Org’s internal yank command will paste subtrees folded and in a clever way, using the same command as C-c C-x C-y. | ~org-yank~                              |
+    | =C-c= =C-x= =c=   | Clone a subtree by making a number of sibling copies of it. You will be prompted for the number of copies to make, and you can also specify if any timestamps in the entry should be shifted. | ~org-clone-subtree-with-time-shift~     |
+    | =C-c= =C-w=       | 将条目或区域 /refile/ 到不同的位置。                              | ~org-refile~                            |
+    | =C-c= =^=         | 排序相同级别的条目。                                              | ~org-sort~                              |
+    | =C-x= =n= =s=     | 将缓冲区缩小到当前子树。                                          | ~org-narrow-to-subtree~                 |
+    | =C-x= =n= =b=     | 将缓冲区缩小到当前 *block* 。                                     | ~org-narrow-to-block~                   |
+    | =C-x= =n= =w=     | 加宽缓冲区以消除变窄。                                            | ~widen~                                 |
+    | =C-c= =*=         | 使正常的文本行变为标题,重复操作可恢复成原样                       | ~org-toggle-heading~                    |
 
 *** 稀疏树
- 一个很重要的特性就是org有能力为被选中的信息构造出稀疏树，使得被选中信息突出显示，无关信息折叠显示。实践才是检测真理的唯一标准，试一试就知道具体是怎样优化你的工作了。
+    一个很重要的特性就是org有能力为被选中的信息构造出稀疏树，使得被选中信息突出显示，无关信息折叠显示。实践才是检测真理的唯一标准，试一试就知道具体是怎样优化你的工作了。
 
-  #+NAME: table:sparse-trees
-  #+CAPTION: 稀疏树
-  #+ATTR_HTML: :border 2 :rules all :frame border
-  |               | <64>                                                              |                   |
-  | Key           | Desc                                                              | Command           |
-  |---------------+-------------------------------------------------------------------+-------------------|
-  | =C-c= =/=     | 本命令会触发sparse-tress命令界面，提示输入字符，来选择创建稀疏树的命令 | ~org-sparse-tree~ |
-  | =C-c= =/= =r= | 创建出和正则表达式匹配的稀疏树;标题匹配，标题可见; body匹配, 标题和body都可见；所以匹配高亮，当当前buffer通过编辑命令发送改变时，高亮消失，当然你可以通过 =C-c C-c= 主动取消高亮。 | ~org-occur~       |
-  | =M-g= =n=     | 跳转到下一个匹配                                                  | ~next-error~      |
-  | =M-g= =p=     | 跳转到上一个匹配                                                  | ~previous-error~  |
+    #+NAME: table:sparse-trees
+    #+CAPTION: 稀疏树
+    #+ATTR_HTML: :border 2 :rules all :frame border
+    |               | <64>                                                              |                   |
+    | Key           | Desc                                                              | Command           |
+    |---------------+-------------------------------------------------------------------+-------------------|
+    | =C-c= =/=     | 本命令会触发sparse-tress命令界面，提示输入字符，来选择创建稀疏树的命令 | ~org-sparse-tree~ |
+    | =C-c= =/= =r= | 创建出和正则表达式匹配的稀疏树;标题匹配，标题可见; body匹配, 标题和body都可见；所以匹配高亮，当当前buffer通过编辑命令发送改变时，高亮消失，当然你可以通过 =C-c C-c= 主动取消高亮。 | ~org-occur~       |
+    | =M-g= =n=     | 跳转到下一个匹配                                                  | ~next-error~      |
+    | =M-g= =p=     | 跳转到上一个匹配                                                  | ~previous-error~  |
 
-  很有可能需要频繁创建特定搜索条件的稀疏树，可通过 ~org-agenda-custom-commands~ 来定义快速访问的快捷键（这个命令可用在[[http://orgmode.org/manual/Agenda-dispatcher.html][agenda dispatcher]]中）。
-  如下：
-  #+BEGIN_SRC emacs-lisp
-  ;; the key C-c a f as a shortcut for creating a sparse tree matching the string ‘FIXME’.
-  (setq org-agenda-custom-commands
-             '(("f" occur-tree "FIXME")))
-  #+END_SRC
-  #+BEGIN_QUOTE
- The other sparse tree commands select headings based on *TODO* keywords, tags, or properties and will be discussed later in this manual.
- To print a sparse tree, you can use the Emacs command ~ps-print-buffer-with-faces~ which does not print invisible parts of the document.
- Or you can use =C-c= =C-e= =C-v= to export only the visible part of the document and print the resulting file.
-  #+END_QUOTE
-** Plain lists
- #+BEGIN_QUOTE
- Within an entry of the outline tree, hand-formatted lists can provide additional structure.
- They also provide a way to create lists of checkboxes.
- Org supports editing such lists, and every exporter can parse and format them.
- #+END_QUOTE
-在大纲树的组织结构中，自定义格式的列表可以提供更多的组织结构。使我们得到一个复先框列表。 =Org= 可以处理这种列表，同时各个 =exporter= 可以解析和格式化。
-*Org* 可识别 /ordered/ 列表, /unordered/ 列表, 和 /description/ 列表。
- - /Unordered/ 的列表项以 *‘-’*, *‘+’* 或 *‘*’* 开始。
- - /Ordered/ 的列表项以数字加在 *‘.’* 或 *‘)’* 开始。格式如下：‘1.’ 或 ‘1)’。 可自定义起始值，在文本开始出插入[@20]，代表以20开始。
- - /Description/ 列表项其实就是 /unordered/ 列表项, 只在文本中间插入了分隔符 *‘::’* 。
+    很有可能需要频繁创建特定搜索条件的稀疏树，可通过 ~org-agenda-custom-commands~ 来定义快速访问的快捷键（这个命令可用在[[http://orgmode.org/manual/Agenda-dispatcher.html][agenda dispatcher]]中）。
+    如下：
+    #+BEGIN_SRC emacs-lisp
+    ;; the key C-c a f as a shortcut for creating a sparse tree matching the string ‘FIXME’.
+    (setq org-agenda-custom-commands '(("f" occur-tree "FIXME")))
+    #+END_SRC
+    #+BEGIN_QUOTE
+    The other sparse tree commands select headings based on *TODO* keywords, tags, or properties and will be discussed later in this manual.
+    To print a sparse tree, you can use the Emacs command ~ps-print-buffer-with-faces~ which does not print invisible parts of the document.
+    Or you can use =C-c= =C-e= =C-v= to export only the visible part of the document and print the resulting file.
+    #+END_QUOTE
+** 列表
+   #+BEGIN_QUOTE
+   Within an entry of the outline tree, hand-formatted lists can provide additional structure.
+   They also provide a way to create lists of checkboxes.
+   Org supports editing such lists, and every exporter can parse and format them.
+   #+END_QUOTE
+   在大纲树的组织结构中，自定义格式的列表可以提供更多的组织结构。使我们得到一个复先框列表。 =Org= 可以处理这种列表，同时各个 =exporter= 可以解析和格式化。
+   *Org* 可识别 /ordered/ 列表, /unordered/ 列表, 和 /description/ 列表。
+   - /Unordered/ 的列表项以 *‘-’*, *‘+’* 或 *‘*’* 开始。
+   - /Ordered/ 的列表项以数字加在 *‘.’* 或 *‘)’* 开始。格式如下：‘1.’ 或 ‘1)’。 可自定义起始值，在文本开始出插入[@20]，代表以20开始。
+   - /Description/ 列表项其实就是 /unordered/ 列表项, 只在文本中间插入了分隔符 *‘::’* 。
 
-同一个列表中项首行必须缩进一致。特别是 /ordered/ 列表到了 *‘10.’* ，两位数字必须和其他数字左对齐。
-若是下一行的缩进小于等于当前列表的缩进，则当前项终结。当所有项都终结，或者后面隔了两个空行时，列表终结。示例如下：
-: ** Lord of the Rings
-:    My favorite scenes are (in this order)
-:    1. The attack of the Rohirrim
-:    2. Eowyn's fight with the witch king
-:        + this was already my favorite scene in the book
-:        + I really like Miranda Otto.
-:    Important actors in this film are:
-:    - Elijah Wood :: He plays Frodo
-:    - Sean Austin :: He plays Sam, Frodo's friend.
-#+BEGIN_QUOTE
-Org supports these lists by tuning filling and wrapping commands to deal with them correctly, and by exporting them properly.
-Since indentation is what governs the structure of these lists,
-many structural constructs like =#+BEGIN_...= blocks can be indented to signal that they belong to a particular item.
+   同一个列表中项首行必须缩进一致。特别是 /ordered/ 列表到了 *‘10.’* ，两位数字必须和其他数字左对齐。
+   若是下一行的缩进小于等于当前列表的缩进，则当前项终结。当所有项都终结，或者后面隔了两个空行时，列表终结。示例如下：
+   : ** Lord of the Rings
+   :    My favorite scenes are (in this order)
+   :    1. The attack of the Rohirrim
+   :    2. Eowyn's fight with the witch king
+   :        + this was already my favorite scene in the book
+   :        + I really like Miranda Otto.
+   :    Important actors in this film are:
+   :    - Elijah Wood :: He plays Frodo
+   :    - Sean Austin :: He plays Sam, Frodo's friend.
+   #+BEGIN_QUOTE
+   Org supports these lists by tuning filling and wrapping commands to deal with them correctly, and by exporting them properly.
+   Since indentation is what governs the structure of these lists,
+   many structural constructs like =#+BEGIN_...= blocks can be indented to signal that they belong to a particular item.
 
-If you find that using a different bullet for a sub-list (than that used for the current list-level) improves readability,
-customize the variable =org-list-demote-modify-bullet=.
-To get a greater difference of indentation between items and their sub-items, =customize org-list-indent-offset=.
+   If you find that using a different bullet for a sub-list (than that used for the current list-level) improves readability,
+   customize the variable =org-list-demote-modify-bullet=.
+   To get a greater difference of indentation between items and their sub-items, =customize org-list-indent-offset=.
 
-The following commands act on items when the cursor is in the first line of an item (the line with the bullet or number).
-Some of them imply the application of automatic rules to keep list structure intact.
-If some of these actions get in your way, configure =org-list-automatic-rules= to disable them individually.
-#+END_QUOTE
-当光标位于一项的首行时（带有项标志符的行），下面命令将作用于该项：
- #+NAME: table:plain-list
- #+CAPTION: 稀疏树
- #+ATTR_HTML: :border 2 :rules all :frame border
- |                      | <64>                                                              |                      |
- | Key                  | Desc                                                              | Command              |
- |----------------------+-------------------------------------------------------------------+----------------------|
- | =TAB=                | 列表项像标题一样的被折叠，展开                                    | ~org-cycle~          |
- | =TAB=                | 用于还未输入文本信息的子项，第一个TAB变为子项，第二个TAB变为父项,第三个TAB恢复原有等级 (,->children->parent->initial)) | ~org-cycle~          |
- | =M-RET=              | 插入一个同级项(行首，把当前行转成列表项；行中，截断余下文本，在下一行生成列表项) | ~org-insert-heading~ |
- | =M-S-RET=            | 插入一个带 =checkbox= 的同级项(行为类似于M-RET)                   |                      |
- | =S-up/S-down=        | 跳转到当前列表的上一项或者下一项                                  |                      |
- | =M-up/M-down=        | 和上一项或者下一项交换位置（同级之间)                             |                      |
- | =M-left/M-right=     | 提升或者降低一项的等级,子项不变                                   |                      |
- | =M-S-left/M-S-right= | 提升或者降低一项的等级,子项同等变化                               |                      |
- | =C-c= =C-c=          | 当前项有 =checkbox= , 触发状态转换                                |                      |
- | =C-c= =-=            | 循环改变将当前列表的项标志符                                      |                      |
- | =C-c= =*=            | 使列表项变为标题 (在当前位置生成子标题).                          | ~org-toggle-heading~ |
- | =C-c= =C-*=          | 使整个列表变成当前标题的子树 =checkboxes= 将变为 =TODO= 当未 /unchecked/ 时 |                      |
- | =S-left/right=       | 循环改变将当前列表的项标志符                                      |                      |
- | =C-c= =^=            | Sort the plain list                                               | ~org-sort~           |
+   The following commands act on items when the cursor is in the first line of an item (the line with the bullet or number).
+   Some of them imply the application of automatic rules to keep list structure intact.
+   If some of these actions get in your way, configure =org-list-automatic-rules= to disable them individually.
+   #+END_QUOTE
+   当光标位于一项的首行时（带有项标志符的行），下面命令将作用于该项：
+   #+NAME: table:plain-list
+   #+CAPTION: 稀疏树
+   #+ATTR_HTML: :border 2 :rules all :frame border
+   |                      | <64>                                                              |                      |
+   | Key                  | Desc                                                              | Command              |
+   |----------------------+-------------------------------------------------------------------+----------------------|
+   | =TAB=                | 列表项像标题一样的被折叠，展开                                    | ~org-cycle~          |
+   | =TAB=                | 用于还未输入文本信息的子项，第一个TAB变为子项，第二个TAB变为父项,第三个TAB恢复原有等级 (,->children->parent->initial)) | ~org-cycle~          |
+   | =M-RET=              | 插入一个同级项(行首，把当前行转成列表项；行中，截断余下文本，在下一行生成列表项) | ~org-insert-heading~ |
+   | =M-S-RET=            | 插入一个带 =checkbox= 的同级项(行为类似于M-RET)                   |                      |
+   | =S-up/S-down=        | 跳转到当前列表的上一项或者下一项                                  |                      |
+   | =M-up/M-down=        | 和上一项或者下一项交换位置（同级之间)                             |                      |
+   | =M-left/M-right=     | 提升或者降低一项的等级,子项不变                                   |                      |
+   | =M-S-left/M-S-right= | 提升或者降低一项的等级,子项同等变化                               |                      |
+   | =C-c= =C-c=          | 当前项有 =checkbox= , 触发状态转换                                |                      |
+   | =C-c= =-=            | 循环改变将当前列表的项标志符                                      |                      |
+   | =C-c= =*=            | 使列表项变为标题 (在当前位置生成子标题).                          | ~org-toggle-heading~ |
+   | =C-c= =C-*=          | 使整个列表变成当前标题的子树 =checkboxes= 将变为 =TODO= 当未 /unchecked/ 时 |                      |
+   | =S-left/right=       | 循环改变将当前列表的项标志符                                      |                      |
+   | =C-c= =^=            | Sort the plain list                                               | ~org-sort~           |
 ** Drawers
-#+BEGIN_QUOTE
-Sometimes you want to keep information associated with an entry, but you normally don’t want to see it.
-For this, Org mode has drawers. They can contain anything but a headline and another drawer.
+   #+BEGIN_QUOTE
+   Sometimes you want to keep information associated with an entry, but you normally don’t want to see it.
+   For this, Org mode has drawers. They can contain anything but a headline and another drawer.
 
-You can interactively insert drawers at point by calling ~org-insert-drawer~, which is bound to =C-c= =C-x= =d=.
-With an active region, this command will put the region inside the drawer.
-With a prefix argument, this command calls ~org-insert-property-drawer~ and add a property drawer right below the current headline.
-Completion over drawer keywords is also possible using =M-TAB=.
+   You can interactively insert drawers at point by calling ~org-insert-drawer~, which is bound to =C-c= =C-x= =d=.
+   With an active region, this command will put the region inside the drawer.
+   With a prefix argument, this command calls ~org-insert-property-drawer~ and add a property drawer right below the current headline.
+   Completion over drawer keywords is also possible using =M-TAB=.
 
-Visibility cycling on the headline will hide and show the entry, but keep the drawer collapsed to a single line.
-In order to look inside the drawer, you need to move the cursor to the drawer line and press =TAB= there.
-Org mode uses the *PROPERTIES* drawer for storing properties , and you can also arrange for state change notes and clock times to be stored in a drawer *LOGBOOK*.
-If you want to store a quick note in the *LOGBOOK* drawer, in a similar way to state changes, use =C-c= =C-z= Add a time-stamped note to the *LOGBOOK* drawer.
+   Visibility cycling on the headline will hide and show the entry, but keep the drawer collapsed to a single line.
+   In order to look inside the drawer, you need to move the cursor to the drawer line and press =TAB= there.
+   Org mode uses the *PROPERTIES* drawer for storing properties , and you can also arrange for state change notes and clock times to be stored in a drawer *LOGBOOK*.
+   If you want to store a quick note in the *LOGBOOK* drawer, in a similar way to state changes, use =C-c= =C-z= Add a time-stamped note to the *LOGBOOK* drawer.
 
-You can select the name of the drawers which should be exported with ~org-export-with-drawers~.
-In that case, drawer contents will appear in export output.
-*Property* drawers are not affected by this variable: configure ~org-export-with-properties~ instead.
-#+END_QUOTE
- /Drawers/ 如下所示：
-:  ** This is a headline
-:     Still outside the drawer
-:     :DRAWERNAME:
-:     This is inside the drawer.
-:     :END:
-:     After the drawer.
-** Blocks
-#+BEGIN_QUOTE
-Org mode uses begin...end blocks for various purposes from including source code examples to capturing time logging information.
-These blocks can be folded and unfolded by pressing =TAB= in the begin line.
-You can also get all blocks folded at startup by configuring the option ~org-hide-block-startup~ or on a per-file basis by using
-:     #+STARTUP: hideblocks
-:     #+STARTUP: nohideblocks
-#+END_QUOTE
-** Footnotes（脚注)
-#+BEGIN_QUOTE
-A footnote is started by a footnote marker in square brackets in column 0, no indentation allowed.
-It ends at the next footnote definition, headline, or after two consecutive empty lines.
-The footnote reference is simply the marker in square brackets, inside text. Markers always start with fn:.
-For example:
-:     The Org homepage[fn:1] now looks a lot better than it used to.
-:     ...
-:     [fn:1] The link is: http://orgmode.org
+   You can select the name of the drawers which should be exported with ~org-export-with-drawers~.
+   In that case, drawer contents will appear in export output.
+   *Property* drawers are not affected by this variable: configure ~org-export-with-properties~ instead.
+   #+END_QUOTE
+   /Drawers/ 如下所示：
+   :  ** This is a headline
+   :     Still outside the drawer
+   :     :DRAWERNAME:
+   :     This is inside the drawer.
+   :     :END:
+   :     After the drawer.
+** 块
+   #+BEGIN_QUOTE
+   Org mode uses begin...end blocks for various purposes from including source code examples to capturing time logging information.
+   These blocks can be folded and unfolded by pressing =TAB= in the begin line.
+   You can also get all blocks folded at startup by configuring the option ~org-hide-block-startup~ or on a per-file basis by using
+   :     #+STARTUP: hideblocks
+   :     #+STARTUP: nohideblocks
+   #+END_QUOTE
+** 脚注
+   #+BEGIN_QUOTE
+   A footnote is started by a footnote marker in square brackets in column 0, no indentation allowed.
+   It ends at the next footnote definition, headline, or after two consecutive empty lines.
+   The footnote reference is simply the marker in square brackets, inside text. Markers always start with fn:.
+   For example:
+   :     The Org homepage[fn:1] now looks a lot better than it used to.
+   :     ...
+   :     [fn:1] The link is: http://orgmode.org
 
-Org mode extends the number-based syntax to named footnotes and optional inline definition. Here are the valid references:
-- =[fn:name]= :: A named footnote reference, where name is a unique label word, or, for simplicity of automatic creation, a number.
-- =[fn::This is the inline definition of this footnote]= :: A LATEX-like anonymous footnote where the definition is given directly at the reference point.
-- =[fn:name:a definition]= :: An inline definition of a footnote, which also specifies a name for the note.
- Since Org allows multiple references to the same note, you can then use \[fn:name\] to create additional references.
+   Org mode extends the number-based syntax to named footnotes and optional inline definition. Here are the valid references:
+   - =[fn:name]= :: A named footnote reference, where name is a unique label word, or, for simplicity of automatic creation, a number.
+   - =[fn::This is the inline definition of this footnote]= :: A LATEX-like anonymous footnote where the definition is given directly at the reference point.
+   - =[fn:name:a definition]= :: An inline definition of a footnote, which also specifies a name for the note.
+        Since Org allows multiple references to the same note, you can then use \[fn:name\] to create additional references.
 
-Footnote labels can be created automatically, or you can create names yourself.
-This is handled by the variable ~org-footnote-auto-label~ and its corresponding *#+STARTUP* keywords.
-See the docstring of that variable for details.
-#+END_QUOTE
-示例如下：
-The Org homepage[fn:org-homepage] now looks a lot better than it used to.
+   Footnote labels can be created automatically, or you can create names yourself.
+   This is handled by the variable ~org-footnote-auto-label~ and its corresponding *#+STARTUP* keywords.
+   See the docstring of that variable for details.
+   #+END_QUOTE
+   示例如下：
+   The Org homepage[fn:org-homepage] now looks a lot better than it used to.
 
-#+NAME: table:footnote-command
-#+CAPTION: 脚注命令列表
-#+ATTR_HTML: :border 2 :rules all :frame border
-|                 | <64>                                                              |                       |
-| Key             | Desc                                                              | Command               |
-|-----------------+-------------------------------------------------------------------+-----------------------|
-| =C-c= =C-x= =f= | 当光标处于引用处时，跳转到它的定义；当光标处理定义处时，跳转到第一个引用处。其他情况下，新建一个脚注。当有前缀参数时，会提供一个菜单供选择操作，其中包括重新给脚注编号。 | ~org-footnote-action~ |
-| =C-c= =C-c=     | 当光标处于引用处时，跳转到它的定义；当光标处理定义处时，跳转到第一个引用处。当有前缀参数时，行为和 =C-c C-x f= 一样,提供同样操作菜单。 |                       |
-| =C-c= =C-o=     | 脚注标签也是指向相应定义/引用的链接，您可以使用常用(链接)命令来跟踪这些链接。 | ~org-open-at-point~   |
-| =C-c= ='=       | 在独立的窗口中，编辑引用关联的脚注定义。窗口可通过 =C-c= ='= 关闭 | ~org-edit-special~    |
+   #+NAME: table:footnote-command
+   #+CAPTION: 脚注命令列表
+   #+ATTR_HTML: :border 2 :rules all :frame border
+   |                 | <64>                                                              |                       |
+   | Key             | Desc                                                              | Command               |
+   |-----------------+-------------------------------------------------------------------+-----------------------|
+   | =C-c= =C-x= =f= | 当光标处于引用处时，跳转到它的定义；当光标处理定义处时，跳转到第一个引用处。其他情况下，新建一个脚注。当有前缀参数时，会提供一个菜单供选择操作，其中包括重新给脚注编号。 | ~org-footnote-action~ |
+   | =C-c= =C-c=     | 当光标处于引用处时，跳转到它的定义；当光标处理定义处时，跳转到第一个引用处。当有前缀参数时，行为和 =C-c C-x f= 一样,提供同样操作菜单。 |                       |
+   | =C-c= =C-o=     | 脚注标签也是指向相应定义/引用的链接，您可以使用常用(链接)命令来跟踪这些链接。 | ~org-open-at-point~   |
+   | =C-c= ='=       | 在独立的窗口中，编辑引用关联的脚注定义。窗口可通过 =C-c= ='= 关闭 | ~org-edit-special~    |
 
-当 =C-c C-x f= 命令加上附加前缀参数时(=C-u C-c C-x f=) ,一个操作菜单被提供：
-:     s    Sort the footnote definitions by reference sequence.  During editing,
-:          Org makes no effort to sort footnote definitions into a particular
-:          sequence.  If you want them sorted, use this command, which will
-:          also move entries according to org-footnote-section.  Automatic
-:          sorting after each insertion/deletion can be configured using the
-:          option org-footnote-auto-adjust.
-:     r    Renumber the simple fn:N footnotes.  Automatic renumbering
-:          after each insertion/deletion can be configured using the option
-:          org-footnote-auto-adjust.
-:     S    Short for first r, then s action.
-:     n    Normalize the footnotes by collecting all definitions (including
-:          inline definitions) into a special section, and then numbering them
-:          in sequence.  The references will then also be numbers.
-:     d    Delete the footnote at point, and all definitions of and references
-:          to it.
+   当 =C-c C-x f= 命令加上附加前缀参数时(=C-u C-c C-x f=) ,一个操作菜单被提供：
+   :     s    Sort the footnote definitions by reference sequence.  During editing,
+   :          Org makes no effort to sort footnote definitions into a particular
+   :          sequence.  If you want them sorted, use this command, which will
+   :          also move entries according to org-footnote-section.  Automatic
+   :          sorting after each insertion/deletion can be configured using the
+   :          option org-footnote-auto-adjust.
+   :     r    Renumber the simple fn:N footnotes.  Automatic renumbering
+   :          after each insertion/deletion can be configured using the option
+   :          org-footnote-auto-adjust.
+   :     S    Short for first r, then s action.
+   :     n    Normalize the footnotes by collecting all definitions (including
+   :          inline definitions) into a special section, and then numbering them
+   :          in sequence.  The references will then also be numbers.
+   :     d    Delete the footnote at point, and all definitions of and references
+   :          to it.
 ** The Orgstruct minor mode
-#+BEGIN_QUOTE
-If you like the intuitive way the Org mode structure editing and list formatting works,
-you might want to use these commands in other modes like Text mode or Mail mode as well.
-The minor mode orgstruct-mode makes this possible. Toggle the mode with =M-x= ~orgstruct-mode~ =RET=,
-or turn it on by default, for example in Message mode, with one of:
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_QUOTE
+   If you like the intuitive way the Org mode structure editing and list formatting works,
+   you might want to use these commands in other modes like Text mode or Mail mode as well.
+   The minor mode orgstruct-mode makes this possible. Toggle the mode with =M-x= ~orgstruct-mode~ =RET=,
+   or turn it on by default, for example in Message mode, with one of:
+   #+BEGIN_SRC emacs-lisp
      (add-hook 'message-mode-hook 'turn-on-orgstruct)
      (add-hook 'message-mode-hook 'turn-on-orgstruct++)
-#+END_SRC
-#+END_QUOTE
+   #+END_SRC
+   #+END_QUOTE
 
-** Org syntax
-#+BEGIN_QUOTE
-A reference document providing a formal description of Org’s syntax is available as [[http://orgmode.org/worg/dev/org-syntax.html][a draft on Worg]], written and maintained by Nicolas Goaziou.
-It defines Org’s core internal concepts such as headlines, sections, affiliated keywords, (greater) elements and objects.
-Each part of an Org file falls into one of the categories above.
+** Org 的语法
+   #+BEGIN_QUOTE
+   A reference document providing a formal description of Org’s syntax is available as [[http://orgmode.org/worg/dev/org-syntax.html][a draft on Worg]], written and maintained by Nicolas Goaziou.
+   It defines Org’s core internal concepts such as headlines, sections, affiliated keywords, (greater) elements and objects.
+   Each part of an Org file falls into one of the categories above.
 
-To explore the abstract structure of an Org buffer, run this in a buffer:
-:     M-: (org-element-parse-buffer) RET
-It will output a list containing the bu↵er’s content represented as an abstract structure.
-The export engine relies on the information stored in this list.
-Most interactive commands (e.g., for structure editing) also rely on the syntactic meaning of the surrounding context.
+   To explore the abstract structure of an Org buffer, run this in a buffer:
+   :     M-: (org-element-parse-buffer) RET
+   It will output a list containing the bu↵er’s content represented as an abstract structure.
+   The export engine relies on the information stored in this list.
+   Most interactive commands (e.g., for structure editing) also rely on the syntactic meaning of the surrounding context.
 
-You can check syntax in your documents using org-lint command.
-#+END_QUOTE
+   You can check syntax in your documents using org-lint command.
+   #+END_QUOTE
 
 * org-mode 表格
   *Org* 提供了一个快速直观的表编辑器。 使用 *Emacs* 内嵌的 /calc/ 的包可支持类似于制表软件的操作。
@@ -441,37 +440,37 @@ You can check syntax in your documents using org-lint command.
    在导出文档时，将自动删除仅包含这些格式化信息的行。
 
 ** 列组
-  当Org导出表时，默认情况下不会有垂直线，因为在视觉上一般来说更令人满意。
-  然而，偶尔，垂直线对于将表结构化成一组列可能是有用的，就像水平线可以对于一组行所做的那样。
-  为了指定列组，您可以使用第一个字段仅包含"/"的特殊行。 其他字段可以包含'<'表示此列应该启动一个组，'>'表示组的结束，或'<>'（'<'和'>'之间没有空格） 当前列自己一组。
-  导出后，列组之间的边界将用垂直线标记。 示例如下：
+   当Org导出表时，默认情况下不会有垂直线，因为在视觉上一般来说更令人满意。
+   然而，偶尔，垂直线对于将表结构化成一组列可能是有用的，就像水平线可以对于一组行所做的那样。
+   为了指定列组，您可以使用第一个字段仅包含"/"的特殊行。 其他字段可以包含'<'表示此列应该启动一个组，'>'表示组的结束，或'<>'（'<'和'>'之间没有空格） 当前列自己一组。
+   导出后，列组之间的边界将用垂直线标记。 示例如下：
 
    #+BEGIN_EXPORT html
    <img src="/images/table-column-groups.jpg" />
    #+END_EXPORT
 
    效果如下（好像没有效果）：
-  | N | N^2 | N^3 | N^4 | ~sqrt(n)~ | ~sqrt[4](N)~ |
-  |---+-----+-----+-----+-----------+--------------|
-  | / |   < |     |   > |         < |            > |
-  | 2 |   4 |   8 |  16 | 1.4142136 |    1.1892071 |
-  | 3 |   9 |  27 |  81 | 1.7320508 |    1.3160740 |
-  |---+-----+-----+-----+-----------+--------------|
-  #+TBLFM: $2=$1^2::$3=$1^3::$4=$1^4::$5=sqrt($1)::$6=sqrt(sqrt(($1)))
+   | N | N^2 | N^3 | N^4 | ~sqrt(n)~ | ~sqrt[4](N)~ |
+   |---+-----+-----+-----+-----------+--------------|
+   | / |   < |     |   > |         < |            > |
+   | 2 |   4 |   8 |  16 | 1.4142136 |    1.1892071 |
+   | 3 |   9 |  27 |  81 | 1.7320508 |    1.3160740 |
+   |---+-----+-----+-----+-----------+--------------|
+   #+TBLFM: $2=$1^2::$3=$1^3::$4=$1^4::$5=sqrt($1)::$6=sqrt(sqrt(($1)))
 
-  只插入列组启动器也是足够的：
+   只插入列组启动器也是足够的：
 
    #+BEGIN_EXPORT html
    <img src="/images/table-column-group-start.jpg" />
    #+END_EXPORT
 
-  | N | N^2 | N^3 | N^4 | ~sqrt(n)~ | ~sqrt[4](N)~ |
-  |---+-----+-----+-----+-----------+--------------|
-  | / |   < |     |     |         < |              |
-  | 2 |   4 |   8 |  16 | 1.4142136 |    1.1892071 |
-  | 3 |   9 |  27 |  81 | 1.7320508 |    1.3160740 |
-  |---+-----+-----+-----+-----------+--------------|
-  #+TBLFM: $2=$1^2::$3=$1^3::$4=$1^4::$5=sqrt($1)::$6=sqrt(sqrt(($1)))
+   | N | N^2 | N^3 | N^4 | ~sqrt(n)~ | ~sqrt[4](N)~ |
+   |---+-----+-----+-----+-----------+--------------|
+   | / |   < |     |     |         < |              |
+   | 2 |   4 |   8 |  16 | 1.4142136 |    1.1892071 |
+   | 3 |   9 |  27 |  81 | 1.7320508 |    1.3160740 |
+   |---+-----+-----+-----+-----------+--------------|
+   #+TBLFM: $2=$1^2::$3=$1^3::$4=$1^4::$5=sqrt($1)::$6=sqrt(sqrt(($1)))
 
 ** The Orgtbl minor mode
    #+BEGIN_QUOTE
@@ -498,6 +497,146 @@ You can check syntax in your documents using org-lint command.
    - [[http://www.gnuplot.info/]]
 
 * 超链接
+  就如 /HTML/ 一样， =Org= 提供文件内部链接，到其他文件，Usenet文章，电子邮件等外部链接。
+** 链接格式
+   :PROPERTIES:
+   :CUSTOM_ID: link-format
+   :END:
+   =Org= 能够识别类似URL链接的文本，并处理成可点击的链接。 通用链接格式如下所示：
+   : [[link][description]]  或者 [[link]]
+   一旦链接完成，链接样式将发生变化，显示 /description/ 而不是 ~[[link] [description]]~ 或 /link/ 而不是 ~[ [link]]]~ 。
+   可以直接编辑链接的可见部分。 请注意，这可以是 /link/ 部分（如果没有 /description/ ）或 /description/ 部分。 要编辑不可见的“链接”部分，只需在链接上键入 =C-c C-l= 。
+   在链接的头和尾可删除链接不可见的边际括号，使得链接不完整，内部再次显示为纯文本。 插入缺失的括号将再次隐藏链接内部。
+   要显示所有链接的内部结构，可用菜单条目 ~Org->Hyperlinks->Literal links~ 。
+** 内部链接
+   如果一个链接不是URL形式的，它被当做当前文件中的内部链接。
+   最重要的情况是像 ~[ [＃my-custom-id]]~ 这样的链接，它将链接到 *CUSTOM_ID* 属性是 /my-custom-id/ 的条目。 自己要负责确保这些自定义ID在文件中是唯一的。
+   诸如 ~[ [MyTarget]]~ 或 ~[[MyTarget] [Findmytarget]]~ 的链接会在当前文件的文本中搜索。
+   在链接上输入 =C-c C-o= 或 鼠标点击时，会跳转到链接匹配处。 自定义ID的链接将指向相应的标题。
+
+   文本链接的首选匹配是 /dedicated target/ ：双角括号中的相同字符串，如 /\leftarrow\leftarrow My Target\rightarrow\rightarrow/ 。
+   如果没有 /dedicated target/ ，链接将尝试匹配缓冲区内元素的精确名称。
+   使用 =＃+NAME= 关键字进行命名，必须将其放在引用的元素之前的行中，如以下示例所示:
+   : #+NAME: My Target
+   : | a  | table      |
+   : |----+------------|
+   : | of | four cells |
+   如果以上都没有成功，Org将搜索与链接文本完全相同的标题(也会搜索 =TODO= 关键字和标签)。
+
+   在导出过程中，内部链接被用于标记对象(并分配一个数字)。 标记的对象将被指向它们的链接引用。 特别地，没有 /description/ 的链接将显示为分配给标记对象的编号。
+   以下摘录自 =Org=  缓冲区
+   : - one item
+   : - <<target>> another item
+   : Here we refer to item [[target]].
+   导出时，最后一句将显示为 /Here we refer to item 2/ 。
+
+   在非 =Org= 文件中，搜索将查找链接文本中的单词。 在上面的例子中搜索将是 /my Target/ 。
+   链接后，将 /mark/ 推到 =Org= 自己的 /mark ring/ 上。 可使用 =C-c ＆= 返回到前一个位置。 直接连续使用这个命令多次可以回到前面记录的位置。
+*** Radio targets
+    =Org= 可自动将正常文本中某些目标名称的任何出现转换为链接。 所以没有明确创建一个链接，文本就连接到 /Radio targents/ 的位置。
+    /Radio targets/ 由三角形括号括起来,
+    如 \leftarrow\leftarrow\leftarrow My Target\rightarrow\rightarrow\rightarrow 导致正常文本中的每个出现的 /my target/ 被激活为链接。
+    仅当文件首次加载到Emacs中时，才会自动扫描 /Radio targets/ 。
+    要在编辑过程中更新 /Radio targets/ 列表，请在光标处于 /Radio targets/ 位置时按 =C-c C-c= 。
+
+** 外部链接
+   =Org= 支持链接到文件，网站，Usenet和电子邮件，BBDB数据库条目和链接到IRC对话及其日志。
+   外部链接是类似URL的 /locators/ 。 它们以一个简短的识别字符串后面跟一个冒号开始。 冒号后没有空格。
+   下面列表显示每个链接类型的示例。
+   :  http://www.astro.uva.nl/~dominik           on the web
+   :  doi:10.1000/182                            DOI for an electronic resource
+   :  file:/home/dominik/images/jupiter.jpg      file, absolute path
+   :  /home/dominik/images/jupiter.jpg           same as above
+   :  file:papers/last.pdf                       file, relative path
+   :  ./papers/last.pdf                          same as above
+   :  file:/myself@some.where:papers/last.pdf    file, path on remote machine
+   :  /myself@some.where:papers/last.pdf         same as above
+   :  file:sometextfile::NNN                     file, jump to line number
+   :  file:projects.org                          another Org file
+   :  file:projects.org::some words              text search in Org file
+   :  file:projects.org::*task                   heading search in Org file
+   :  docview:papers/last.pdf::NNN               open in doc-view mode at page
+   :  id:B7423F4D-2E8A-471B-8810-C40F074717E9    Link to heading by ID
+   :  news:comp.emacs                            Usenet link
+   :  mailto:adent@galaxy.net                    Mail link
+   :  mhe:folder                                 MH-E folder link
+   :  mhe:folder#id                              MH-E message link
+   :  rmail:folder                               RMAIL folder link
+   :  rmail:folder#id                            RMAIL message link
+   :  gnus:group                                 Gnus group link
+   :  gnus:group#id                              Gnus article link
+   :  bbdb:R.*Stallman                           BBDB link (with regexp)
+   :  irc:/irc.com/#emacs/bob                    IRC link
+   :  info:org#External links                    Info node or index link
+   :  shell:ls *.org                             A shell command
+   :  elisp:org-agenda                           Interactive Elisp command
+   :  elisp:(find-file-other-frame "Elisp.org")  Elisp form to evaluate
+
+   链接应包含在双括号中，当然可能想要显示的描述性文本而不是URL（参见[[#link-format][链接格式]]），例如：
+   : [[http://www.gnu.org/software/emacs/][GNU Emacs]]
+
+   如果描述是文件名或指向图像的URL，则HTML导出将内嵌图像作为可点击按钮。
+   如果没有任何描述和链接指向图像，该图像将被内联到导出的HTML文件中。
+
+   =Org= 能识别出正常文本中的外部链接，并将其作为链接激活。
+   如果空格必须是链接的一部分（例如在 ~bbdb:[Richard Stallman]~ 中），
+   或者如果需要消除关于链接结尾的歧义，请将其括在方括号中。
+
+** 处理链接
+   =Org= 为了正确的创建链接，插入链接和跟随链接，提供了很多快捷键。
+   #+NAME: table:handing_links
+   #+ATTR_HTML: :border 2 :rules all :frame border
+   |                 | <64>                                                              |         |
+   | Key             | Description                                                       | Command |
+   |-----------------+-------------------------------------------------------------------+---------|
+   | =C-c l=         | 存储当前位置的链接。 这是一个全局命令，可以在任何缓冲区中使用它来创建链接。 链接将被存储以备将来插入 =Org= 的缓冲区。 创建什么样的链接取决于当前的缓冲区。 |         |
+   | =C-c C-l=       | 插入链接。 将提示将链接插入缓冲区。 可以键入链接，使用内部链接的文本或上述示例中提到的链接类型前缀之一。 该链接将被插入到缓冲区，以及一个描述性的文本。 如果在调用此命令时选择了某些文本，则所选文本将成为默认描述。 |         |
+   | =C-u C-c C-l=   | 当使用 =C-u= 前缀参数调用 =C-c C-l= 时，将插入文件链接，可以使用文件名来完成文件选择。当前用到是相对路径，若是想要绝对路径可用两个 =C-u= 前缀。 |         |
+   | =C-c C-l=       | 当光标在已有链接上时， =C-c C-l= 允许编辑链接的链接和描述部分。   |         |
+   | =C-c C-o=       | 打开当前位置的链接。如果要覆盖默认应用程序并使用Emacs访问文件，请使用 =C-u= 前缀。 如果要避免在Emacs中打开，请使用 =C-u C-u= 前缀。如果光标位于标题上，但不在链接上，则打开标题中所有链接。 |         |
+   | =RET=           | 当 =org-return-follow-link= 设置时，RET也将跟随当前位置的链接。   |         |
+   | =C-c C-x C-v=   | 触发图片链接内联显示。当用前缀参数调用时，还会显示具有描述信息的图片链接。 可以通过配置变量 =org-startup-with-inline-images= 使内联图片在启动时显示。 |         |
+   | =C-c %=         | Push the current position onto the mark ring, to be able to return easily. Commands following an internal link do this automatically. |         |
+   | =C-c &=         | 跳回到记录位置。 A position is recorded by the commands following internal links, and by C-c %. Using this command several times in direct succession moves through a ring of previously recorded positions. |         |
+   | =C-c C-x C-n/p= | 向前/向后移动到缓冲区中的下一个链接。                             |         |
+
+** 在Org之外使用链接
+   可以插入和跟踪具有Org语法的链接，不仅在组织中，而且可以在任何Emacs缓冲区中。
+   为此，应该创建两个全局命令，如下：
+   #+BEGIN_SRC emacs-lisp
+     (global-set-key "\C-c L" 'org-insert-link-global)
+     (global-set-key "\C-c o" 'org-open-at-point-global)
+   #+END_SRC
+** 链接缩写
+   长的URL输入起来会很麻烦，同时在文档中类似的链接可能会很频繁的出现。
+   为此，你可能需要使用链接缩写。 链接缩写看起来如下所示:
+   : [[linkword:tag][description]]
+   /tag/ 是可选的， /linkword/ 必须是一个单词，以字母开头，后跟字母，数字，' - '和'_'。
+   根据将链接缩写词与替换文本相关联的变量 =org-link-abbrev-alist= 中的信息来解析缩写。 定义如下所示：
+   #+BEGIN_SRC emacs-lisp
+     (setq org-link-abbrev-alist
+           '(("bugzilla"  . "http://10.1.2.9/bugzilla/show_bug.cgi?id=")
+             ("url-to-ja" . "http://translate.google.fr/translate?sl=en&tl=ja&u=%h")
+             ("google"    . "http://www.google.com/search?q=")
+             ("gmap"      . "http://maps.google.com/maps?q=%s")
+             ("omap"      . "http://nominatim.openstreetmap.org/search?q=%s&polygon=1")
+             ("ads"       . "http://adsabs.harvard.edu/cgi-bin/nph-abs_connect?author=%s&db_key=AST")))
+   #+END_SRC
+   如果替换文本包含字符串 =％s= ，它将被标签所替换。
+   使用 =％h= 而不是 =％s= ,是因为需要对标签进行url编码（参见上面示例，需要对URL参数进行编码）。
+   使用 =％(my-function)= 将标签传递给自定义函数 ，并将其替换为生成的字符串。
+   如果替换文本不包含任何说明符，则只需把标签添加到替换文本后即可创建链接。
+
+   如果只需要单个Org缓冲区的特殊缩写，可以在文件中定义它们
+   #+BEGIN_SRC org
+     ,#+LINK: bugzilla  http://10.1.2.9/bugzilla/show_bug.cgi?id=
+     ,#+LINK: google    http://www.google.com/search?q=%s
+   #+END_SRC
+
+** 文件链接的搜索选项
+    参见[[http://orgmode.org/manual/Search-options.html#Search-options][Org-mode手册中相关章节]]
+** 自定义搜索
+    参见[[http://orgmode.org/manual/Custom-searches.html#Custom-searches][Org-mode手册中相关章节]]
 * 待办事项
 * 标签
 * 属性

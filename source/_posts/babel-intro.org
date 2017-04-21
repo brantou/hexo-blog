@@ -6,7 +6,6 @@
 #+STARTUP: content
 #+TAGS: org-mode, babel, source-code-tool, tutorial, literate programming
 #+CATEGORIES: org-mode
-#+HTML_HEAD: <style>pre, code {font-family: monospace;}</style>
 
 #+BEGIN_QUOTE
 原文[[http://orgmode.org/worg/org-contrib/babel/intro.html][Babel: Introduction]], 由 *Eric Schulte* ,  *Dan Davison*, *Tom Dye* 编辑，维护。本文只做学习之用。
@@ -687,15 +686,15 @@
   以下示例演示了在 *Babel* 中 *tangling* 的过程。
 
 ** /tangling/ 的示例
-*** Simple Literate Programming Example (Noweb syntax)
+*** 简单文学编程示例 (Noweb syntax)
     :PROPERTIES:
     :CUSTOM_ID: literate-programming-example
     :END:
-    #+BEGIN_SRC
+    #+BEGIN_QUOTE
     Tangling functionality is controlled by the =tangle= family of tangle
     header arguments.  These arguments can be used to turn tangling on or
     off (the default), either for the code block or the Org-mode heading level.
-    #+END_SRC
+    #+END_QUOTE
 
     以下代码块演示如何使用 =org-babel-tangle= （ =C-c C-v t= ） 把分散的代码块 /tangle/ 为单个源代码文件。
 
@@ -860,8 +859,7 @@
 
 * Footnotes
 
-[fn:1] Calling =C-c C-o= on a code block will open the
-block's results in a separate buffer.
+[fn:1] Calling =C-c C-o= on a code block will open the block's results in a separate buffer.
 
 [fn:2]  This mode will be familiar to Sweave users.
 

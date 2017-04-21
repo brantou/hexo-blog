@@ -4,7 +4,6 @@
 #+LAYOUT:     post
 #+OPTIONS:    num:nil \n:nil ::t |:t ^:t -:t f:t *:t tex:t d:(hide)
 #+STARTUP:    align fold nodlcheck hidestars oddeven lognotestate
-#+SEQ_TODO:   todo(t) inprogress(i) waiting(w@) | done(d) canceled(c@)
 #+TAGS:       org-mode, table, spreadsheet, tutorial
 #+PRIORITIES: a c b
 #+CATEGORIES: org-mode
