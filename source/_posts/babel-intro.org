@@ -4,7 +4,7 @@
 #+LAYOUT: post
 #+OPTIONS: ':t author:nil ^:{}
 #+STARTUP: content
-#+TAGS: org-mode, babel, source-code-tool, tutorial, literate programming
+#+TAGS: org-mode, babel, source-code-tool, tutorial, literate-programming
 #+CATEGORIES: org-mode
 
 #+BEGIN_QUOTE

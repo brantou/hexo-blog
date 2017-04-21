@@ -82,3 +82,20 @@ org:
 
 # Avatar
 avatar: https://avatars1.githubusercontent.com/u/26197076?v=3&s=400
+
+# Local search
+search:
+  path: search.xml
+  field: post
+  format: html
+  limit: 10000
+
+sitemap:
+  path: sitemap.xml
+
+feed:
+  type: atom
+  path: atom.xml
+  limit: 20
+  hub:
+  content:
