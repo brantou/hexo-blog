@@ -1,4 +1,4 @@
-#+TITLE:     Org电子表格系统--用Emacs lisp为公式
+#+TITLE:     在Org的电子表格中使用elisp公式
 #+AUTHOR:     Worg people
 #+DATE:       <2017-04-08 Sat>
 #+LAYOUT:     post

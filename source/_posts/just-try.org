@@ -1,4 +1,4 @@
-#+TITLE: Org-mode 手册版
+#+TITLE: Org-mode手册
 #+DATE: <2017-03-21 Tue>
 #+LAYOUT: post
 #+TAGS: org-mode, tutorial, manual
@@ -13,7 +13,7 @@
   <!-- more -->
   #+END_EXPORT
 
-* org-mode的文档结构
+* 文档结构
 ** 标题
    Org 是在大纲模式之上实现的。
    大纲模式可以让我们用层次结构来组织文档，这（至少对我来说）是笔记和想法的最好实现方式。
@@ -326,7 +326,7 @@
    You can check syntax in your documents using org-lint command.
    #+END_QUOTE
 
-* org-mode 表格
+* 表格
   *Org* 提供了一个快速直观的表编辑器。 使用 *Emacs* 内嵌的 /calc/ 的包可支持类似于制表软件的操作。
 ** 内置表编辑器
    *Org* 能够很容易地格式化 *ASCII* 文本表格。 任何把'|'作为首个非空白字符的行都被视为表的一部分。 '|'也是列分隔符。 表如下所示：
@@ -586,19 +586,19 @@
    =Org= 为了正确的创建链接，插入链接和跟随链接，提供了很多快捷键。
    #+NAME: table:handing_links
    #+ATTR_HTML: :border 2 :rules all :frame border
-   |                 | <64>                                                              |         |
-   | Key             | Description                                                       | Command |
-   |-----------------+-------------------------------------------------------------------+---------|
-   | =C-c l=         | 存储当前位置的链接。 这是一个全局命令，可以在任何缓冲区中使用它来创建链接。 链接将被存储以备将来插入 =Org= 的缓冲区。 创建什么样的链接取决于当前的缓冲区。 |         |
-   | =C-c C-l=       | 插入链接。 将提示将链接插入缓冲区。 可以键入链接，使用内部链接的文本或上述示例中提到的链接类型前缀之一。 该链接将被插入到缓冲区，以及一个描述性的文本。 如果在调用此命令时选择了某些文本，则所选文本将成为默认描述。 |         |
-   | =C-u C-c C-l=   | 当使用 =C-u= 前缀参数调用 =C-c C-l= 时，将插入文件链接，可以使用文件名来完成文件选择。当前用到是相对路径，若是想要绝对路径可用两个 =C-u= 前缀。 |         |
-   | =C-c C-l=       | 当光标在已有链接上时， =C-c C-l= 允许编辑链接的链接和描述部分。   |         |
-   | =C-c C-o=       | 打开当前位置的链接。如果要覆盖默认应用程序并使用Emacs访问文件，请使用 =C-u= 前缀。 如果要避免在Emacs中打开，请使用 =C-u C-u= 前缀。如果光标位于标题上，但不在链接上，则打开标题中所有链接。 |         |
-   | =RET=           | 当 =org-return-follow-link= 设置时，RET也将跟随当前位置的链接。   |         |
-   | =C-c C-x C-v=   | 触发图片链接内联显示。当用前缀参数调用时，还会显示具有描述信息的图片链接。 可以通过配置变量 =org-startup-with-inline-images= 使内联图片在启动时显示。 |         |
-   | =C-c %=         | Push the current position onto the mark ring, to be able to return easily. Commands following an internal link do this automatically. |         |
-   | =C-c &=         | 跳回到记录位置。 A position is recorded by the commands following internal links, and by C-c %. Using this command several times in direct succession moves through a ring of previously recorded positions. |         |
-   | =C-c C-x C-n/p= | 向前/向后移动到缓冲区中的下一个链接。                             |         |
+   |                 | <64>                                                              |                            |
+   | Key             | Description                                                       | Command                    |
+   |-----------------+-------------------------------------------------------------------+----------------------------|
+   | =C-c l=         | 存储当前位置的链接。 这是一个全局命令，可以在任何缓冲区中使用它来创建链接。 链接将被存储以备将来插入 =Org= 的缓冲区。 创建什么样的链接取决于当前的缓冲区。 | =org-store-link=           |
+   | =C-c C-l=       | 插入链接。 将提示将链接插入缓冲区。 可以键入链接，使用内部链接的文本或上述示例中提到的链接类型前缀之一。 该链接将被插入到缓冲区，以及一个描述性的文本。 如果在调用此命令时选择了某些文本，则所选文本将成为默认描述。 | =org-insert-link=          |
+   | =C-u C-c C-l=   | 当使用 =C-u= 前缀参数调用 =C-c C-l= 时，将插入文件链接，可以使用文件名来完成文件选择。当前用到是相对路径，若是想要绝对路径可用两个 =C-u= 前缀。 |                            |
+   | =C-c C-l=       | 当光标在已有链接上时， =C-c C-l= 允许编辑链接的链接和描述部分。   |                            |
+   | =C-c C-o=       | 打开当前位置的链接。如果要覆盖默认应用程序并使用Emacs访问文件，请使用 =C-u= 前缀。 如果要避免在Emacs中打开，请使用 =C-u C-u= 前缀。如果光标位于标题上，但不在链接上，则打开标题中所有链接。 | =org-open-at-point=        |
+   | =RET=           | 当 =org-return-follow-link= 设置时，RET也将跟随当前位置的链接。   |                            |
+   | =C-c C-x C-v=   | 触发图片链接内联显示。当用前缀参数调用时，还会显示具有描述信息的图片链接。 可以通过配置变量 =org-startup-with-inline-images= 使内联图片在启动时显示。 | =org-toggle-inline-images= |
+   | =C-c %=         | Push the current position onto the mark ring, to be able to return easily. Commands following an internal link do this automatically. | =org-mark-ring-push=       |
+   | =C-c &=         | 跳回到记录位置。 A position is recorded by the commands following internal links, and by C-c %. Using this command several times in direct succession moves through a ring of previously recorded positions. | =org-mark-ring-goto=       |
+   | =C-c C-x C-n/p= | 向前/向后移动到缓冲区中的下一个链接。                             | =org-next/previous-link=   |
 
 ** 在Org之外使用链接
    可以插入和跟踪具有Org语法的链接，不仅在组织中，而且可以在任何Emacs缓冲区中。
@@ -638,6 +638,165 @@
 ** 自定义搜索
     参见[[http://orgmode.org/manual/Custom-searches.html#Custom-searches][Org-mode手册中相关章节]]
 * 待办事项
+  =Org-mode= 不把 =TODO= 列表作为单独的文档来维护。 相反， =TODO= 列表是笔记的组成部分，因为它通常产生于记录笔记时！
+  使用 =Org-mode= ，只需将树中的任何条目标记为 =TODO=  就可构造出 =TODO= 列表。 这种方式，信息不会冗余重复，并且始终显示 =TODO= 项出现的整个上下文。
+  当然，这种用于管理 =TODO= 项的方式会将它们分散在各个笔记文件中。 =Org-mode= 通过提供一些方法使我们可以把它们看作一个整体来处理。
+** 基础的待办事项功能
+   以 =TODO= 关键字开始的任意标题都会变为代办事项，例如：
+   : *** TODO Write letter to Sam Fortune
+   #+NAME: table:todo-important-cmd
+   #+ATTR_HTML: :border 2 :rules all :frame border
+   |                | <64>                                                              |                           |
+   | Key            | Desc                                                              | Command                   |
+   |----------------+-------------------------------------------------------------------+---------------------------|
+   | =C-c C-t=      | 转换当前项的TODO状态 _,-> (unmarked) -> TODO -> DONE --._         | =org-todo=                |
+   | =C-u C-c C-t=  | 当TODO关键字没有选择时，使用补全选择特定的关键字; 否则强制循环遍历TODO状态，没有提示。 |                           |
+   | =S-left/right= | 选择之后/之前的TODO状态，像是循环。                               |                           |
+   | =C-c / t=      | 构造出TODO列的稀疏树;折叠整个缓冲区，但显示所有TODO项（ ~not-DONE~ 状态）和其上的标题层次结构。 使用前缀参数（或使用 =C-c / T= ），搜索特定的TODO。 系统提示输入关键字，还可以输入KWD1 \vert KWD2 \vert ...等关键字，列出与这些关键字中的任何一个匹配的项。 使用数字前缀参数N，在选项 =org-todo-keywords= 中显示第N个关键字的树。 使用两个前缀参数，找到所有TODO状态，无论是完成还是未完成。 | =org-show-todo-tree=      |
+   | =C-c a t=      | 展示全局 =TODO= 列表;将所有agenda文件中的TODO项（ =not-DONE= 状态）收集到一个缓冲区中。 新的缓冲区将处于 =agenda-mode= ，它提供了从新的缓冲区检查和操作TODO项的命令。 | =org-todo-list=           |
+   | =S-M-RET=      | 在当前项之后插入新的 =TODO= 项                                    | =org-insert-todo-heading= |
+   注： 改变 =TODO= 状态也可触发标签发生变更。 请参阅 =org-todo-state-tags-triggers= 文档以了解详细信息, 也可可查看[[http://stackoverflow.com/questions/17559662/how-to-automatically-trigger-a-change-in-todo-state-in-emacs-org-mode][How to automatically trigger a change in TODO state in Emacs org-mode]]。
+** 待办事项扩展
+   默认情况下， 待办事项只能为以下两种状态之一： ~TODO~ 和 ~DONE~ 。
+   =Org-mode= 允许使用 =TODO= 关键字（存储在 ~org-todo-keywords~ ）以更复杂的方式对 =TODO= 项目进行分类管理。
+   通过特殊设置， =TODO= 关键字系统可在不同的文件对不同的工作流程进行定制。
+*** 工作流状态应用
+   可以使用 =TODO= 关键字来表示项目进行过程中工作流状态，例如：
+   #+BEGIN_SRC elisp
+     (setq org-todo-keywords
+        '((sequence "TODO" "FEEDBACK" "VERIFY" "|" "DONE" "DELEGATED")))
+   #+END_SRC
+   垂直条将 =TODO= 关键字（需要处理的状态）从DONE状态分离（无需进一步操作）。
+   如果不提供垂直条，则最后一个状态用作 =DONE= 状态。
+   使用以上设置，命令 =C-c C-t= 将待办事项从 =TODO= 循环到 =FEEDBACK= ，然后到 =VERIFY= ，最后到 =DONE= 和 =DELEGATED= 。
+   也可以使用数字前缀参数快速选择特定状态。 例如， =C-3 C-c C-t= 将立即将状态更改为VERIFY。 或者可以使用 =S-left/right= 向后/向前遍历序列。
+*** 类型标示应用
+    第二种可能性是使用TODO关键字来指示待办事项的隶属于不同类型。
+    例如，可能希望指出项目是 /work/ 或 /home/ 。
+    或者，当在一个项目中与多个人合作时，可能需要通过使用他们的名字作为 =TODO= 关键字来将项目任务直接分配给个人。
+    如下配置：
+    #+BEGIN_SRC elisp
+      (setq org-todo-keywords '((type "Fred" "Sara" "Lucy" "|" "DONE")))
+    #+END_SRC
+    在这种情况下，不同的关键字不表示序列，而是不同的类型。
+    所以正常的工作流程是将任务分配给一个人，然后将其标记为DONE。
+    =Org-mode= 通过调整命令 =C-c C-t= 的工作机制来支持这种风格。
+    当连续使用多次时，它仍将循环遍历所有名称，以便首先为任务选择正确的类型。
+    但是，当经过一段时间后返回该项目并再次执行 =C-c C-t= ，它将从任何名称直接切换到 =DONE= 。
+    使用前缀参数或完成快速选择一个特定的名称。 还可以使用 =C-c / t= 的数字前缀来查看稀疏树中特定 =TODO= 类型的项目。
+    例如，要查看Lucy所做的一切事情，使用 =C-3 C-c / t= 。
+    要将Lucy的所有项目从所有议程文件收集到一个单独的库中，还可以在创建全局TODO列表时使用数字前缀参数： =C-3 C-c a t= 。
+*** 单个文件中多个关键字集合
+    有时可能需要并行使用不同的TODO关键字集。
+    例如，可能需要具有基本的 =TODO= / =DONE= ，还有一个修复错误的工作流程，以及指示某个项目已被取消的单独状态（因此它不是 =DONE= ，也不需要执行操作）。
+    设置如下所示：
+    #+BEGIN_SRC elisp
+      (setq org-todo-keywords
+            '((sequence "TODO" "|" "DONE")
+              (sequence "REPORT" "BUG" "KNOWNCAUSE" "|" "FIXED")
+              (sequence "|" "CANCELED")))
+    #+END_SRC
+    这些关键字应该是不同的，这有助于 =Org-mode= 跟踪给定条目应该使用哪个子序列。
+    在这个设置中， =C-c C-t= 只能在一个子序列中运行，
+    所以它从 =DONE= 切换到（无）到 =TODO= ，
+    从 =FIXED= 切换到（无）到 =REPORT= 。
+    因此，需要一种机制来正确初始选择序列。
+    除了显式的键入关键字或使用补全外，还可应用以下命令：
+    + =C-u C-u C-c C-t= =C-S-right/left= ::
+    这些键从一个 =TODO= 子集跳到下一个。
+    在上面的例子中， =C-u C-u C-c C-t= 或 =C-S-right= 将从 /TODO/ 或 /DONE/ 跳到 /REPORT/ ，
+    而第二行中的任何一个字都可跳转到 =CANCELED= 。
+    + =S-right/left= ::
+    =S-right/left= 并从所有集合中遍历所有关键字，例如在上面的例子中，S-right将从DONE切换到REPORT。
+
+*** 快速访问代办状态
+    如果要快速将条目更改为任意TODO状态，而不是循环遍历状态，则可以设置单个字符来快速访问状态的键。
+    这是通过在每个关键字后面的括号中添加选择字符来完成的。
+    #+BEGIN_SRC elisp
+      (setq org-todo-keywords
+           '((sequence "TODO(t)" "|" "DONE(d)")
+             (sequence "REPORT(r)" "BUG(b)" "KNOWNCAUSE(k)" "|" "FIXED(f)")
+             (sequence "|" "CANCELED(c)")))
+    #+END_SRC
+    如果按C-c C-t，后按选择键，则条目将切换到此状态。 SPC可用于从条目中删除任何TODO关键字。
+*** 为文件设置独立的关键字集合
+    在不同文件中使用 =TODO= 机制的不同方面是非常有用的。
+    对于文件本地设置，需要在文件中添加专用行，仅为该文件设置关键字和仅对当前文件起效。
+    例如，要设置上述两个示例之一，需要在文件中包含以下任何一行：
+    #+BEGIN_SRC org
+      ,#+TODO: TODO FEEDBACK VERIFY | DONE CANCELED
+    #+END_SRC
+    或者
+    #+BEGIN_SRC org
+      ,#+TYP_TODO: Fred Sara Lucy Mike | DONE
+    #+END_SRC
+    并行使用几组的设置如下：
+    #+BEGIN_SRC org
+      ,#+TODO: TODO | DONE
+      ,#+TODO: REPORT BUG KNOWNCAUSE | FIXED
+      ,#+TODO: | CANCELED
+    #+END_SRC
+    在更改其中一行后，在行中使用 =C-c C-c= ，以使变更生效。
+
+*** 代办事项关键字的样式
+    =Org-mode= 突出显示具有特殊样式的TODO关键字：关键字的 ~org-todo~ 表示某个项目仍然需要执行，对于表示项目完成的关键字 ~org-done~ 。
+    如果使用两种以上的不同状态，可能需要为其中某些状态使用特殊样式。 可使用选项 =org-todo-keyword-faces= 来完成。
+    例如：
+    #+BEGIN_SRC elisp
+      (setq org-todo-keyword-faces
+            '(("TODO" . org-warning) ("STARTED" . "yellow")
+              ("CANCELED" . (:foreground "blue" :weight bold))))
+    #+END_SRC
+*** 待办事项的依赖关系
+    =Org= 结构（层次结构和列表）可以轻松定义TODO依赖关系。
+    通常，在将所有子任务标记为 =DONE= 之前，不应将父 =TODO= 任务标记为 =DONE= 。
+    有时，对于一些（子）任务有一个逻辑顺序，所以在完成上面的所有兄弟任务之前，一个任务不能被执行。
+    如果设置自定义选项 ~org-enforce-todo-dependencies~ ，Org将会阻塞任务从 =TODO= 更改为 =DONE= ，而它的子项不是DONE。
+    此外，如果条目具有 =ORDERED= 属性，则每个子项将被阻塞，直到所有较早的兄弟节点被标记为 =DONE= 。
+    设置 ~org-enforce-todo-dependencies~,如下所示：
+    #+BEGIN_SRC elisp
+      (setq org-enforce-todo-dependencies t)
+    #+END_SRC
+
+    依赖关系示例如下：
+    #+BEGIN_SRC org
+      ,* TODO Blocked until (two) is done
+      ,** DONE one
+      ,** TODO two
+
+      ,* Parent
+        :PROPERTIES:
+        :ORDERED:  t
+        :END:
+      ,** TODO a
+      ,** TODO b, needs to wait for (a)
+      ,** TODO c, needs to wait for (a) and (b)
+    #+END_SRC
+   可以使用 =NOBLOCKING= 属性确保从不阻塞输入：
+   #+BEGIN_SRC org
+     ,* This entry is never blocked
+       :PROPERTIES:
+       :NOBLOCKING: t
+       :END:
+   #+END_SRC
+
+   - =C-c C-x o= ::
+   切换当前条目的 ~ORDERED~ 属性。 =ORDERED= 属性只适用于当前项，而不是像标签一样可继承。
+   但是，如果要使用标签跟踪该属性的值，以便更好地查看，请自定义选项 ~org-track-ordered-property-with-tag~ 。
+   - =C-u C-u C-u C-c C-t= :: 改变 =TODO= 状态，规避任何状态阻塞。
+
+
+   如果设置选项 ~org-agenda-dim-blocked-tasks~ ，则由于这些依赖关系而无法关闭的TODO条目将以渐变字体显示，甚至在议程视图中不可见。
+   还可以通过查看复选框来阻止 =TODO= 状态的更改。 如果设置了选项 ~org-enforce-todo-checkbox-dependencies~ ，则将禁止具有未选中复选框的条目切换到 =DONE= 。
+   如果需要更复杂的依赖关系结构，例如不同树或文件中的条目之间的依赖关系，请查看模块 /org-depend.el/ 。
+
+** 进度记录
+*** 关闭项目
+*** 追踪TODO状态变化
+*** 追踪你的习惯
+** 优先级
+** 任务分解
+** 复选框
 * 标签
 * 属性
 * 日期和时间

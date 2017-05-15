@@ -1,9 +1,9 @@
-#+TITLE:     Org的列视图(Column View)
-#+AUTHOR:    Bastien Guerry
-#+DATE:      <2017-04-14 Fri 21:00>
+#+TITLE:      Org的列视图简明教程
+#+AUTHOR:     Bastien Guerry
+#+DATE:       <2017-04-14 Fri 21:00>
 #+LAYOUT:     post
-#+OPTIONS:   H:3 num:nil toc:nil \n:nil ::t |:t ^:t -:t f:t *:t tex:t d:(HIDE) tags:not-in-toc
-#+TAGS:      org-mode, column-view, tutorial
+#+OPTIONS:    H:3 num:nil toc:nil \n:nil ::t |:t ^:t -:t f:t *:t tex:t d:(HIDE) tags:not-in-toc
+#+TAGS:       org-mode, column-view, tutorial
 #+PRIORITIES: a c b
 #+CATEGORIES: org-mode
 

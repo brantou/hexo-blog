@@ -231,7 +231,7 @@
    return 2 + 2
    #+end_src
 
-   #+resname:
+   #+RESULTS:
    : 4
 
    请注意，在 /functional mode/ 下，输出只由最后一个语句返回，没有其他情况。

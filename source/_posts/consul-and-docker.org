@@ -1,0 +1,42 @@
+#+TITLE: consul的docker环境配置
+#+DATE:
+#+LAYOUT: post
+#+TAGS: consul
+#+CATEGORIES:
+#+STARTUP: content
+
+构造consul的docker集群
+#+BEGIN_SRC shell
+    sudo docker run -d --name=node0 consul agent -server -client=0.0.0.0 -node=node0 -bootstrap-expect=1 -bind=172.17.0.2 -data-dir=/tmp/consul
+    sudo docker run -d --name=node1 consul agent -node-id=$(uuidgen | awk '{print tolower($0)}') -server -client=0.0.0.0 -node=node1 -bind=172.17.0.3 -join=172.17.0.2
+    sudo docker run -d --name=node2 consul agent -node-id=$(uuidgen | awk '{print tolower($0)}') -server -client=0.0.0.0 -node=node2 -bind=172.17.0.4 -join=172.17.0.2
+    sudo docker run -d --name=node3 consul agent -node-id=$(uuidgen | awk '{print tolower($0)}') -client=0.0.0.0 -node=node3 -bind=172.17.0.5 -join=172.17.0.2
+#+END_SRC
+
+参看集群状态
+#+BEGIN_SRC shell :results output
+    sudo docker exec -t node0 consul info
+#+END_SRC
+
+Network Coordinates in consul
+#+BEGIN_SRC shell :results output
+    curl http://172.17.0.2:8500/v1/coordinate/datacenters
+#+END_SRC
+
+#+RESULTS:
+: [{"Datacenter":"dc1","AreaID":"wan","Coordinates":[{"Node":"node1","Coord":{"Vec":[-0.0003564321019888437,0.0006172921455292343,-0.0008699994662520707,-0.0006417661406055976,0.0016652184325466857,-0.00009879980176087705,-0.00018452243047211263,0.0006982046062567467],"Error":0.21912157094388096,"Adjustment":-0.00001280133168630292,"Height":0.00033384661011953064}},{"Node":"node2","Coord":{"Vec":[-0.00038583847160505747,0.0006306444387008061,-0.0008576437376395283,-0.0006003516524943454,0.0016890019595555779,-0.00009450943773083834,-0.00021389799839132087,0.0006898081948361813],"Error":0.6512925828683503,"Adjustment":-0.00006309724141190899,"Height":0.00012330191650817068}},{"Node":"node0","Coord":{"Vec":[-0.00027783642420275794,0.0005997014510409666,-0.0008854351599939047,-0.0007251378130038645,0.0016241855995467126,-0.00011288821592298348,-0.00012914626405708508,0.0007137143304746633],"Error":0.43091311897444695,"Adjustment":-0.000015032213704692447,"Height":0.000018101383608542797}}]}]
+
+#+BEGIN_SRC shell :results output
+    curl http://172.17.0.2:8500/v1/coordinate/nodes
+#+END_SRC
+
+#+RESULTS:
+: [{"Node":"node0","Coord":{"Vec":[0.0001258235283813709,-0.0026088378092910345,-0.000398951683040503,0.0010945260099022372,0.0000924214670446571,0.002095300008493866,0.0017760955491511045,0.00014420692550228193],"Error":0.38943213305024565,"Adjustment":-0.00008115472026889854,"Height":0.000011178905638570498}},{"Node":"node1","Coord":{"Vec":[0.00005075856381375362,-0.002480787280653086,-0.000408979595004612,0.001054391809365469,0.00019938148175165722,0.0020660505814429375,0.0016937979241563913,0.000026418061556623544],"Error":0.1970496084013988,"Adjustment":-0.00009795272863975513,"Height":0.0003636747740304589}},{"Node":"node2","Coord":{"Vec":[0.00007734702216715131,-0.002379979615246116,-0.000428425922805845,0.0009617621483986319,0.0001809745061692202,0.0019889200519281358,0.0017027874781042848,0.000057945366792125794],"Error":0.616369346985405,"Adjustment":-0.00010842616335013153,"Height":0.00001}},{"Node":"node3","Coord":{"Vec":[-0.00002471008213070308,-0.0024834976071604147,-0.00039837478542403473,0.0011101343026354861,0.00028939605248597556,0.0021153241215418105,0.0016291828851898477,-0.00008283528056334268],"Error":0.32896458502923726,"Adjustment":-0.00007500855013880782,"Height":0.00001}}]
+
+健康检查
+#+BEGIN_SRC shell :results output
+    curl http://172.17.0.3:8500/v1/health/service/consul
+#+END_SRC
+
+#+RESULTS:
+: [{"Node":{"ID":"2bd34888-dad8-722a-54f0-63d67946a5b2","Node":"node0","Address":"172.17.0.2","Datacenter":"dc1","TaggedAddresses":{"lan":"172.17.0.2","wan":"172.17.0.2"},"Meta":{},"CreateIndex":72,"ModifyIndex":73},"Service":{"ID":"consul","Service":"consul","Tags":[],"Address":"","Port":8300,"EnableTagOverride":false,"CreateIndex":72,"ModifyIndex":73},"Checks":[{"Node":"node0","CheckID":"serfHealth","Name":"Serf Health Status","Status":"passing","Notes":"","Output":"Agent alive and reachable","ServiceID":"","ServiceName":"","ServiceTags":[],"CreateIndex":72,"ModifyIndex":72}]},{"Node":{"ID":"56c29345-e26a-4e85-89f5-921844bd90b4","Node":"node1","Address":"172.17.0.3","Datacenter":"dc1","TaggedAddresses":{"lan":"172.17.0.3","wan":"172.17.0.3"},"Meta":{},"CreateIndex":8,"ModifyIndex":9},"Service":{"ID":"consul","Service":"consul","Tags":[],"Address":"","Port":8300,"EnableTagOverride":false,"CreateIndex":8,"ModifyIndex":9},"Checks":[{"Node":"node1","CheckID":"serfHealth","Name":"Serf Health Status","Status":"passing","Notes":"","Output":"Agent alive and reachable","ServiceID":"","ServiceName":"","ServiceTags":[],"CreateIndex":8,"ModifyIndex":8}]},{"Node":{"ID":"78aeef7c-9327-4d43-bba9-b0be34e5ed75","Node":"node2","Address":"172.17.0.4","Datacenter":"dc1","TaggedAddresses":{"lan":"172.17.0.4","wan":"172.17.0.4"},"Meta":{},"CreateIndex":11,"ModifyIndex":12},"Service":{"ID":"consul","Service":"consul","Tags":[],"Address":"","Port":8300,"EnableTagOverride":false,"CreateIndex":11,"ModifyIndex":12},"Checks":[{"Node":"node2","CheckID":"serfHealth","Name":"Serf Health Status","Status":"passing","Notes":"","Output":"Agent alive and reachable","ServiceID":"","ServiceName":"","ServiceTags":[],"CreateIndex":11,"ModifyIndex":11}]}]
