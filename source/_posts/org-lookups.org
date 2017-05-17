@@ -1,4 +1,4 @@
-#+TITLE:      Org表查找功能的简明教程
+#+TITLE:      Org-mode表查找功能的简明教程
 #+DATE:       <2017-04-09 Sun>
 #+LAYOUT:     post
 #+OPTIONS:    num:nil \n:nil ::t |:t ^:t -:t f:t *:t tex:t d:(HIDE)

@@ -1,4 +1,4 @@
-#+TITLE:      Org的列视图简明教程
+#+TITLE:      Org-mode的列视图简明教程
 #+AUTHOR:     Bastien Guerry
 #+DATE:       <2017-04-14 Fri 21:00>
 #+LAYOUT:     post

@@ -1,4 +1,4 @@
-#+TITLE: 面试中的编码
+#+TITLE: 面试中的Coding
 #+DATE: <2017-05-14 Sun>
 #+LAYOUT: post
 #+TAGS: golang
@@ -19,7 +19,7 @@
    问题很简单，使用 ~channel~ 来控制打印的进度。使用两个 ~channel~ ，来分别控制数字和字母的打印序列，
    数字打印完成后通过 ~channel~ 通知字母打印, 字母打印完成后通知数字打印，然后周而复始的工作。
 ** 实际编码
-   #+BEGIN_SRC go :results output :imports "fmt"
+   #+BEGIN_SRC go :results output :imports "fmt" :exports both
      chan_n := make(chan bool, 1)
      chan_c := make(chan bool, 1)
      done := make(chan struct{})
@@ -48,6 +48,7 @@
      <-done
    #+END_SRC
 
+   代码执行结果:
    #+RESULTS:
    : 12AB34CD56EF78GH910IJ
 * 随机抽奖
@@ -67,7 +68,7 @@
    从map中选取随机用户，拿到这个编码问题，有点懵逼,但仔细一想，只需把关注用户的区间，转变一下数据结构即解题。
    把map转成array，思考起来就简单多了，原有问题变成了从0至n-1中选取一个数字，数字对应的用户即中奖用户。
 ** 实际编码
-   #+BEGIN_SRC go
+   #+BEGIN_SRC go :exports both
      package main
 
      import (
@@ -78,7 +79,7 @@
 
      func GetAwardUserName(users map[string]int64) (name string) {
        sizeOfUsers := len(users)
-       award_index := rand.Intn(sizeOfUsers*1000)/1000
+       award_index := rand.Intn(sizeOfUsers)
 
        var index int
        for u_name, _ := range users {
@@ -120,6 +121,7 @@
      }
    #+END_SRC
 
+   代码执行结果：
    #+RESULTS:
    : user: f, award count: 178
    : user: d, award count: 152
@@ -145,7 +147,7 @@
    理解成所有的用户权重都相同的抽奖，而此题是权重不同的抽奖。解决此问题，依旧是把map转为数组来思考，
    把各用户的权重，从前到后依次拼接到数轴上，数轴的起点到终点即时中奖区间，而随机数落到的那个用户的区间，那个用户即为中奖用户。
 ** 实际编码
-   #+BEGIN_SRC go
+   #+BEGIN_SRC go :exports both
      package main
 
      import (
@@ -214,6 +216,7 @@
      }
    #+END_SRC
 
+   代码执行结果：
    #+RESULTS:
    : user: c, award count: 1667
    : user: f, award count: 3310

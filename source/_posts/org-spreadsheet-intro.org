@@ -1,4 +1,4 @@
-#+TITLE:      Org的电子表格的简明教程
+#+TITLE:      Org-mode的电子表格的简明教程
 #+AUTHOR:     worg people
 #+DATE:       <2017-04-06 Thu>
 #+LAYOUT:     post
