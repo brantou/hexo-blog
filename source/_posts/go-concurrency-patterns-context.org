@@ -268,7 +268,8 @@
    服务器通过为 /golang/ 提供前几个 /Google/ 搜索结果来处理像 "/search？q=golang" 之类的请求。
    它注册 /handleSearch/ 来处理 "/search"。 处理函数创建一个名为ctx的 /Context/ ，并在处理程序返回时,一并被取消。
    如果 /request/ 包含超时URL参数，则超时时会自动取消上下文：
-   #+BEGIN_SRC go
+   #+NAME: handle-search
+   #+BEGIN_SRC go :noweb strip-export
      func handleSearch(w http.ResponseWriter, req *http.Request) {
        // ctx is the Context for this handler. Calling cancel closes the
        // ctx.Done channel, which is the cancellation signal for requests
@@ -287,11 +288,17 @@
        }
        defer cancel() // Cancel ctx as soon as handleSearch returns.
 
+       <<handle-search-extral-userip>>
+
+       <<handle-search-google>>
+
+       <<handle-search-render-result>>
      }
    #+END_SRC
 
    处理程序从 /request/ 中提取查询关键字，并通过调用 /userip/ 包来提取客户端的IP地址。
    后端请求需要客户端的IP地址，因此handleSearch将其附加到ctx：
+   #+NAME: handle-search-extral-userip
    #+BEGIN_SRC go
      // Check the search query.
      query := req.FormValue("q")
@@ -310,14 +317,20 @@
    #+END_SRC
 
    处理程序使用ctx和查询关键字调用 /google.Search/ ：
+   #+NAME: handle-search-google
    #+BEGIN_SRC go
      // Run the Google search and print the results.
      start := time.Now()
      results, err := google.Search(ctx, query)
      elapsed := time.Since(start)
+     if err != nil {
+       http.Error(w, err.Error(), http.StatusInternalServerError)
+       return
+     }
    #+END_SRC
 
    如果搜索成功，处理程序将渲染返回结果：
+   #+NAME: handle-search-render-result
    #+BEGIN_SRC go
      if err := resultsTemplate.Execute(w, struct {
        Results          google.Results
@@ -332,6 +345,29 @@
      }
    #+END_SRC
 
+   #+BEGIN_SRC go :packages main :noweb yes :exports none :tangle ../src/context/server/server.go :mkdirp yes
+     func main() {
+       http.HandleFunc("/search", handleSearch)
+       log.Fatal(http.ListenAndServe(":8080", nil))
+     }
+
+     <<handle-search>>
+
+     var resultsTemplate = template.Must(template.New("results").Parse(`
+     <html>
+     <head/>
+     <body>
+       <ol>
+       {{range .Results}}
+         <li>{{.Title}} - <a href="{{.URL}}">{{.URL}}</a></li>
+       {{end}}
+       </ol>
+       <p>{{len .Results}} results in {{.Elapsed}}; timeout {{.Timeout}}</p>
+     </body>
+     </html>
+     `))
+   #+END_SRC
+
 ** userip
    userip包提供从请求中提取用户IP地址并将其与 /Context/ 相关联的函数。
    /Context/ 提供了 key-value 映射的 /map/ ，其中 /key/ 和 /value/ 均为 ~interface{}~ 类型。
@@ -339,6 +375,7 @@
    /userip/ 这样的包会隐藏 /map/ 的细节，并提供强类型访问特定的 /Context/ 值。
 
    为了避免关键字冲突， /userip/ 定义了一个不导出的类型 /key/ ，并使用此类型的值作为 /Context/  的关键字：
+   #+NAME: userip-key-type
    #+BEGIN_SRC go
      // The key type is unexported to prevent collisions with context keys defined in
      // other packages.
@@ -351,17 +388,24 @@
    #+END_SRC
 
    /FromRequest/ 从 /http.Request/ 中提取一个 /userIP/ 值：
+   #+NAME: userip-from-req
    #+BEGIN_SRC go
      func FromRequest(req *http.Request) (net.IP, error) {
-         ip, _, err := net.SplitHostPort(req.RemoteAddr)
-         if err != nil {
-             return nil, fmt.Errorf("userip: %q is not IP:port", req.RemoteAddr)
-         }
-         // ......
+       ip, _, err := net.SplitHostPort(req.RemoteAddr)
+       if err != nil {
+         return nil, fmt.Errorf("userip: %q is not IP:port", req.RemoteAddr)
+       }
+
+       userIP := net.ParseIP(ip)
+       if userIP == nil {
+         return nil, fmt.Errorf("userip: %q is not IP:port", req.RemoteAddr)
+       }
+       return userIP, nil
      }
    #+END_SRC
 
    NewContext返回一个带有userIP的新Context：
+   #+NAME: userip-new-ctx
    #+BEGIN_SRC go
      func NewContext(ctx context.Context, userIP net.IP) context.Context {
          return context.WithValue(ctx, userIPKey, userIP)
@@ -369,6 +413,7 @@
    #+END_SRC
 
    /FromContext/ 从 /Context/ 中提取 /userIP/ ：
+   #+NAME: userip-from-ctx
    #+BEGIN_SRC go
      func FromContext(ctx context.Context) (net.IP, bool) {
          // ctx.Value returns nil if ctx has no value for the key;
@@ -378,12 +423,23 @@
      }
    #+END_SRC
 
+   #+BEGIN_SRC go :exports none :noweb yes :tangle ../src/context/userip/userip.go :package "userip" :mkdirp yes :main no
+   <<userip-from-req>>
+
+   <<userip-key-type>>
+
+   <<userip-new-ctx>>
+
+   <<userip-from-ctx>>
+   #+END_SRC
+
 ** google
    /google.Search/ 函数向 [[https://developers.google.com/web-search/docs/][Google Web Search API]] 发出HTTP请求，并解析JSON编码结果。
    它接受Context参数ctx，并且在ctx.Done关闭时立即返回。
 
    Google Web Search API请求包括搜索查询和用户IP作为查询参数：
-   #+BEGIN_SRC go
+   #+NAME: google-search
+   #+BEGIN_SRC go :noweb strip-export
      func Search(ctx context.Context, query string) (Results, error) {
          // Prepare the Google Search API request.
          req, err := http.NewRequest("GET", "https://ajax.googleapis.com/ajax/services/search/web?v=1.0", nil)
@@ -401,12 +457,14 @@
          }
          req.URL.RawQuery = q.Encode()
 
-       // ......
+         // Issue the HTTP request and handle the response.
+         <<google-search-done>>
      }
    #+END_SRC
 
    /Search/ 使用一个辅助函数 /httpDo/ 来发出HTTP请求, 如果在处理请求或响应时关闭 /ctx.Done/ ，取消 /httpDo/ 。
    /Search/ 将传递闭包给 /httpDo/ 来处理HTTP响应：
+   #+NAME: google-search-done
    #+BEGIN_SRC go
      var results Results
      err = httpDo(ctx, req, func(resp *http.Response, err error) error {
@@ -440,6 +498,7 @@
 
    /httpDo/ 函数发起HTTP请求，并在新的 ~goroutine~ 中处理其响应。
    如果在 ~goroutine~ 退出之前关闭了ctx.Done，它将取消该请求：
+   #+NAME: google-http-do
    #+BEGIN_SRC go
      func httpDo(ctx context.Context, req *http.Request, f func(*http.Response, error) error) error {
          // Run the HTTP request in a goroutine and pass the response to f.
@@ -456,6 +515,21 @@
              return err
          }
      }
+   #+END_SRC
+
+   #+BEGIN_SRC go :exports none :noweb yes :tangle ../src/context/google/google.go :package google :mkdirp yes :main no
+
+     // Results is an ordered list of search results.
+     type Results []Result
+
+     // A Result contains the title and URL of a search result.
+     type Result struct {
+       Title, URL string
+     }
+
+     <<google-search>>
+
+     <<google-http-do>>
    #+END_SRC
 
 * 适配Context到已有代码

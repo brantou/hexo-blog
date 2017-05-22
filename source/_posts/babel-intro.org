@@ -89,7 +89,7 @@
     代码块可以直接在 =Org-mode= 文件中编辑，但通过 =C-c '= 调用的函数 =org-edit-src-code= 编辑代码往往更容易。
     将代码块放全新的缓冲区中，同时激活相应语言的模式,语言的编辑特性你全都可用，真是爽。
 
-    #+begin_src org
+    #+begin_src org :eval no-export
     ,#+begin_src language org-switches
     ,body
     ,#+end_src
@@ -97,7 +97,7 @@
 
     =ruby= 代码的代码块如下所示:
 
-    #+begin_src org
+    #+begin_src org :eval no-export
     ,#+begin_src ruby
     ,require 'date'
     ,"This file was last evaluated on #{Date.today}"
@@ -139,7 +139,7 @@
     : #+end_src
 
     HTML 导出的代码:
-    #+begin_src ruby
+    #+begin_src ruby :eval no-export
     require 'date'
     "This file was last evaluated on #{Date.today}"
     #+end_src
@@ -155,7 +155,7 @@
     : #+end_src
 
     HTML 导出的代码:
-    #+begin_src sh
+    #+begin_src sh :eval no-export
     echo "This file takes up `du -h babel-intro.org |sed 's/\([0-9k]*\)[ ]*babel-intro.org/\1/'`"
     #+end_src
 
@@ -172,7 +172,7 @@
     : #+end_src
 
     HTML 导出的代码:
-    #+begin_src R :colnames yes
+    #+begin_src R :colnames yes :eval no-export
     words <- tolower(scan("babel-intro.org", what="", na.strings=c("|",":")))
     t(sort(table(words[nchar(words) > 3]), decreasing=TRUE)[1:10])
     #+end_src
@@ -195,7 +195,7 @@
     : #+end_src
 
     HTML导出的代码:
-    #+begin_src ditaa :file blue.png :cmdline -r
+    #+begin_src ditaa :file blue.png :cmdline -r :eval no-export
     +---------+
     | cBLU    |
     |         |
@@ -224,7 +224,7 @@
    /functional mode/ 是默认设置。
 
    作为示例，观察以下python代码块及其输出。
-   #+begin_src python :results value
+   #+begin_src python :results value :eval no-export
    import time
    print("Hello, today's date is %s" % time.ctime())
    print("Two plus two is")
@@ -246,7 +246,7 @@
 
    观察以下使用 /scripting mode/ 执行代码块的结果。
    #+name: name
-   #+begin_src python :results output
+   #+begin_src python :results output :eval no-export
    import time
    print("Hello, today's date is %s" % time.ctime())
    print('Two plus two is')
@@ -292,7 +292,7 @@
 
     #+name: square
     #+header: :var x=0
-    #+begin_src python
+    #+begin_src python :eval no-export
     return x*x
     #+end_src
 
@@ -330,7 +330,7 @@
 
     Emacs Lisp的源代码:
     #+name: fibonacci-seq
-    #+begin_src emacs-lisp :var fib-inputs=fibonacci-inputs
+    #+begin_src emacs-lisp :var fib-inputs=fibonacci-inputs :eval no-export
       (defun fibonacci (n)
       (if (or (= n 0) (= n 1))
           n
@@ -392,13 +392,13 @@
 
    引用数据表格的代码块:
    #+name: setup-my-account
-   #+begin_src emacs-lisp :rownames yes :var data=user-data
+   #+begin_src emacs-lisp :rownames yes :var data=user-data :eval no-export
    (setq my-special-username (first (first data)))
    (setq my-special-password (first (second data)))
    #+end_src
 
    在代码块内部， =C-c M-b p= (=C-c C-v v=)扩展内容如下：
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :eval no-export
    (let ((data (quote (("john-doe") ("abc123")))))
    (setq my-special-username (first (first data)))
    (setq my-special-password (first (second data))))
@@ -422,7 +422,7 @@
 
      代码如下：
      #+name: directories
-     #+begin_src sh :results replace
+     #+begin_src sh :results replace :eval no-export
      cd ~/program/ && du -sc * | grep -v total
      #+end_src
 
@@ -446,7 +446,7 @@
 
      HTML 导出的代码:
      #+name: directory-pie-chart(dirs=directories)
-     #+begin_src R :session R-pie-example :file ../images/babel/dirs.png :var dirs=directories() :results graphics
+     #+begin_src R :session R-pie-example :file ../images/babel/dirs.png :var dirs=directories() :results graphics :eval no-export
      pie(dirs[,1],labels=dirs[,2])
      #+end_src
 
