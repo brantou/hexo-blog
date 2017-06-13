@@ -1,0 +1,176 @@
+#+TITLE: 在Org-mode中执行Go代码
+#+DATE: <2017-06-12 Mon>
+#+LAYOUT: post
+#+OPTIONS: ':t author:nil ^:{}
+#+STARTUP: content
+#+TAGS: org-mode, babel, active-code, tutorial, literate-programming, golang
+#+CATEGORIES: org-mode
+
+  在未使用 =org-mode= 前，学习和实验Go的特性（例如 /context/ ）的步骤如下：
+  - 打开终端
+  - 跳转到学习示例目录下
+  - 创建子目录，例如 /context/ , 然后跳入子目录， 创建 /main.go/ 文件
+  - 编写简单的示例代码
+  - 编译和运行代码示例,若出错调试，返回上个步骤
+  上面的过程有些可精简，例如在IDE中，目录跳转可在对话框中完成，代码的编写，编译和运行都可在IDE中完成。
+  在IDE中流程如下：
+  - 在学习示例目录下，创建一个新的示例工程
+  - 编写简单的示例代码, 编译和运行
+  在IDE中，整个流程精简了很多。
+  作为语言使用者，我们可能需要把实验过的示例代码留存，以便能应用在日后的开发中。
+  上面的两个流程，都会根据实验的包或者语言特性，创建相应的子目录，经过这样的处理，代码示例都聚合到了一起，方便了翻阅和修改。
+  示例代码的执行结果，大多是直接输出到终端的，你要验证原有示例代码的执行结果，你必须要重新执行代码，因为执行结果并没有留存。
+  若是这个示例代码，是很久之前的，可能是一年以前的， 这个时候你看到代码的时候，可能会时一脸懵逼。
+  这个时候你会想，为什么当时没有多留些信息，让我知道，为什么做这个示例，以及这段代码完成了什么功能。
+
+  =Org-mode= 简单配置后， 可完美的解决以上问题，代码留存，执行结果留存，文学编程（在编码过程中书写文档）。
+  #+BEGIN_EXPORT html
+  <img src="/images/go-babel/go-babel-example.jpeg" />
+  #+END_EXPORT
+  上图展示了一个子问题的各个部分，问题描述，解决方案，代码，以及代码的执行结果。
+  子问题对应 =Org-mode= 中的子目录，然后所有问题都可聚合在一个 =Org-mode= 文档中。
+  现在流程可简化为：
+  - 跳转到 =Org-mode= 文档中
+  - 创建子目录，书写解决方案，编码实现
+  借助 =Org-mode= 强大的特性，可很容易的复用代码以及查询。
+
+  对于 =Org-mode= 不熟悉的，可先浏览[[http://orgmode.org/][Org-mode的主页]]。
+  =Org-mode= 通过 ~Babel~ 执行代码，对此不熟悉的读者， 可阅读我之前[[https://brantou.github.io/2017/04/01/babel-intro/][翻译的文档]]。
+
+* ob-go
+  ~Babel~ 可执行[[http://orgmode.org/worg/org-contrib/babel/languages.html][多种语言的代码]]， 但官方的收录的语言支持中，没有Go。
+  但Go是如此的炙手可热，没有官方支持，肯定也会有先行者实现支持。
+  感谢 [[https://github.com/pope][pope]] 在 [[http://orgmode.org/worg/org-contrib/babel/languages/ob-doc-C.html][ob-C]] 实现了ob-go , 实现了 ~Babel~ 对于Go的支持。
+
+** 简介
+  [[https://github.com/pope/ob-go][ob-go]] 使[[https://brantou.github.io/2017/04/01/babel-intro/][ Org-babel]] 可执行Go代码。
+  与解释语言可直接执行不同，Go需要先编译为可执行文件，然后运行。
+  Go代码通过 ~go run~ 命令编译和运行。
+  若代码中没有 ~main~ 函数，默认情况下，代码会被包裹在简单的 ~main~ 函数中。
+  若 ~:package~ 选项没设置并且代码中没有声明 ~package~ ， 则 ~main~ package 被声明。
+  示例如下，代码被执行，执行结果被回写到 ~buffer~ 中。
+  : #+BEGIN_SRC go :imports "fmt"
+  :   fmt.Println("Hello, org-mode")
+  : #+END_SRC
+
+  : #+RESULTS:
+  : : Hello, org-mode
+
+  使用快捷键 =C-c C-v v= 可查看被扩展后的代码。
+  #+BEGIN_SRC go :imports "fmt" :exports none
+    fmt.Println("Hello, org-mode")
+  #+END_SRC
+  #+BEGIN_EXPORT html
+  <img src="/images/go-babel/go-ob-ex.gif" />
+  #+END_EXPORT
+
+** Go特定的头参数(Header Arguments)
+   除了 ~Babel~ 的常规头参数之外，下面是一些Go语言特定的头文件。
+   - =:args= ::
+            传递命令行参数到代码编译后的可执行文件，传递超过多参数，需要使用 ~list~ 。
+   - =:flags= ::
+              传递给 ~go run~ 或者 ~go build~ 的flags(未使用成功)。
+   - =:main= ::
+             若没设置 ~no~ ， 代码将会被包裹在 ~main~ 函数中。默认 ~yes~ 。
+   - =:imports= ::
+                为代码提供 /imports/ 的快捷支持。 当处理 ~main~ 函数时，应该使用这个选项。 要 /import/ 多个包，请使用 ~list~ 。
+   - =:package= ::
+                设置当前代码块 /tangle/ 时的包名。 需要： ~:main no~ 。 若没设置，同时代码中没有包名声明， ~main~ 包将被声明。
+   - =:var= ::
+            =ob-go= 支持 ~Babel~ 的变量，不过目前还不完备。
+
+
+* 配置
+  这里假设Go的开发环境已经配置完毕，同时你的机器上的 =Emacs= 和 =Org-mode= 都是最近的版本，对于 ~Babel~ 都是完整支持的。
+  由于 ~ob-go~ 没有并入 ~Org-mode~ 所以需要单独配置。 步骤如下：
+  - ~M-x find-library ob-C~ , 找到的目录 ~org-plus-contrib~
+  - 新建 /ob-go.el/ , 然后把 [[https://github.com/brantou/ob-go/blob/master/ob-go.el][github中代码]] 复制到新建的文件中
+  - 配置 ~org-babel-load-languages~, 如下：
+    #+BEGIN_SRC elisp
+      (org-babel-do-load-languages
+       'org-babel-load-languages
+       '((python . t)
+         (C . t)
+         (go . t)
+         (emacs-lisp . t)
+         (shell . t)))
+    #+END_SRC
+
+* 编码流程
+  最近在 [[https://leetcode.com/brantou89/][LeetCode]] 上做编程训练，这里就以解决上面的问题的流程来做说明。
+  - 在LeetCode页面上，仔细阅读和理解问题，这里以 [[https://leetcode.com/problems/merge-two-binary-trees/][Merge Two Binary Trees]] 为例
+  - 跳转到 /leetcode.org/ ， 创建 /merge two binary trees/ 子目录
+  - 创建名为 /merge-two-bt/ 的Go代码块
+  - 通过快捷键 =C-c '= 打开Go语言特定的编辑模式buffer中,然后编码。
+    在编码过程完成后， =C-c '= 完成并关闭编辑buffer；或者对自己编辑不满意， =C-c C-k= 取消编辑并关闭编辑buffer。
+    #+BEGIN_EXPORT html
+    <img src="/images/go-babel/go-ob-leetcode.gif" />
+    #+END_EXPORT
+  - 把定义好的代码块整合到一起，然后执行([[https://play.golang.org/p/93dZx1kg6l][完整代码]])。
+    #+BEGIN_EXPORT html
+    <img src="/images/go-babel/go-ob-leetcode-cmp.gif" />
+    #+END_EXPORT
+
+* 使用示例
+
+** 导入多个包
+   : #+BEGIN_SRC go :imports '("fmt" "time")
+   :   fmt.Println("当前时间：", time.Now())
+   : #+END_SRC
+
+   : #+RESULTS:
+   : : 当前时间： 2017-06-12 18:04:20.562355811 +0800 CST
+** 命令行参数传递
+   : #+BEGIN_SRC go :imports '("fmt" "os") :args '("bable" "golang")
+   :   fmt.Println(os.Args[1], os.Args[2])
+   : #+END_SRC
+
+   : #+RESULTS:
+   : : bable golang
+** 多入参
+   : #+NAME: sum
+   : #+BEGIN_SRC go :imports "fmt" :var a=12 b=13
+   :   fmt.Println(a+b)
+   : #+END_SRC
+
+   : #+RESULTS:
+   : : 25
+
+   : #+call: sum(a=22,b=23)
+
+   : #+RESULTS:
+   : : 45
+** 代码组织
+   : #+NAME: min
+   : #+BEGIN_SRC  go
+   :   func min(a, b int) int {
+   :     if a > b {
+   :       return b
+   :     } else {
+   :       return a
+   :     }
+   :   }
+   : #+END_SRC
+
+   : #+NAME: get-min
+   : #+BEGIN_SRC go :var a=0 b=0 :imports "fmt" :noweb strip-export
+   :   <<min>>
+
+   :   func main() {
+   :     fmt.Println(min(a,b))
+   :   }
+   : #+END_SRC
+
+   : #+call: get-min(27, 23)
+
+   : #+RESULTS:
+   : : 23
+
+* 总结
+  Org-mode于我来说，就是一个神器，打破了我对一个编辑器的认知，打破了我对一个信息收集器的认知。
+  Org-mode依托于强大的 /Emacs/, 借助于 /Babel/,  使文档和代码无缝的结合在了一起, 一会编码，一会记录，
+  一会调试，一会执行。 不失为，学习语言，尝试新工具的不二神器。
+  再来一段Go代码:
+  : #+BEGIN_SRC go :imports "fmt"
+  :   fmt.Println("Goodbye, Gopher!")
+  : #+END_SRC

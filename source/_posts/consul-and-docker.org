@@ -7,7 +7,7 @@
 
 构造consul的docker集群
 #+BEGIN_SRC shell
-    sudo docker run -d --name=node0 consul agent -server -client=0.0.0.0 -node=node0 -bootstrap-expect=1 -bind=172.17.0.2 -data-dir=/tmp/consul
+    sudo docker run -d --name=node0 consul agent -server -client=0.0.0.0 -node=node0 -bootstrap-expect=1 -bind=172.17.0.2 -data-dir=/tmp/consul -ui-dir /ui
     sudo docker run -d --name=node1 consul agent -node-id=$(uuidgen | awk '{print tolower($0)}') -server -client=0.0.0.0 -node=node1 -bind=172.17.0.3 -join=172.17.0.2
     sudo docker run -d --name=node2 consul agent -node-id=$(uuidgen | awk '{print tolower($0)}') -server -client=0.0.0.0 -node=node2 -bind=172.17.0.4 -join=172.17.0.2
     sudo docker run -d --name=node3 consul agent -node-id=$(uuidgen | awk '{print tolower($0)}') -client=0.0.0.0 -node=node3 -bind=172.17.0.5 -join=172.17.0.2

@@ -1,8 +1,8 @@
-#+TITLE: 面试中的Coding
+#+TITLE: Gopher面试中的Coding
 #+DATE: <2017-05-14 Sun>
 #+LAYOUT: post
 #+TAGS: golang
-#+CATEGORIES: code
+#+CATEGORIES: 技术积累
 #+STARTUP: content
 
   从四月份下半月开始，陆陆续续面试了几家公司，都是golang的岗位。每一次面试，侧重点都会有不同，有的会直接给过来一道试题，
@@ -19,8 +19,9 @@
    问题很简单，使用 ~channel~ 来控制打印的进度。使用两个 ~channel~ ，来分别控制数字和字母的打印序列，
    数字打印完成后通过 ~channel~ 通知字母打印, 字母打印完成后通知数字打印，然后周而复始的工作。
 ** 实际编码
-   #+BEGIN_SRC go :results output :imports "fmt" :exports both
-     chan_n := make(chan bool, 1)
+   #+BEGIN_SRC go :results output :imports '("fmt" "runtime") :exports both
+     runtime.GOMAXPROCS(runtime.NumCPU())
+     chan_n := make(chan bool)
      chan_c := make(chan bool, 1)
      done := make(chan struct{})
 
@@ -225,5 +226,5 @@
    : user: b, award count: 549
    : user: a, award count: 1099
 * 总结
-  问题一来自 /方付通/ , 侧重于语言特性；问题二三来自 /ezbuy/ ，侧重于解决问题的思路；本人更喜欢第二种，很有启发性。
+  问题一来自一家公司 , 侧重于语言特性；问题二三来自另外一家公司 ，侧重于解决问题的思路；本人更喜欢第二种，很有启发性。
   我之后会把其他自己认为比较有趣的编程任务，整理到此篇文章中，敬请期待。

@@ -1,10 +1,10 @@
-#+TITLE: Babel: org-mode的多语言编程环境
+#+TITLE: Babel: org-mode的元编程
 #+AUTHOR: Eric Schulte, Dan Davison, Tom Dye
 #+DATE: <2017-04-01 Sat>
 #+LAYOUT: post
 #+OPTIONS: ':t author:nil ^:{}
 #+STARTUP: content
-#+TAGS: org-mode, babel, source-code-tool, tutorial, literate-programming
+#+TAGS: org-mode, babel, active-code, tutorial, literate-programming, 元编程
 #+CATEGORIES: org-mode
 
 #+BEGIN_QUOTE
@@ -156,7 +156,7 @@
 
     HTML 导出的代码:
     #+begin_src sh :eval no-export
-    echo "This file takes up `du -h babel-intro.org |sed 's/\([0-9k]*\)[ ]*babel-intro.org/\1/'`"
+      echo "This file takes up `du -h babel-intro.org |sed 's/\([0-9k]*\)[ ]*babel-intro.org/\1/'`"
     #+end_src
 
     HTML 导出的执行结构:

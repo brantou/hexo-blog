@@ -1,4 +1,4 @@
-#+TITLE: golang的并发模式：Context
+#+TITLE: Golang的并发模式：Context
 #+DATE:  <2017-05-19 fri>
 #+LAYOUT: post
 #+TAGS: golang, context

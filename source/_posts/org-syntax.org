@@ -1,4 +1,4 @@
-#+TITLE: Org-mode的语法解析
+#+TITLE: Org-mode的语法解读
 #+AUTHOR: Nicolas Goaziou
 #+DATE: <2017-03-11 Sat>
 #+LAYOUT: post
