@@ -1,0 +1,2207 @@
+#+TITLE: Leetcode-array
+#+DATE: <2017-07-16 Sun> 
+#+LAYOUT: post
+#+TAGS: leetcode
+#+CATEGORIES: 技术积累
+#+STARTUP: content
+
+  #+NAME: interval-def
+  #+BEGIN_SRC go
+    type Interval struct {
+     Start int
+     End   int
+    }
+  #+END_SRC
+
+* best time to buy and sell stock
+  :PROPERTIES:
+  :ID:       f4e4fab8-d414-4790-be85-130f330e8633
+  :END:
+  #+BEGIN_SRC go
+    func maxProfit(prices []int) int {
+      if len(prices) < 1 {
+        return 0
+      }
+
+      var mp int
+      min_p := prices[0]
+      for _, price := range prices {
+        if price-min_p > mp {
+          mp = price - min_p
+        }
+        if price < min_p {
+          min_p = price
+        }
+      }
+
+      return mp
+    }
+  #+END_SRC
+* best time to buy and sell stock II
+  :PROPERTIES:
+  :ID:       0c6a9a83-8b5f-4d23-a97e-f64fa7d4328d
+  :END:
+  #+BEGIN_SRC go
+    func maxProfit(prices []int) int {
+      if len(prices) < 1 {
+        return 0
+      }
+
+      var mp, pre_p, buy_p int
+      var status string // buy sell
+      for index, price := range prices {
+        if index == 0 {
+          pre_p = price
+          buy_p = price
+          status = "buy"
+          continue
+        }
+
+        if price > pre_p && status == "sell" {
+          buy_p = pre_p
+          status = "buy"
+        }
+
+        if pre_p > price && status == "buy" {
+          mp += pre_p - buy_p
+          status = "sell"
+        }
+
+        pre_p = price
+      }
+
+      if pre_p > buy_p && status == "buy" {
+        mp += pre_p - buy_p
+      }
+
+      return mp
+    }
+  #+END_SRC
+* plus one
+  :PROPERTIES:
+  :ID:       5d3a8d0f-7cb5-42ce-a280-8e8e55a9b44e
+  :END:
+
+  #+BEGIN_SRC go
+    func plusOne(digits []int) []int {
+      var carry int
+      carry = 1
+      for index := len(digits) - 1; index >= 0; index -= 1 {
+        if carry+digits[index] == 10 {
+          carry = 1
+          digits[index] = 0
+        } else {
+          digits[index] += carry
+          carry = 0
+        }
+
+        if carry == 0 {
+          break
+        }
+      }
+
+      if carry == 1 {
+        return append([]int{1}, digits...)
+      }
+
+      return digits
+    }
+  #+END_SRC
+* pascal's triangle
+  :PROPERTIES:
+  :ID:       955a32cc-ff35-432c-87da-c1173739bd61
+  :END:
+  #+NAME: pascal-triangle-generate
+  #+BEGIN_SRC go
+    func generate(numRows int) [][]int {
+      pt_arr := make([][]int, 0)
+      if numRows < 1 {
+        return pt_arr
+      }
+      pt_arr = append(pt_arr, []int{1})
+      if numRows == 1 {
+        return pt_arr
+      }
+      pt_arr = append(pt_arr, []int{1, 1})
+      if numRows < 3 {
+        return pt_arr
+      }
+      for i := 3; i <= numRows; i += 1 {
+        pt := make([]int, i)
+        pre_pt := pt_arr[i-2]
+        var pre int
+        for index, _ := range pre_pt {
+          if index == 0 {
+            pt[index] = pre_pt[index]
+            pre = pre_pt[index]
+            continue
+          }
+
+          if index == len(pre_pt)-1 {
+            pt[index] = pre + pre_pt[index]
+            pt[index+1] = pre_pt[index]
+            continue
+          }
+
+          pt[index] = pre + pre_pt[index]
+          pre = pre_pt[index]
+        }
+        pt_arr = append(pt_arr, pt)
+      }
+
+      return pt_arr
+    }
+  #+END_SRC
+
+  #+BEGIN_SRC go :imports "fmt" :noweb strip-export
+    <<pascal-triangle-generate>>
+
+    func main() {
+        fmt.Println(generate(3))
+    }
+  #+END_SRC
+
+  #+RESULTS:
+  : [[1] [1 1] [1 2 1]]
+
+* pascal's triangle II
+  :PROPERTIES:
+  :ID:       f2b7b1c8-839c-4976-96d1-e95394e59b64
+  :END:
+  #+NAME: pascal-triangle-getrow
+  #+BEGIN_SRC go
+    func getRow(rowIndex int) []int {
+      rowIndex += 1
+      pt_row := make([]int, rowIndex)
+      if rowIndex < 1 {
+        return pt_row
+      }
+      pt_row[0] = 1
+      if rowIndex == 1 {
+        return pt_row
+      }
+      pt_row[1] = 1
+
+      for i := 3; i <= rowIndex; i += 1 {
+        ptr := pt_row[0:i]
+        pre_ptr := pt_row[0 : i-1]
+        var pre int
+        for index, _ := range pre_ptr {
+          if index == 0 {
+            pre = pre_ptr[index]
+            continue
+          }
+
+          if index == len(pre_ptr)-1 {
+            ptr[index+1] = pre_ptr[index]
+            ptr[index] = pre + pre_ptr[index]
+            continue
+          }
+
+          pre_num := pre_ptr[index]
+          ptr[index], pre = pre+pre_num, pre_num
+        }
+      }
+
+      return pt_row
+    }
+  #+END_SRC
+
+  #+BEGIN_SRC go :imports "fmt" :noweb strip-export
+    <<pascal-triangle-getrow>>
+
+    func main() {
+        fmt.Println(getRow(4))
+    }
+  #+END_SRC
+
+  #+RESULTS:
+  : [1 3 3 1]
+* array partition I
+  :PROPERTIES:
+  :ID:       026862fc-98ae-49f7-bd7e-ecdb6854aebf
+  :END:
+
+  #+BEGIN_SRC go
+    func min(a, b int) int {
+      if a > b {
+        return b
+      } else {
+        return a
+      }
+    }
+
+    func arrayPairSum(nums []int) int {
+      sort.Ints(nums)
+      var p_sum int
+      for index := 0; index < len(nums); index += 2 {
+        p_sum += min(nums[index], nums[index+1])
+      }
+
+      return p_sum
+    }
+  #+END_SRC
+* find all numbers disappeared in an array
+  :PROPERTIES:
+  :ID:       3f563c9d-eac2-4ca7-8684-4c031064e172
+  :END:
+  #+NAME: find-disappeared-nums
+  #+BEGIN_SRC go
+    func findDisappearedNumbers(nums []int) []int {
+      if len(nums) < 1 {
+        return nums
+      }
+      dis_nums := make([]int, 0)
+
+      var pre, pre_index int
+      for index, num := range nums {
+        if index+1 != num && num != 0 {
+          pre = num
+          pre_index = index
+          break
+        }
+      }
+      if pre == 0 {
+        return dis_nums
+      }
+
+      for i := 0; i < len(nums); i += 1 {
+        if nums[pre-1] != pre && nums[pre-1] != 0 {
+          nums[pre-1], pre = pre, nums[pre-1]
+          continue
+        }
+
+        if nums[pre-1] == 0 {
+          nums[pre-1] = pre
+        }
+
+        nums[pre_index] = 0
+        for index, num := range nums {
+          if index+1 != num && num != 0 {
+            pre = num
+            pre_index = index
+            break
+          }
+        }
+      }
+
+      nums[pre-1] = pre
+
+      for index, num := range nums {
+        if index+1 != num {
+          dis_nums = append(dis_nums, index+1)
+        }
+      }
+
+      return dis_nums
+    }
+  #+END_SRC
+
+  #+BEGIN_SRC go
+    func findDisappearedNumbers(nums []int) []int {
+      marks := make([]int, 0)
+      for _, num := range nums {
+        marks[num-1] = 1
+      }
+
+      dis_nums := make([]int, 0)
+      for index, mark := range marks {
+        if mark == 0 {
+          dis_nums = append(dis_nums, index+1)
+        }
+      }
+      return dis_nums
+    }
+  #+END_SRC
+
+  #+BEGIN_SRC go :imports "fmt" :noweb strip-export
+    <<find-disappeared-nums>>
+
+    func main() {
+      fmt.Println(findDisappearedNumbers([]int{4,3,2,7,8,2,3,1}))
+    }
+  #+END_SRC
+* two sum
+  :PROPERTIES:
+  :ID:       a6cad07b-f004-4e13-ae5f-8580d32df685
+  :END:
+  #+BEGIN_SRC go
+    func twoSum(nums []int, target int) []int {
+        indices := make([]int, 0)
+        for i := 0; i < len(nums); i += 1 {
+            fir := nums[i]
+            for j := i+1; j < len(nums); j +=1 {
+                secd := nums[j]
+                if fir + secd == target {
+                    indices = append(indices, i)
+                    indices = append(indices, j)
+                    break
+                }
+            }
+        }
+        return indices
+    }
+  #+END_SRC
+
+#+NAME: add-two-number
+#+BEGIN_SRC go
+  /**
+   ,* Definition for singly-linked list.
+   ,* type ListNode struct {
+   ,*     Val int
+   ,*     Next *ListNode
+   ,* }
+   ,*/
+  func addTwoNumbers(l1 *ListNode, l2 *ListNode) *ListNode {
+    var carry int
+    var sum_head, sum_curr *ListNode
+    for {
+      if l1 == nil && l2 == nil {
+        if carry > 0 {
+          sum_node := &ListNode{
+            Val:  carry,
+            Next: nil,
+          }
+          if sum_head != nil {
+            sum_curr.Next = sum_node
+            sum_curr = sum_node
+          } else {
+            sum_head = sum_node
+            sum_curr = sum_node
+          }
+        }
+        break
+      }
+
+      var sum int
+      if l1 != nil && l2 != nil {
+        sum = l1.Val + l2.Val + carry
+        l1, l2 = l1.Next, l2.Next
+      } else if l2 == nil {
+        sum = l1.Val + carry
+        l1 = l1.Next
+      } else if l1 == nil {
+        sum = l2.Val + carry
+        l2 = l2.Next
+      }
+
+      if sum > 9 {
+        carry = 1
+        sum -= 10
+      } else {
+        carry = 0
+      }
+
+      sum_node := &ListNode{
+        Val:  sum,
+        Next: nil,
+      }
+      if sum_head != nil {
+        sum_curr.Next = sum_node
+        sum_curr = sum_node
+      } else {
+        sum_head = sum_node
+        sum_curr = sum_node
+      }
+    }
+    return sum_head
+  }
+#+END_SRC
+
+#+BEGIN_SRC go :imports '("fmt" "strings") :noweb strip-export
+  type ListNode struct {
+    Val int
+    Next *ListNode
+  }
+
+  <<add-two-number>>
+
+  func make_list(vals []int) *ListNode{
+    var lst, lst_c *ListNode
+    for _, val := range vals {
+      node := &ListNode{
+        Val: val,
+        Next: nil,
+      }
+      if lst != nil {
+        lst_c.Next = node
+        lst_c = node
+      } else {
+        lst = node
+        lst_c = node
+      }
+    }
+    return lst
+  }
+
+  func print_list(lst *ListNode) {
+    var str string
+    for {
+      if lst == nil {
+        break
+      }
+      str += fmt.Sprintf("%d,", lst.Val)
+      lst = lst.Next
+    }
+    str = strings.Trim(str, ",")
+    fmt.Printf("[%s]", str)
+  }
+
+  func main() {
+    l1 := make_list([]int{2,4,3})
+    l2 := make_list([]int{5,6,4})
+    sum_lst := addTwoNumbers(l1,l2)
+    print_list(sum_lst)
+  }
+
+#+END_SRC
+
+* two sum II - input array is sorted
+  :PROPERTIES:
+  :ID:       e61189bf-00f4-47e4-9573-7f449688d5ef
+  :END:
+
+  #+BEGIN_SRC go
+    func twoSum(nums []int, target int) []int {
+      indices := make([]int, 0)
+      for i := 0; i < len(nums); i += 1 {
+        fir := nums[i]
+        for j := i + 1; j < len(nums); j += 1 {
+          secd := nums[j]
+          if fir+secd == target {
+            indices = append(indices, i+1)
+            indices = append(indices, j+1)
+            break
+          }
+        }
+      }
+      return indices
+    }
+  #+END_SRC
+* remove duplicates from sorted array
+  :PROPERTIES:
+  :ID:       ff6497bd-6708-49cc-8fec-b31ad19be5b5
+  :END:
+  #+BEGIN_SRC go
+    func removeDuplicates(nums []int) int {
+      if (len(nums)) <2 {
+        return len(nums)
+      }
+
+      pre := nums[0]
+      size := 1
+      for _, num := range nums {
+        if pre != num {
+          pre = num
+          nums[size] = num
+          size++
+        }
+      }
+
+      return size
+    }
+  #+END_SRC
+* remove duplicates from sorted array II
+  :PROPERTIES:
+  :ID:       2230af93-5ae2-4282-abc5-e9d51f5dd361
+  :END:
+  #+BEGIN_SRC go
+    func removeDuplicates(nums []int) int {
+      if (len(nums)) < 3 {
+        return len(nums)
+      }
+
+      size := 2
+      pp_num := nums[0]
+      p_num := nums[1]
+      nums_size := len(nums)
+      for i := 2; i < nums_size; i++ {
+        if nums[i] == p_num && p_num == pp_num {
+          continue
+        }
+
+        pp_num = p_num
+        p_num = nums[i]
+        nums[size] = nums[i]
+        size++
+      }
+
+      return size
+    }
+  #+END_SRC
+* remove element
+  :PROPERTIES:
+  :ID:       6ca329cf-96b6-406e-b1ac-f72f5e276e2f
+  :END:
+  #+BEGIN_SRC go
+    func removeElement(nums []int, val int) int {
+      var size int
+      for index, num := range nums {
+        if index == 0 {
+          if num == val {
+            size = 0
+          } else {
+            size = 1
+          }
+          continue
+        }
+
+        if num != val {
+          nums[size] = num
+          size += 1
+        }
+      }
+
+      return size
+    }
+  #+END_SRC
+* majority element
+  :PROPERTIES:
+  :ID:       eecdd18d-3a8d-4b15-8486-83931c55d6d8
+  :END:
+  #+BEGIN_SRC go
+    func majorityElement(nums []int) int {
+      num_M := make(map[int]int)
+      for _, num := range nums {
+        time := num_M[num]
+        num_M[num] = time + 1
+      }
+
+      var mt_num, max_times int
+      for num, time := range num_M {
+        if time > max_times {
+          mt_num = num
+          max_times = time
+        }
+      }
+      return mt_num
+    }
+  #+END_SRC
+* DONE shortest unsorted continuous subarray
+  CLOSED: [2017-07-17 Mon 23:32]
+  :PROPERTIES:
+  :ID:       020d91c3-f039-49e0-9c39-6808fec46f85
+  :END:
+  - State "DONE"       from "STARTED"    [2017-07-17 Mon 23:32]
+  #+BEGIN_SRC go
+    func findUnsortedSubarray(nums []int) int {
+      n_nums := make([]int, len(nums))
+      copy(n_nums, nums)
+      sort.Ints(n_nums)
+      var start, end int
+      for index, _ := range nums {
+        if nums[index] != n_nums[index] {
+          start = index
+          break
+        }
+      }
+
+      for index := len(nums) - 1; index >= 0; index -= 1 {
+        if nums[index] != n_nums[index] {
+          end = index + 1
+          break
+        }
+      }
+
+      return end - start
+    }
+  #+END_SRC
+* reshape the matrix
+  :PROPERTIES:
+  :ID:       e99a3f76-2d7f-4ab9-a908-beb1a83f094c
+  :END:
+  #+BEGIN_SRC go
+    func matrixReshape(nums [][]int, r int, c int) [][]int {
+      if len(nums) < 1 || len(nums[0]) < 1 {
+        return [][]int{}
+      }
+
+      or := len(nums)
+      oc := len(nums[0])
+      if or*oc != r*c {
+        return nums
+      }
+
+      f_nums := make([]int, 0)
+      for index, _ := range nums {
+        row := nums[index]
+        f_nums = append(f_nums, row...)
+      }
+
+      n_nums := make([][]int, r)
+      for i := 0; i < r; i += 1 {
+        row := make([]int, c)
+        for j := 0; j < c; j += 1 {
+          row[j] = f_nums[i*c+j]
+        }
+        n_nums[i] = row
+      }
+
+      return n_nums
+    }
+  #+END_SRC
+* search insert position
+  :PROPERTIES:
+  :ID:       8848824b-c05f-499a-8698-097e6d5f188f
+  :END:
+  #+BEGIN_SRC go
+    func searchInsert(nums []int, target int) int {
+      for index, num := range nums {
+        if num == target {
+          return index
+        }
+
+        if num > target {
+          return index
+        }
+      }
+
+      return len(nums)
+    }
+  #+END_SRC
+* merge sorted array
+  :PROPERTIES:
+  :ID:       66d01320-b62d-4545-8df5-ad4a10985f03
+  :END:
+  #+BEGIN_SRC go
+    func merge(nums1 []int, m int, nums2 []int, n int) {
+      if m == 0 {
+        for i := 0; i < n; i += 1 {
+          nums1[i] = nums2[i]
+        }
+        return
+      }
+
+      if n == 0 {
+        return
+      }
+
+      n1_index := m - 1
+      n2_index := n - 1
+      index := m + n - 1
+      for {
+        if n1_index < 0 || n2_index < 0 {
+          break
+        }
+
+        if nums1[n1_index] > nums2[n2_index] {
+          nums1[index] = nums1[n1_index]
+          n1_index -= 1
+          index -= 1
+        } else {
+          nums1[index] = nums2[n2_index]
+          n2_index -= 1
+          index -= 1
+        }
+      }
+
+      if n2_index >= 0 {
+        for i := 0; i <= n2_index; i += 1 {
+          nums1[i] = nums2[i]
+        }
+      }
+
+      return
+    }
+  #+END_SRC
+* maximum product of three numbers
+  :PROPERTIES:
+  :ID:       ebc5d9db-bd7a-4b85-9405-969a823eb259
+  :END:
+  #+BEGIN_SRC go
+    func max(a, b int) int {
+      if a > b {
+        return a
+      } else {
+        return b
+      }
+    }
+
+    func maximumProduct(nums []int) int {
+      sort.Ints(nums)
+      size := len(nums)
+      return max(nums[size-1]*nums[size-2]*nums[size-3], nums[0]*nums[1]*nums[size-1])
+    }
+  #+END_SRC
+
+* maximum average subarray I
+  :PROPERTIES:
+  :ID:       d9eff77f-9182-4424-8f25-0c4db04d89b0
+  :END:
+
+  #+BEGIN_SRC go
+    func findMaxAverage(nums []int, k int) float64 {
+      var max_average float64
+      for index := 0; index <= len(nums)-k; index += 1 {
+        var sub_sum int
+        for j := 0; j < k; j += 1 {
+          sub_sum += nums[index+j]
+        }
+
+        average := float64(sub_sum) / float64(k)
+        if index == 0 {
+          max_average = average
+          continue
+        }
+
+        if max_average < average {
+          max_average = average
+        }
+      }
+
+      return max_average
+    }
+  #+END_SRC
+* move zeroes
+  :PROPERTIES:
+  :ID:       818861d8-8ca1-4f72-b7ac-0043b0c6a443
+  :END:
+  #+NAME: move-zeroes
+  #+BEGIN_SRC go
+    func moveZeroes(nums []int) {
+      for index, num := range nums {
+        if num == 0 {
+          continue
+        }
+
+        for j := index; 0 < j; j -= 1 {
+          if nums[j-1] == 0 {
+            nums[j-1], nums[j] = nums[j], nums[j-1]
+          } else {
+            break
+          }
+        }
+      }
+
+      return
+    }
+  #+END_SRC
+
+  #+BEGIN_SRC go :imports "fmt" :noweb strip-export
+    <<move-zeroes>>
+
+    func main() {
+      nums := []int{0, 1, 0, 3, 12}
+      moveZeroes(nums)
+      fmt.Println(nums)
+    }
+  #+END_SRC
+
+  #+RESULTS:
+  : [1 3 12 0 0]
+* can place flowers
+  :PROPERTIES:
+  :ID:       b8398f40-bc7f-4dd3-bd80-06749066b2af
+  :END:
+  #+BEGIN_SRC go
+    func canPlaceFlowers(flowerbed []int, n int) bool {
+      if len(flowerbed) < 1 && n > 0 {
+        return false
+      }
+
+      if n == 0 {
+        return true
+      }
+
+      if len(flowerbed) < n {
+        return false
+      }
+
+      if len(flowerbed) == 1 {
+        if flowerbed[0] == 0 && n == 1 {
+          return true
+        } else {
+          return false
+        }
+      }
+
+      for index, _ := range flowerbed {
+        if flowerbed[index] == 1 {
+          continue
+        }
+
+        switch index {
+        case 0:
+          if flowerbed[index+1] == 0 {
+            flowerbed[index] = 1
+            n -= 1
+          }
+        case len(flowerbed) - 1:
+          if flowerbed[index-1] == 0 {
+            flowerbed[index] = 1
+            n -= 1
+          }
+        default:
+          if flowerbed[index-1] == 0 && flowerbed[index+1] == 0 {
+            flowerbed[index] = 1
+            n -= 1
+          }
+        }
+
+        if n < 1 {
+          return true
+        }
+      }
+
+      return false
+    }
+  #+END_SRC
+* contains duplicate
+  :PROPERTIES:
+  :ID:       6d755473-9caf-43be-89ad-c43a041b5421
+  :END:
+  #+BEGIN_SRC go
+    func containsDuplicate(nums []int) bool {
+      num_M := make(map[int]bool)
+      for _, num := range nums {
+        num_M[num] = true
+      }
+
+      return len(nums) > len(num_M)
+    }
+  #+END_SRC
+* contains duplicate II
+  :PROPERTIES:
+  :ID:       ace08f3a-dd6f-4c21-a296-19aaa0cdcd93
+  :END:
+  #+BEGIN_SRC go
+    func containsNearbyDuplicate(nums []int, k int) bool {
+      num_M := make(map[int]bool)
+      for index, num := range nums {
+        if index > k {
+          delete(num_M, nums[index-k-1])
+        }
+        if num_M[num] {
+          return true
+        }
+        num_M[num] = true
+      }
+      return false
+    }
+  #+END_SRC
+* contains duplicate III
+  :PROPERTIES:
+  :ID:       2d415749-6f4d-4c66-89e5-1d473029acdb
+  :END:
+  #+BEGIN_SRC go
+    func abs(x int) int {
+      if x < 0 {
+        return -x
+      } else {
+        return x
+      }
+    }
+
+    func getQuot(i, w int) int {
+      if i < 0 {
+        return (i+1)/w - 1
+      } else {
+        return i / w
+      }
+    }
+
+    func containsNearbyAlmostDuplicate(nums []int, k int, t int) bool {
+      if t < 0 {
+        return false
+      }
+      num_M := make(map[int]int)
+      w := t + 1
+      for index, num := range nums {
+
+        quot := getQuot(num, w)
+        if _, ok := num_M[quot]; ok {
+          return true
+        }
+
+        if pre_num, ok := num_M[quot-1]; ok && abs(num-pre_num) < w {
+          return true
+        }
+
+        if pre_num, ok := num_M[quot+1]; ok && abs(num-pre_num) < w {
+          return true
+        }
+
+        num_M[quot] = num
+
+        if index >= k {
+          delete(num_M, getQuot(nums[index-k], w))
+        }
+
+      }
+      return false
+    }
+  #+END_SRC
+* k-diff pairs in an array
+  :PROPERTIES:
+  :ID:       3e2631da-23df-4faa-a5a6-5c1e392a68d5
+  :END:
+  #+BEGIN_SRC go
+    func findPairs(nums []int, k int) int {
+      sort.Ints(nums)
+      var base_index, pair_size int
+      for {
+        for i := base_index + 1; i < len(nums); i += 1 {
+          if nums[i]-nums[base_index] > k {
+            break
+          }
+          if nums[i]-nums[base_index] == k {
+            pair_size += 1
+            break
+          }
+        }
+
+        old_bi := base_index
+        for i := base_index + 1; i < len(nums); i += 1 {
+          if nums[i]-nums[base_index] > 0 {
+            base_index = i
+            break
+          }
+        }
+
+        if old_bi == base_index {
+          break
+        }
+
+        if base_index == len(nums)-1 {
+          break
+        }
+      }
+
+      return pair_size
+    }
+  #+END_SRC
+* best time to buy and sell stock II
+  :PROPERTIES:
+  :ID:       0c6a9a83-8b5f-4d23-a97e-f64fa7d4328d
+  :END:
+  #+BEGIN_SRC go
+    func maxProfit(prices []int) int {
+      if len(prices) < 1 {
+        return 0
+      }
+
+      var mp, pre_p, buy_p int
+      var status string // buy sell
+      for index, price := range prices {
+        if index == 0 {
+          pre_p = price
+          buy_p = price
+          status = "buy"
+          continue
+        }
+
+        if price > pre_p && status == "sell" {
+          buy_p = pre_p
+          status = "buy"
+        }
+
+        if pre_p > price && status == "buy" {
+          mp += pre_p - buy_p
+          status = "sell"
+        }
+
+        pre_p = price
+      }
+
+      if pre_p > buy_p && status == "buy" {
+        mp += pre_p - buy_p
+      }
+
+      return mp
+    }
+
+  #+END_SRC
+* DONE maximum subarray
+  CLOSED: [2017-07-18 Tue 23:30] SCHEDULED: <2017-07-18 Tue 21:30>
+  :PROPERTIES:
+  :ID:       89cea991-3745-4b96-a8ef-9f65b8655e29
+  :Effort:   15:00
+  :END:
+  - State "DONE"       from "WAITING"    [2017-07-18 Tue 23:30]
+  :LOGBOOK:
+  CLOCK: [2017-07-18 Tue 23:20]--[2017-07-18 Tue 23:30] =>  0:10
+  :END:
+  #+BEGIN_SRC go
+    func maxSubArray(nums []int) int {
+      if len(nums) < 1 {
+        return 0
+      }
+
+      size := len(nums)
+      max_sum := nums[0]
+      pre_sum := nums[0]
+      for i := 1; i < size; i += 1 {
+        if pre_sum > 0 {
+          pre_sum = nums[i] + pre_sum
+        } else {
+          pre_sum = nums[i]
+        }
+        if pre_sum > max_sum {
+          max_sum = pre_sum
+        }
+      }
+
+      return max_sum
+    }
+  #+END_SRC
+* missing number
+  :PROPERTIES:
+  :ID:       e49e7944-4682-4ad6-8aae-e401f82a2285
+  :END:
+  #+BEGIN_SRC go
+    func missingNumber(nums []int) int {
+      var sum int
+      for _, num := range nums {
+        sum += num
+      }
+
+      size := len(nums)
+      return size*(size+1)/2 - sum
+    }
+  #+END_SRC
+* max consecutive ones
+  :PROPERTIES:
+  :ID:       a62621a7-3030-4023-8a95-c5b51c1718f5
+  :END:
+  #+BEGIN_SRC go
+    func findMaxCntecutiveOnes(nums []int) int {
+      var cnt, max_cnt int
+      for _, num := range nums {
+        if num == 0 {
+          if cnt > max_cnt {
+            max_cnt = cnt
+          }
+          cnt = 0
+        }
+
+        if num == 1 {
+          cnt += 1
+        }
+      }
+      if cnt > max_cnt {
+        max_cnt = cnt
+      }
+
+      return max_cnt
+    }
+  #+END_SRC
+* rotate array
+  :PROPERTIES:
+  :ID:       01baaeb2-7713-4dd7-bcc2-999218245060
+  :END:
+  #+NAME: rotate-array
+  #+BEGIN_SRC go
+    func reverse(nums []int) {
+      size := len(nums)
+      mid := size / 2
+      for i := 0; i < mid; i += 1 {
+        nums[i], nums[size-i-1] = nums[size-i-1], nums[i]
+      }
+    }
+
+    func rotate(nums []int, k int) {
+      size := len(nums)
+      if size == 1 {
+        return
+      }
+      k = k % size
+      reverse(nums[0 : size-k])
+      reverse(nums[size-k : size])
+      reverse(nums)
+    }
+  #+END_SRC
+
+  #+BEGIN_SRC go :imports "fmt" :noweb strip-export
+        <<rotate-array>>
+
+        func main() {
+          arr := []int{1,2,3,4,5,6,7}
+          rotate(arr, 3)
+          fmt.Println(arr)
+        }
+  #+END_SRC
+
+  #+RESULTS:
+  : [5 6 7 1 2 3 4]
+* find peak element
+  :PROPERTIES:
+  :ID:       9b380d70-176b-4c1f-b5b3-5de9f6e6a5f0
+  :END:
+  #+BEGIN_SRC go
+    func findPeakElement(nums []int) int {
+      if len(nums) < 1 {
+        return -1
+      }
+      if len(nums) == 1 {
+        return 0
+      }
+
+      var pe int
+      size := len(nums)
+      for i := 0; i < size; i += 1 {
+        switch i {
+        case 0:
+          if nums[0] > nums[1] {
+            return 0
+          }
+        case size - 1:
+          if nums[size-1] > nums[size-2] {
+            return size - 1
+          }
+        default:
+          if nums[i-1] < nums[i] && nums[i] > nums[i+1] {
+            return i
+          }
+        }
+      }
+
+      return -1
+    }
+  #+END_SRC
+* maximum product subarray
+  :PROPERTIES:
+  :ID:       94010a20-a154-495e-a24f-314453110e67
+  :END:
+  #+NAME: maximum-product-subarray
+  #+BEGIN_SRC go
+    func max(a, b int) int {
+      if a > b {
+        return a
+      } else {
+        return b
+      }
+    }
+
+    func min(a, b int) int {
+      if a > b {
+        return b
+      } else {
+        return a
+      }
+    }
+
+    func maxProduct(nums []int) int {
+      if len(nums) < 1 {
+        return 0
+      }
+
+      size := len(nums)
+      maxp_sub_arr := make([]int, size)
+      ng_maxp_sub_arr := make([]int, size)
+      maxp_sub_arr[0] = nums[0]
+      if maxp_sub_arr[0] < 0 {
+        ng_maxp_sub_arr[0] = maxp_sub_arr[0]
+      } else {
+        ng_maxp_sub_arr[0] = 1
+      }
+      for i := 1; i < size; i += 1 {
+        if nums[i] == 0 {
+          continue
+        }
+
+        if maxp_sub_arr[i-1] == 0 {
+          maxp_sub_arr[i] = nums[i]
+          if nums[i] < 0 {
+            ng_maxp_sub_arr[i] = maxp_sub_arr[i]
+          } else {
+            ng_maxp_sub_arr[i] = 1
+          }
+        }
+
+        if nums[i] > 0 {
+          maxp_sub_arr[i] = max(nums[i]*maxp_sub_arr[i-1], nums[i])
+          ng_maxp_sub_arr[i] = nums[i] * ng_maxp_sub_arr[i-1]
+        }
+
+        if nums[i] < 0 {
+          maxp_sub_arr[i] = nums[i] * ng_maxp_sub_arr[i-1]
+          ng_maxp_sub_arr[i] = min(nums[i]*maxp_sub_arr[i-1], nums[i])
+        }
+      }
+
+      maxp := maxp_sub_arr[0]
+      for _, subp := range maxp_sub_arr {
+        if subp > maxp {
+          maxp = subp
+        }
+      }
+
+      return maxp
+    }
+  #+END_SRC
+
+  #+BEGIN_SRC go :imports "fmt" :noweb strip-export
+        <<maximum-product-subarray>>
+
+        func main() {
+          fmt.Println(maxProduct([]int{2,3,-2,4,0,-3,-4}))
+        }
+  #+END_SRC
+
+  #+RESULTS:
+  : 12
+* minimum size subarray sum
+  :PROPERTIES:
+  :ID:       ae8200c6-b764-479c-9f7c-a3faee06c76c
+  :END:
+  #+NAME: minimum-size-subarray-sum
+  #+BEGIN_SRC go
+    func minSubArrayLen(s int, nums []int) int {
+      if len(nums) < 0 {
+        return 0
+      }
+
+      var sub_sum, msub_arl, sub_arl int
+      size := len(nums)
+      msub_arl = size + 1
+      for index, num := range nums {
+        if sub_sum+num < s {
+          sub_sum += num
+          sub_arl += 1
+          continue
+        }
+
+        if sub_sum+num >= s {
+          for {
+            if sub_arl < 1 {
+              break
+            }
+
+            del_num := nums[index-sub_arl]
+            sub_sum -= del_num
+            sub_arl -= 1
+            if sub_sum+num < s {
+              sub_sum += num
+              sub_arl += 1
+              break
+            }
+          }
+
+          if sub_arl+1 < msub_arl {
+            msub_arl = sub_arl + 1
+          }
+        }
+      }
+
+      if msub_arl == size+1 {
+        msub_arl = 0
+      }
+
+      return msub_arl
+    }
+  #+END_SRC
+
+  #+BEGIN_SRC go :imports "fmt" :noweb strip-export
+    <<minimum-size-subarray-sum>>
+
+    func main() {
+      fmt.Println(minSubArrayLen(15, []int{5,1,3,5,10,7,4,9,2,8}))
+    }
+  #+END_SRC
+
+  #+RESULTS:
+  : 1
+* array nesting
+  :PROPERTIES:
+  :ID:       5054147d-6967-4087-9995-3d0b99934c1c
+  :END:
+  #+NAME: array-nesting
+  #+BEGIN_SRC go
+    func arrayNesting(nums []int) int {
+      anl_arr := make([]int, len(nums))
+
+      var max_anl int
+      for _, num := range nums {
+        if anl_arr[num] > 0 {
+          continue
+        }
+
+        var anl int
+        next_num := num
+        for {
+          anl_arr[next_num] = 1
+          anl += 1
+
+          next_num = nums[next_num]
+          if next_num == num {
+            break
+          }
+        }
+
+        if anl > max_anl {
+          max_anl = anl
+        }
+      }
+
+      return max_anl
+    }
+  #+END_SRC
+
+  #+BEGIN_SRC go :imports "fmt" :noweb strip-export
+    <<array-nesting>>
+
+    func main() {
+      fmt.Println(arrayNesting([]int{5,4,0,3,1,6,2}))
+    }
+  #+END_SRC
+
+  #+RESULTS:
+  : 4
+* triangle
+  :PROPERTIES:
+  :ID:       750b5ff8-538b-4e0f-b55b-a069ac517bed
+  :END:
+  #+BEGIN_SRC go
+    func min(a, b int) int {
+      if a < b {
+        return a
+      } else {
+        return b
+      }
+    }
+
+    func minimumTotal(triangle [][]int) int {
+      pre_nums := triangle[0]
+      trg_size := len(triangle)
+      for i := 1; i < trg_size; i += 1 {
+        nums := triangle[i]
+        n_size := len(nums)
+        for j, _ := range nums {
+          switch j {
+          case 0:
+            nums[0] += pre[0]
+          case n_size - 1:
+            nums[n_size-1] += pre_nums[n_size-2]
+          default:
+            nums[j] += min(pre_nums[j-1], pre_nums[j])
+          }
+        }
+        pre_nums = nums
+      }
+
+      min_total := pre_nums[0]
+      for _, num := range pre_nums {
+        if num < min_total {
+          min_total = num
+        }
+      }
+
+      return min_total
+    }
+  #+END_SRC
+* subsets
+  :PROPERTIES:
+  :ID:       d8ad10e9-7e42-43ea-a9a5-5c2d8a0e54d4
+  :END:
+  #+BEGIN_SRC go
+    func subsets(nums []int) [][]int {
+      if len(nums) < 1 {
+        return [][]int{[]int{}}
+      }
+
+      sub_sets := subsets(nums[1:])
+      sets := sub_sets
+      num := nums[0]
+      for _, set := range sub_sets {
+        nset := append([]int{num}, set...)
+        sets = append(sets, nset)
+      }
+
+      return sets
+    }
+  #+END_SRC
+* subsets II
+  :PROPERTIES:
+  :ID:       270533c8-ac2c-4cc2-b3e5-a8b6caf8316c
+  :END:
+  #+BEGIN_SRC go
+    type Item struct {
+      Num   int
+      Count int
+    }
+
+    func subsetsWithDup(nums []int) [][]int {
+      num_M := make(map[int]int)
+      for _, num := range nums {
+        num_M[num] += 1
+      }
+
+      items := make([]*Item, 0)
+      for num, count := range num_M {
+        item := &Item{
+          Num:   num,
+          Count: count,
+        }
+        items = append(items, item)
+      }
+
+      return subsets(items)
+    }
+
+    func subsetsHelper(item *Item, sub_sets [][]int) [][]int {
+      sets := sub_sets
+      for _, set := range sub_sets {
+        var _count int
+        for {
+          if _count == item.Count {
+            break
+          }
+          set = append([]int{item.Num}, set...)
+          sets = append(sets, set)
+          _count += 1
+        }
+      }
+      return sets
+    }
+
+    func subsets(items []*Item) [][]int {
+      if len(items) < 1 {
+        return [][]int{[]int{}}
+      }
+
+      return subsetsHelper(items[0], subsets(items[1:]))
+    }
+  #+END_SRC
+* search in rotated sorted array
+  :PROPERTIES:
+  :ID:       6d7e99d7-ca10-432b-b77e-9d2c37cab25d
+  :END:
+  #+BEGIN_SRC go
+    func search(nums []int, target int) int {
+      start, end := 0, len(nums)-1
+      for start <= end {
+        mid := start + (end-start)/2
+        if nums[mid] == target {
+          return mid
+        }
+
+        if start == end {
+          break
+        }
+
+        if (nums[start] <= nums[mid] && (target < nums[start] || nums[mid] < target)) ||
+          (nums[mid] <= nums[end] && (target >= nums[mid] && nums[end] >= target)) {
+          start = mid + 1
+          continue
+        }
+
+        if (nums[start] <= nums[mid] && (target >= nums[start] && nums[mid] >= target)) ||
+          (nums[mid] <= nums[end] && (target < nums[mid] || nums[end] < target)) {
+          end = mid - 1
+          continue
+        }
+      }
+
+      return -1
+    }
+  #+END_SRC
+* search in rotated sorted array II
+  :PROPERTIES:
+  :ID:       13f468b8-2c4a-4d08-949b-f0a1826be40a
+  :END:
+  #+BEGIN_SRC go
+    func search(nums []int, target int) bool {
+      start, end := 0, len(nums)-1
+      for start <= end {
+        if nums[start] == nums[end] {
+          if nums[start] == target {
+            return true
+          }
+
+          dup_num := nums[start]
+          for {
+            if start == end || nums[start] != dup_num {
+              break
+            }
+            start++
+          }
+
+          for {
+            if start == end || nums[end] != dup_num {
+              break
+            }
+            end--
+          }
+        }
+
+        mid := start + (end-start)/2
+        if nums[mid] == target {
+          return true
+        }
+
+        if start == end {
+          break
+        }
+
+        if (nums[start] <= nums[mid] && (target < nums[start] || nums[mid] < target)) ||
+          (nums[mid] <= nums[end] && (target >= nums[mid] && nums[end] >= target)) {
+          start = mid + 1
+          continue
+        }
+
+        if (nums[start] <= nums[mid] && (target >= nums[start] && nums[mid] >= target)) ||
+          (nums[mid] <= nums[end] && (target < nums[mid] || nums[end] < target)) {
+          end = mid - 1
+          continue
+        }
+      }
+
+      return false
+    }
+  #+END_SRC
+* search a 2d matrix
+  :PROPERTIES:
+  :ID:       090f04ca-1173-404a-9057-1b1456ec67ad
+  :END:
+  #+BEGIN_SRC go
+    func searchMatrix(matrix [][]int, target int) bool {
+      length := len(matrix)
+      if length < 1 {
+        return false
+      }
+      start, end := 0, length-1
+      width := len(matrix[0])
+      for start <= end {
+        if start == end {
+          break
+        }
+        mid := start + (end-start)/2
+        if matrix[mid][0] > target {
+          end = mid - 1
+        } else if matrix[mid][0] < target {
+          if target > matrix[mid][width-1] {
+            start = mid + 1
+          } else {
+            start = mid
+            break
+          }
+        } else {
+          return true
+        }
+      }
+
+      return binary_search(matrix[start], target) != -1
+    }
+
+    func binary_search(nums []int, target int) int {
+      start, end := 0, len(nums)-1
+      for start <= end {
+        mid := start + (end-start)/2
+        if nums[mid] > target {
+          end = mid - 1
+        } else if nums[mid] < target {
+          start = mid + 1
+        } else {
+          return mid
+        }
+      }
+
+      return -1
+    }
+  #+END_SRC
+* sort colors
+  :PROPERTIES:
+  :ID:       165bd17e-19e9-4142-8e81-09ff10c502f7
+  :END:
+  #+BEGIN_SRC go
+    func sortColors(nums []int) {
+      colors := make([]int, 3)
+      for _, num := range nums {
+        colors[num] += 1
+      }
+
+      var base int
+      for color, count := range colors {
+        for count > 0 {
+          nums[base] = color
+          count--
+          base++
+        }
+      }
+
+      return
+    }
+  #+END_SRC
+* set matrix zeroes
+  :PROPERTIES:
+  :ID:       5734d05f-3a6a-46e5-b7df-1e93a580d822
+  :END:
+  #+BEGIN_SRC go
+    func setZeroes(matrix [][]int) {
+      length := len(matrix)
+      if length < 1 {
+        return
+      }
+      width := len(matrix[0])
+      row_M := make(map[int]bool, length)
+      col_M := make(map[int]bool, width)
+      for i := 0; i < length; i++ {
+        for j := 0; j < width; j++ {
+          if matrix[i][j] == 0 {
+            row_M[i] = true
+            col_M[j] = true
+          }
+        }
+      }
+
+      if len(row_M) > 0 {
+        for row, _ := range row_M {
+          for i := 0; i < width; i++ {
+            matrix[row][i] = 0
+          }
+        }
+      }
+
+      if len(col_M) > 0 {
+        for col, _ := range col_M {
+          for i := 0; i < length; i++ {
+            matrix[i][col] = 0
+          }
+        }
+      }
+
+      return
+    }
+  #+END_SRC
+* unique paths
+  :PROPERTIES:
+  :ID:       1b34fd51-e1d2-4439-9499-e9616e1ab91d
+  :END:
+  #+BEGIN_SRC go
+    func uniquePaths(m int, n int) int {
+      if m < 2 {
+        return m
+      }
+
+      matrix := make([][]int, 2)
+      matrix[0] = make([]int, n)
+      matrix[1] = make([]int, n)
+      for i := 0; i < n; i++ {
+        matrix[0][i] = 1
+      }
+      matrix[1][0] = 1
+
+      pre_row := matrix[0]
+      curr_row := matrix[1]
+      for i := 1; i < m; i++ {
+        for j := 1; j < n; j++ {
+          curr_row[j] = curr_row[j-1] + pre_row[j]
+        }
+        pre_row, curr_row = curr_row, pre_row
+      }
+
+      return pre_row[n-1]
+    }
+  #+END_SRC
+* unique paths II
+  :PROPERTIES:
+  :ID:       ff13a976-fca6-4df2-aee9-d7d9190e4d13
+  :END:
+  #+BEGIN_SRC go
+    func uniquePathsWithObstacles(obstacleGrid [][]int) int {
+      m := len(obstacleGrid)
+      if m < 1 {
+        return 0
+      }
+      n := len(obstacleGrid[0])
+      if n < 1 {
+        return 0
+      }
+      if obstacleGrid[0][0] == 1 {
+        return 0
+      }
+
+      matrix := make([][]int, 2)
+      matrix[0] = make([]int, n)
+      matrix[1] = make([]int, n)
+      for i := 0; i < n; i++ {
+        if obstacleGrid[0][i] == 1 {
+          break
+        }
+        matrix[0][i] = 1
+      }
+      if m > 1 && obstacleGrid[1][0] == 0 {
+        matrix[1][0] = 1
+      }
+
+      pre_row := matrix[0]
+      curr_row := matrix[1]
+      for i := 1; i < m; i++ {
+        for j := 0; j < n; j++ {
+          if obstacleGrid[i][j] == 0 {
+            if j > 0 {
+              curr_row[j] = curr_row[j-1] + pre_row[j]
+            } else {
+              curr_row[j] = pre_row[j]
+            }
+          } else {
+            curr_row[j] = 0
+          }
+        }
+        pre_row, curr_row = curr_row, pre_row
+      }
+
+      return pre_row[n-1]
+    }
+  #+END_SRC
+* spiral matrix
+  :PROPERTIES:
+  :ID:       c2be23dd-adb0-4b83-9184-58dc843a0a72
+  :END:
+  #+BEGIN_SRC go
+    func spiralOrder(matrix [][]int) []int {
+      m := len(matrix)
+      if m < 1 {
+        return []int{}
+      }
+      n := len(matrix[0])
+      row_start := 0
+      row_end := m
+      col_start := 0
+      col_end := n
+      so_arr := make([]int, 0, m*n)
+      for {
+        for i := col_start; i < col_end; i++ {
+          so_arr = append(so_arr, matrix[row_start][i])
+        }
+        row_start += 1
+        if row_start == row_end {
+          break
+        }
+
+        for i := row_start; i < row_end; i++ {
+          so_arr = append(so_arr, matrix[i][col_end-1])
+        }
+        col_end -= 1
+        if col_start == col_end {
+          break
+        }
+
+        for i := col_end - 1; i >= col_start; i-- {
+          so_arr = append(so_arr, matrix[row_end-1][i])
+        }
+        row_end -= 1
+        if row_start == row_end {
+          break
+        }
+
+        for i := row_end - 1; i >= row_start; i-- {
+          so_arr = append(so_arr, matrix[i][col_start])
+        }
+        col_start += 1
+        if col_start == col_end {
+          break
+        }
+      }
+
+      return so_arr
+    }
+  #+END_SRC
+* spiral matrix II
+  :PROPERTIES:
+  :ID:       32644016-6137-4694-82ab-d041d47f9c7d
+  :END:
+  #+BEGIN_SRC go
+    func generateMatrix(n int) [][]int {
+      if n == 0 {
+        return [][]int{}
+      }
+
+      matrix := make([][]int, n)
+      for i := 0; i < n; i++ {
+        matrix[i] = make([]int, n)
+      }
+      row_start := 0
+      row_end := n
+      col_start := 0
+      col_end := n
+      num := 1
+      for {
+        for i := col_start; i < col_end; i++ {
+          matrix[row_start][i] = num
+          num += 1
+        }
+        row_start += 1
+        if row_start == row_end {
+          break
+        }
+
+        for i := row_start; i < row_end; i++ {
+          matrix[i][col_end-1] = num
+          num += 1
+        }
+        col_end -= 1
+        if col_start == col_end {
+          break
+        }
+
+        for i := col_end - 1; i >= col_start; i-- {
+          matrix[row_end-1][i] = num
+          num += 1
+        }
+        row_end -= 1
+        if row_start == row_end {
+          break
+        }
+
+        for i := row_end - 1; i >= row_start; i-- {
+          matrix[i][col_start] = num
+          num += 1
+        }
+        col_start += 1
+        if col_start == col_end {
+          break
+        }
+      }
+      return matrix
+    }
+  #+END_SRC
+* merge intervals
+  :PROPERTIES:
+  :ID:       9970d21a-0c12-42c9-8594-b0b5b5db0f53
+  :END:
+  #+BEGIN_SRC go
+    func merge(intervals []Interval) []Interval {
+      size := len(intervals)
+      if size < 2 {
+        return intervals
+      }
+
+      sort.Slice(intervals,
+        func(i, j int) bool {
+          return intervals[i].Start < intervals[j].Start
+        })
+
+      merge_intervals := make([]Interval, 0)
+      interval := intervals[0]
+      for i := 1; i < size; i++ {
+        if interval.End >= intervals[i].Start {
+          if interval.End < intervals[i].End {
+            interval.End = intervals[i].End
+          }
+        } else {
+          merge_intervals = append(merge_intervals, interval)
+          interval = intervals[i]
+        }
+      }
+      if interval.Start != intervals[0].Start {
+        merge_intervals = append(merge_intervals, interval)
+      }
+      if len(merge_intervals) < 1 {
+        merge_intervals = append(merge_intervals, interval)
+      }
+
+      return merge_intervals
+    }
+  #+END_SRC
+* jump game
+  :PROPERTIES:
+  :ID:       c65ca6ba-643c-4ff1-9356-4f76dab393ee
+  :END:
+  #+BEGIN_SRC c++
+    class Solution {
+    public:
+      bool canJump(vector<int>& nums) {
+        if (nums.size() < 2) {
+          return true;
+        }
+
+        if (nums[0]==0) {
+          return false;
+        }
+
+        deque<int> position_deq;
+        set<int> position_set;
+        position_deq.push_back(0);
+        position_set.insert(0);
+        while (position_deq.size()>0) {
+          int position = position_deq.front();
+          position_deq.pop_front();
+          if (nums[position] > 0) {
+            for (int i = 1; i <= nums[position]; i++) {
+              int new_position = position +i;
+              if (new_position == nums.size()-1) {
+                return true;
+              }
+
+              if (nums[new_position]>0 &&
+                  position_set.find(new_position) != position_set.end()) {
+                position_deq.push_back(new_position);
+              }
+            }
+          }
+        }
+
+        return false;
+      }
+    };
+  #+END_SRC
+
+  #+BEGIN_SRC go
+    func canJump(nums []int) bool {
+      size := len(nums)
+      var i, reach int
+      for ; i < size && i <= reach; i++ {
+        if i+nums[i] > reach {
+          reach = i + nums[i]
+        }
+      }
+      return i == size
+    }
+  #+END_SRC
+* search for a range
+  :PROPERTIES:
+  :ID:       acea46fd-e76f-4827-a106-142064ee678e
+  :END:
+  #+BEGIN_SRC go
+    func searchRange(nums []int, target int) []int {
+      target_index := binary_search(nums, target)
+      if target_index == -1 {
+        return []int{-1, -1}
+      }
+
+      start_index := target_index
+      for {
+        s_index := binary_search(nums[:start_index], target)
+        if s_index == -1 {
+          break
+        }
+        start_index = s_index
+      }
+
+      end_index := target_index
+      for {
+        e_index := binary_search(nums[end_index+1:], target)
+        if e_index == -1 {
+          break
+        }
+        end_index += 1 + e_index
+      }
+
+      return []int{start_index, end_index}
+    }
+
+    func binary_search(nums []int, target int) int {
+      start, end := 0, len(nums)-1
+      for start <= end {
+        mid := start + (end-start)/2
+        if nums[mid] > target {
+          end = mid - 1
+        } else if nums[mid] < target {
+          start = mid + 1
+        } else {
+          return mid
+        }
+      }
+
+      return -1
+    }
+  #+END_SRC
+* rotate image
+  :PROPERTIES:
+  :ID:       a4ca5347-1970-4b97-8c06-ffed8d7b5b86
+  :END:
+  #+BEGIN_SRC go
+    func rotate(matrix [][]int) {
+      if len(matrix) < 2 {
+        return
+      }
+
+      size := len(matrix)
+      for i := 0; i < size-1; i++ {
+        var tmp int
+        matrix[i][size-1], tmp = matrix[0][i], matrix[i][size-1]
+        matrix[size-1][size-i-1], tmp = tmp, matrix[size-1][size-i-1]
+        matrix[size-i-1][0], tmp = tmp, matrix[size-i-1][0]
+        matrix[0][i] = tmp
+      }
+
+      if size-2 > 0 {
+        sub_matrix := make([][]int, 0, size-2)
+        for i := 1; i < size-1; i++ {
+          sub_matrix = append(sub_matrix, matrix[i][1:size-1])
+        }
+        rotate(sub_matrix)
+      }
+      return
+    }
+  #+END_SRC
+* valid triangle number
+  :PROPERTIES:
+  :ID:       860aecd0-4b89-475e-8af6-6b1e5bc782ed
+  :END:
+  #+BEGIN_SRC go
+    func triangleNumber(nums []int) int {
+      if len(nums) < 3 {
+        return 0
+      }
+      sort.Ints(nums)
+      size := len(nums)
+
+      var count int
+      for i := 0; i < size-2; i++ {
+        for j := i + 1; j < size-1; j++ {
+          for k := j + 1; k < size; k++ {
+            if nums[i]+nums[j] <= nums[k] {
+              break
+            }
+            count++
+          }
+        }
+      }
+
+      return count
+    }
+  #+END_SRC
+* TODO task scheduler
+  :PROPERTIES:
+  :ID:       e1f076a6-94de-4e75-9531-79fac8113fa6
+  :END:
+  #+BEGIN_SRC go
+    func leastInterval(tasks []byte, n int) int {
+    }
+  #+END_SRC
+* DONE word search
+  CLOSED: [2017-07-24 Mon 00:27]
+  :PROPERTIES:
+  :ID:       8e1a9bca-15d4-4066-8f44-1b59059412a1
+  :END:
+  - State "DONE"       from "TODO"       [2017-07-24 Mon 00:27]
+  #+BEGIN_SRC c++
+    struct Coord {
+      int x;
+      int y;
+      char letter;
+      int seq_num;
+      int dir;
+    };
+
+    struct CoordComp {
+      bool operator() (const Coord& lhs, const Coord& rhs) const {
+        if (lhs.x<rhs.x) {
+          return true;
+        } else if (lhs.x>rhs.x) {
+          return false;
+        } else {
+          return lhs.y<rhs.y;
+        }
+      }
+    };
+
+    class Solution {
+    public:
+      bool exist(vector<vector<char>>& board, string word) {
+        for (int i=0; i < board.size(); i++) {
+          for (int j=0; j < board[i].size(); j++) {
+            if (board[i][j]==word[0]) {
+              Coord coord={i,j,word[0],0,0};
+              stack<Coord> coord_stk;
+              set<Coord,CoordComp> coord_set;
+              coord_stk.push(coord);
+              coord_set.insert(coord);
+              while (coord_stk.size()>0) {
+                Coord coord = coord_stk.top();
+                if (coord.seq_num == word.size()-1) {
+                  return true;
+                }
+                coord_stk.pop();
+                coord_set.erase(coord);
+                int x, y;
+                x = coord.x;
+                y = coord.y;
+                for (int dir=coord.dir; dir<4; dir++) {
+                  if (dir == 0 && y > 0 && board[x][y-1]==word[coord.seq_num+1]) {
+                    coord.dir = 1;
+                    coord_stk.push(coord);
+                    coord_set.insert(coord);
+                    Coord next_coord={x,y-1,word[coord.seq_num+1],coord.seq_num+1,0};
+                    if (coord_set.find(next_coord) == coord_set.end()) {
+                      coord_stk.push(next_coord);
+                      coord_set.insert(next_coord);
+                    }
+                    break;
+                  }
+
+                  if (dir == 1 && x > 0 && board[x-1][y]==word[coord.seq_num+1]) {
+                    coord.dir = 2;
+                    coord_stk.push(coord);
+                    coord_set.insert(coord);
+                    Coord next_coord={x-1,y,word[coord.seq_num+1],coord.seq_num+1,0};
+                    if (coord_set.find(next_coord) == coord_set.end()) {
+                      coord_stk.push(next_coord);
+                      coord_set.insert(next_coord);
+                    }
+                    break;
+                  }
+
+                  if (dir == 2
+                      && y < board[x].size()-1
+                      && board[x][y+1]==word[coord.seq_num+1]) {
+                    coord.dir = 3;
+                    coord_stk.push(coord);
+                    coord_set.insert(coord);
+                    Coord next_coord={x,y+1,word[coord.seq_num+1],coord.seq_num+1,0};
+                    if (coord_set.find(next_coord) == coord_set.end()) {
+                      coord_stk.push(next_coord);
+                      coord_set.insert(next_coord);
+                    }
+                    break;
+                  }
+
+                  if (dir == 3
+                      && x < board.size()-1
+                      && board[x+1][y]==word[coord.seq_num+1]) {
+                    coord.dir = 4;
+                    coord_stk.push(coord);
+                    coord_set.insert(coord);
+                    Coord next_coord={x+1,y,word[coord.seq_num+1],coord.seq_num+1,0};
+                    if (coord_set.find(next_coord) == coord_set.end()) {
+                      coord_stk.push(next_coord);
+                      coord_set.insert(next_coord);
+                    }
+                    break;
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        return false;
+      }
+    };
+  #+END_SRC
+* TODO next permutation
+  :PROPERTIES:
+  :ID:       3c9fd5f8-caee-494b-9c68-4cd95da3603d
+  :END:
+  #+BEGIN_SRC go
+    func nextPermutation(nums []int)  {
+
+    }
+  #+END_SRC
+* TODO 4sum
+  :PROPERTIES:
+  :ID:       61db87e7-b342-4fda-89f4-b38fffe91cb7
+  :END:
+  #+BEGIN_SRC go
+    func fourSum(nums []int, target int) [][]int {
+    }
+  #+END_SRC
+* TODO 3sum closest
+  :PROPERTIES:
+  :ID:       bbc65872-21e9-4af2-8502-34392f0fcc14
+  :END:
+  #+BEGIN_SRC go
+    func threeSumClosest(nums []int, target int) int {
+
+    }
+  #+END_SRC
+* TODO 3sum
+  :PROPERTIES:
+  :ID:       406bfb92-c083-4822-b269-6226bc252df1
+  :END:
+  #+BEGIN_SRC go
+    func threeSum(nums []int) [][]int {
+    }
+  #+END_SRC

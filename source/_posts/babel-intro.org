@@ -14,6 +14,7 @@
 * 序言
   :PROPERTIES:
   :CUSTOM_ID: introduction
+  :ID:       bee7e406-bb22-498e-a068-f0402cde93d0
   :END:
   *Bable* 可让许多不同的语言工作一起。
   编程语言生活在自然语言的 =Org-mode= 文档的代码块之中。
@@ -34,6 +35,9 @@
   #+END_EXPORT
 
 * 概述
+  :PROPERTIES:
+  :ID:       108e87f7-8457-4e8f-bf8d-daaf10f80462
+  :END:
   *Babel* 在几个不同的方面提供了新的功能，不同的人可能想在不同的地方开始。
 
   - 在 =Org-mode= 中使用代码块 ::
@@ -54,6 +58,7 @@
   :PROPERTIES:
   :CUSTOM_ID: getting-started
   :results:  silent
+  :ID:       ea65f564-0fc1-45ec-9f01-91125d57560a
   :END:
   #+BEGIN_QUOTE
   If you have a working Emacs installation, then getting started with
@@ -78,10 +83,12 @@
 * 代码块
     :PROPERTIES:
     :CUSTOM_ID: source-code-blocks
+    :ID:       93f23ca9-fef1-4ebe-ae1f-3d68fddd9ea6
     :END:
 ** 代码块在 =Org-mode= 中
     :PROPERTIES:
     :CUSTOM_ID: source-code-blocks-org
+    :ID:       63128e9d-e315-491b-b4eb-cd15aec54a69
     :END:
     *Babel* 是关于 =Org-mode= 中代码块的。 如果还不熟悉 =Org-mode= 中的代码块的概念，请在继续之前查看 [[http://orgmode.org/manual/Literal-examples.html][Org-mode手册的相关章节]]。
 
@@ -107,6 +114,7 @@
 ** 代码块在 =Babel= 中
     :PROPERTIES:
     :CUSTOM_ID: source-code-blocks-babel
+    :ID:       780f1b68-48ce-4786-88b9-10b1a1b10234
     :END:
     *Babel* 向代码块添加了一些新的元素。 基本结构变成了:
 
@@ -125,13 +133,20 @@
 * 源代码执行
     :PROPERTIES:
     :CUSTOM_ID: source-code-execution
+    :ID:       633c29ed-bc53-4bf2-8c22-fca5847eddf0
     :END:
     *Babel* 通过将代码传递给解释器来执行解释语言（如shell，python，R等）的代码块。 在执行结果上可以做进一步的操作，如果你想的话。
 
 ** 示例
+   :PROPERTIES:
+   :ID:       cbc64bd5-950a-4d6d-a659-8acedede1e8d
+   :END:
    以下是三种不同语言的代码块，其后是其输出。
    如果正在Emacs中查看本文档的 =Org-mode= 版本，则把光标放置在块的任何位置，然后按 =C-c C-c= 执行代码[fn:1]（并随意更改它）。
 *** Ruby
+    :PROPERTIES:
+    :ID:       9ff0080c-2a4e-42de-bb80-f0ff0df537f3
+    :END:
     在 =Org-mode= 的文件中:
     : #+begin_src ruby
     : require 'date'
@@ -149,6 +164,9 @@
     : This file was last evaluated on 2017-04-05
 
 *** Shell
+    :PROPERTIES:
+    :ID:       342ff42e-dab6-4ecf-a0d1-fc0b922b5329
+    :END:
     在 =Org-mode= 的文件中:
     : #+begin_src sh
     :   echo "This file takes up `du -h babel-intro.org |sed 's/\([0-9k]*\)[ ]*babel-intro.org/\1/'`"
@@ -164,6 +182,9 @@
     : This file takes up 36K
 
 *** [[http://www.r-project.org/][R]]
+    :PROPERTIES:
+    :ID:       57448a04-6850-40ac-a1ca-1f7dedcd5942
+    :END:
     当前这个文件中最常用的词是？
     在 =Org-mode= 文件中:
     : #+begin_src R :colnames yes
@@ -183,6 +204,9 @@
     |        45 |          42 |       36 |   33 |      33 |    21 |   20 |   18 |    17 |   17 |
 
 *** [[http://ditaa.sourceforge.net/][ditaa]]
+    :PROPERTIES:
+    :ID:       d3053d37-0c93-41ab-946f-56c3407e1193
+    :END:
     在 =Org-mode= 文件中:
     : #+begin_src ditaa :file blue.png :cmdline -r
     : +---------+
@@ -209,14 +233,27 @@
     #+RESULTS:
     [[http://orgmode.org/worg/images/babel/blue.png]]
 
+*** js
+    :PROPERTIES:
+    :ID:       141de388-4141-4e02-ac15-9268a0480ca5
+    :END:
+    #+BEGIN_SRC js :results output
+      console.log('Hello, world');
+    #+END_SRC
+
+    #+RESULTS:
+    : Hello, world
+
 ** 捕获代码执行结果
    :PROPERTIES:
    :CUSTOM_ID: results
+   :ID:       c0705d07-4dd6-418b-bd6b-4aa9dd920a1e
    :END:
    *Babel* 提供了两种根本不同的模式来捕获代码执行的结果： /functional mode/ 和 /scripting mode/ 。 模式的选择可以通过配置 =:results= 头参数来指定。
 *** =:results value= (functional mode)
    :PROPERTIES:
    :CUSTOM_ID: results-value
+   :ID:       f5a3fb97-8add-4f5a-b5ed-c60507bf4b49
    :END:
    代码执行的结果是代码块中最后一个语句的值。
    在 /functional mode/ 下，代码块是具有返回值的函数。 一个代码块的返回值可以用作另一代码块的输入，即使是不同语言的输入。
@@ -239,6 +276,7 @@
 *** =:results output= (scripting mode)
    :PROPERTIES:
    :CUSTOM_ID: results-output
+   :ID:       c9b10b0a-2b42-41ab-a84d-4c6aeaba0047
    :END:
    在 /scripting mode/ 中，Babel捕获代码块的文本输出并将其放置在 =Org-mode= 的缓冲区中。
    它被称为 /scripting mode/ ，因为代码块包含一系列命令，并返回每个命令的输出。
@@ -261,6 +299,9 @@
    因为代码块不包含最后一个语句 =(2 + 2)= 的 =print()= 语句，所以结果中不会出现4。
 
 ** 基于会话的代码块
+   :PROPERTIES:
+   :ID:       245a812f-594f-4e6e-b795-92824297b5e3
+   :END:
    对于某些语言，例如Python，R，ruby和shell，可以在Emacs中运行一个不完备的交互式会话进程。
    这意味着创建了一个不同源代码块之间共享数据对象的持久化环境。
    *Babel* 支持使用 =:session= 头参数来 指定代码块运行于特定会话中。
@@ -280,6 +321,7 @@
 ** 代码块的入参
    :PROPERTIES:
    :CUSTOM_ID: arguments-to-source-code-blocks
+   :ID:       1a103aeb-0eea-4e60-b882-346604ff4537
    :END:
    *Babel* 支持代码块的参数化，即可以将参数传递给代码块，从而使它们函数化。
    /functional mode/ 和 /scripting mode/ 都支持入参。
@@ -287,6 +329,7 @@
 *** 代码块作为函数的简单示例
     :PROPERTIES:
     :CUSTOM_ID: using-a-code-block-as-a-function
+    :ID:       479c571b-254e-403e-963e-a8185ce792d2
     :END:
     首先我们来看一个非常简单的例子。 以下源代码块使用Python定义了一个函数，求入参的平方。
 
@@ -315,6 +358,9 @@
     : 36
 
 *** =Org-mode= 表格作为入参的更复杂的示例
+    :PROPERTIES:
+    :ID:       192b07cb-0c73-4af0-a476-b40e86b822da
+    :END:
     在本例中，使用Emacs Lisp定义的一个名为 =fibonacci-seq= 的函数。
     函数 =fibonacci-seq= 计算斐波纳契序列。 该函数只需要一个参数，在当前情况下参数即为 =Org-mode= 表格的引用。
 
@@ -357,6 +403,9 @@
     | 1 | 3 | 8 | 21 | 55 | 144 | 377 | 987 | 2584 | 6765 |
 
 ** 内联(In-line)的代码块
+   :PROPERTIES:
+   :ID:       45f36f3c-0268-45ee-96cd-ea23cf4482d3
+   :END:
    可使用以下语法内联(In-line)的执行代码：
 
    : Without header args: src_lang{code} or with header args: src_lang[args]{code},
@@ -369,6 +418,9 @@
    执行结果： {{{results(=Hello World!=)}}}
 
 ** 代码块扩展
+   :PROPERTIES:
+   :ID:       f4809ee0-f691-4c33-853f-423fcd7c2571
+   :END:
    *Babel* 在执行之前“扩展”代码块，即，执行代码包括把引用的数据(或代码)填充到代码块内容里。
    可以预览展开的内容，还可以在 /tangling/ 期间展开代码。 扩展时，头参数和变量需要一并考虑进去。
 
@@ -407,6 +459,7 @@
 ** =Org-mode= 的元编程语言
   :PROPERTIES:
   :CUSTOM_ID: meta-programming-language
+  :ID:       db8adedd-db40-448a-ad61-700dc7fb7cff
   :END:
   因为用一种语言编写的函数的返回值可以被传递给另一种语言编写的函数，
   或者传递到本身就可程序化的 =Org-mode= 的表格中， 所以可将 *Babel* 用作元功能编程语言。
@@ -455,6 +508,7 @@
 * 在Org表格中使用代码块
   :PROPERTIES:
   :CUSTOM_ID: spreadsheet
+  :ID:       85379805-cddb-42bb-8bbf-21af4574b4b7
   :END:
   除了可将表格中的数据作为参数传递给代码块和结果存储为表格外， *Babel* 还有第三种方式使用 =Org-mode= 表格。
   =Org-mode= [[http://orgmode.org/manual/The-spreadsheet.html#The-spreadsheet][现有电子表格]] 功能允许使用 =＃+TBLFM= 从指定单元格值自动计算出其他单元格值。
@@ -463,7 +517,13 @@
   *Babel* 有效扩展了 =＃+TBLFM= 行使用代码块（以任何语言）进行必要计算的能力。
 
 ** 示例
+   :PROPERTIES:
+   :ID:       b2baa172-d9a5-4d81-a694-c4d92b67b0e6
+   :END:
 *** 示例 1: 使用R生成数据概要
+    :PROPERTIES:
+    :ID:       f37815fc-fabe-4906-a3d5-7cd6b812cb81
+    :END:
     将使用几个数字的平均值来填充 =Org-mode= 表中的一个单元格，来做简单示例。
     首先，要生成数据, 以下代码块生成0和1之间的五个随机数来填充了 =Org-mode= 表。
 
@@ -512,6 +572,9 @@
     重新计算表格公式，请在表格中使用 =C-u C-c C-c= 。 每次重新计算表格公式时，代码块都会再次计算，因此计算的平均值会发生变化。
 
 *** 示例 2: Babel 的测试套件
+    :PROPERTIES:
+    :ID:       e779ec57-c1f6-44dd-9a77-45497d7fa1ac
+    :END:
     #+BEGIN_QUOTE
     While developing Babel, we used a suite of tests implemented as a large Org-mode table.
     #+END_QUOTE
@@ -547,6 +610,9 @@
     #+TBLFM: $5='(if (= (length $3) 1) (org-sbe $2 (n $3)) (org-sbe $2)) :: $6='(if (string= $4 $5) "pass" (format "expected %S but was %S" $4 $5))
 
 **** 用于测试的代码块
+     :PROPERTIES:
+     :ID:       81e29d42-18c7-4545-b057-b77d97d2dc83
+     :END:
       =Org-mode= 文件中，如下所示：:
      : #+name: basic-elisp
      : #+begin_src emacs-lisp :var n=0
@@ -591,7 +657,7 @@
 
      HTML 导出代码，如下所示：:
      #+name: basic-ruby
-     #+begin_src ruby :results silent
+     #+begin_src ruby :results silent :session ruby
      "org-babel"
      #+end_src
 
@@ -624,6 +690,7 @@
 * Babel库文件
   :PROPERTIES:
   :CUSTOM_ID: library-of-babel
+  :ID:       1d60ae3e-72db-4ac5-a7e1-4a001d0fd930
   :END:
   (可参阅 [[http://orgmode.org/manual/Library-of-Babel.html#Library-of-Babel][Org manual:Library-of-Babel]])
 
@@ -652,6 +719,7 @@
 * 文学化编程
   :PROPERTIES:
   :CUSTOM_ID: literate-programming
+  :ID:       c327d292-1a89-4e27-9e42-81b63059e2bb
   :END:
   #+begin_quote
   Let us change our traditional attitude to the construction of
@@ -686,9 +754,13 @@
   以下示例演示了在 *Babel* 中 *tangling* 的过程。
 
 ** /tangling/ 的示例
+   :PROPERTIES:
+   :ID:       9e3da4eb-99b2-46f7-b47a-903fbb40b47a
+   :END:
 *** 简单文学编程示例 (Noweb syntax)
     :PROPERTIES:
     :CUSTOM_ID: literate-programming-example
+    :ID:       b2c57a71-abe0-402e-a475-3999f8d0f04e
     :END:
     #+BEGIN_QUOTE
     Tangling functionality is controlled by the =tangle= family of tangle
@@ -764,6 +836,7 @@
 *** 用Bable初始化Emacs
     :PROPERTIES:
     :CUSTOM_ID: emacs-initialization
+    :ID:       d338dd50-4694-45d7-a74d-09355b195235
     :END:
 
     #+attr_html: style="float:left;"
@@ -783,6 +856,7 @@
 **** 优雅的Emacs初始化
      :PROPERTIES:
      :CUSTOM_ID: literate-emacs-init
+     :ID:       d757b79f-8afa-4a19-a6bc-5267fa6f886c
      :END:
      请按照以下5个步骤进行操作：
      1) 在主目录的内创建一个名为 =.emacs.d= 的目录;
@@ -833,6 +907,7 @@
 * 可重复性研究
   :PROPERTIES:
   :CUSTOM_ID: reproducable-research
+  :ID:       0b64ef01-c4c4-405d-8ed3-23dc6384d825
   :END:
   #+begin_quote
   An article about computational science in a scientific publication is
@@ -858,6 +933,9 @@
   - 文档可利用 =Org-mode=  强大的功能特性，支持项目规划和任务管理等。
 
 * Footnotes
+  :PROPERTIES:
+  :ID:       547dae0e-98e8-4c57-9922-aa1ab901dda7
+  :END:
 
 [fn:1] Calling =C-c C-o= on a code block will open the block's results in a separate buffer.
 

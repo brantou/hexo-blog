@@ -5,47 +5,55 @@
 #+CATEGORIES: 技术积累
 #+STARTUP: content
 
-* maxCount
-#+NAME: max-count
-#+BEGIN_SRC go
-  func maxCount(m int, n int, ops [][]int) int {
-    M := make([]([]int), 0,m)
-    for i := 0; i < m; i+=1 {
-      r := make([]int,n)
-      M = append(M, r)
-    }
-    var max int
-    var max_count int
-    for index, _ := range ops {
-      a, b := ops[index][0],ops[index][1]
-      fmt.Println(a,b)
-      rs := M[0:a]
-      for index, _ := range rs {
-        ris := rs[index]
-        for index, _ := range ris {
-          ri := ris[index]
-          if index == b {
-            break
-          }
-          ri +=1
-          ris[index]=ri
-          if ri > max {
-            max = ri
-            max_count = 0
-          }
-          if ri == max {
-            max_count +=1
-          }
-        }
-        rs[index] = ris
-      }
-    }
-    return max_count
-  }
-#+END_SRC
+  /LeetCode/ 编程训练的积累，目前在努力做题中，日后整理！
+  #+BEGIN_EXPORT html
+  <!-- more -->
+  #+END_EXPORT
 
-#+NAME: max-count-smp
-#+BEGIN_SRC go
+* maxCount
+  :PROPERTIES:
+  :ID:       9b1b242f-d391-4e42-97cd-37c186533dbf
+  :END:
+  #+NAME: max-count
+  #+BEGIN_SRC go
+    func maxCount(m int, n int, ops [][]int) int {
+      M := make([]([]int), 0,m)
+      for i := 0; i < m; i+=1 {
+        r := make([]int,n)
+        M = append(M, r)
+      }
+      var max int
+      var max_count int
+      for index, _ := range ops {
+        a, b := ops[index][0],ops[index][1]
+        fmt.Println(a,b)
+        rs := M[0:a]
+        for index, _ := range rs {
+          ris := rs[index]
+          for index, _ := range ris {
+            ri := ris[index]
+            if index == b {
+              break
+            }
+            ri +=1
+            ris[index]=ri
+            if ri > max {
+              max = ri
+              max_count = 0
+            }
+            if ri == max {
+              max_count +=1
+            }
+          }
+          rs[index] = ris
+        }
+      }
+      return max_count
+    }
+  #+END_SRC
+
+  #+NAME: max-count-smp
+  #+BEGIN_SRC go
   func maxCount(m int, n int, ops [][]int) int {
     m_r, m_c := m, n
     for _, op := range ops {
@@ -60,151 +68,22 @@
     }
     return m_r * m_c
   }
-#+END_SRC
+  #+END_SRC
 
-#+BEGIN_SRC go :imports '("fmt") :noweb strip-export
+  #+BEGIN_SRC go :imports '("fmt") :noweb strip-export
   <<max-count-smp>>
   func main() {
       fmt.Println(maxCount(3,3, [][]int{[]int{2,2},[]int{3,3}}))
   }
-#+END_SRC
+  #+END_SRC
 
-#+RESULTS:
-: 4
-
-* twoSum
-#+BEGIN_SRC go
-func twoSum(nums []int, target int) []int {
-    indices := make([]int, 0)
-    for i := 0; i < len(nums); i += 1 {
-        fir := nums[i]
-        for j := i+1; j < len(nums); j +=1 {
-            secd := nums[j]
-            if fir + secd == target {
-                indices = append(indices, i)
-                indices = append(indices, j)
-                break
-            }
-        }
-    }
-    return indices
-}
-#+END_SRC
-
-#+NAME: add-two-number
-#+BEGIN_SRC go
-  /**
-   ,* Definition for singly-linked list.
-   ,* type ListNode struct {
-   ,*     Val int
-   ,*     Next *ListNode
-   ,* }
-   ,*/
-  func addTwoNumbers(l1 *ListNode, l2 *ListNode) *ListNode {
-    var carry int
-    var sum_head, sum_curr *ListNode
-    for {
-      if l1 == nil && l2 == nil {
-        if carry > 0 {
-          sum_node := &ListNode{
-            Val:  carry,
-            Next: nil,
-          }
-          if sum_head != nil {
-            sum_curr.Next = sum_node
-            sum_curr = sum_node
-          } else {
-            sum_head = sum_node
-            sum_curr = sum_node
-          }
-        }
-        break
-      }
-
-      var sum int
-      if l1 != nil && l2 != nil {
-        sum = l1.Val + l2.Val + carry
-        l1, l2 = l1.Next, l2.Next
-      } else if l2 == nil {
-        sum = l1.Val + carry
-        l1 = l1.Next
-      } else if l1 == nil {
-        sum = l2.Val + carry
-        l2 = l2.Next
-      }
-
-      if sum > 9 {
-        carry = 1
-        sum -= 10
-      } else {
-        carry = 0
-      }
-
-      sum_node := &ListNode{
-        Val:  sum,
-        Next: nil,
-      }
-      if sum_head != nil {
-        sum_curr.Next = sum_node
-        sum_curr = sum_node
-      } else {
-        sum_head = sum_node
-        sum_curr = sum_node
-      }
-    }
-    return sum_head
-  }
-#+END_SRC
-
-#+BEGIN_SRC go :imports '("fmt" "strings") :noweb strip-export
-  type ListNode struct {
-    Val int
-    Next *ListNode
-  }
-
-  <<add-two-number>>
-
-  func make_list(vals []int) *ListNode{
-    var lst, lst_c *ListNode
-    for _, val := range vals {
-      node := &ListNode{
-        Val: val,
-        Next: nil,
-      }
-      if lst != nil {
-        lst_c.Next = node
-        lst_c = node
-      } else {
-        lst = node
-        lst_c = node
-      }
-    }
-    return lst
-  }
-
-  func print_list(lst *ListNode) {
-    var str string
-    for {
-      if lst == nil {
-        break
-      }
-      str += fmt.Sprintf("%d,", lst.Val)
-      lst = lst.Next
-    }
-    str = strings.Trim(str, ",")
-    fmt.Printf("[%s]", str)
-  }
-
-  func main() {
-    l1 := make_list([]int{2,4,3})
-    l2 := make_list([]int{5,6,4})
-    sum_lst := addTwoNumbers(l1,l2)
-    print_list(sum_lst)
-  }
-
-#+END_SRC
+  #+RESULTS:
+  : 4
 
 * lengthOfLongestSubstring
+  :PROPERTIES:
+  :ID:       b3c790ed-cabd-4916-93b0-bb67e7559852
+  :END:
 #+NAME: longest-sub-str
 #+BEGIN_SRC go
   func lengthOfLongestSubstring(s string) int {
@@ -246,6 +125,9 @@ func twoSum(nums []int, target int) []int {
 : 3
 
 * findMedianSortedArrays
+  :PROPERTIES:
+  :ID:       e9a9a0bd-79f4-49e2-8fdf-3e4051bd304e
+  :END:
 #+NAME: find-median-sorted-arr
 #+BEGIN_SRC go
   func findMedianSortedArrays(nums1 []int, nums2 []int) float64 {
@@ -309,6 +191,9 @@ func twoSum(nums []int, target int) []int {
 : 5
 
 * findMin
+  :PROPERTIES:
+  :ID:       fd1eab89-a9ba-4ec4-b025-2d621ed67a95
+  :END:
 #+BEGIN_SRC go
   func findMin(nums []int) int {
     if len(nums) < 1 {
@@ -347,6 +232,9 @@ func twoSum(nums []int, target int) []int {
 #+END_SRC
 
 * findDiagonalOrder
+  :PROPERTIES:
+  :ID:       a5b26f2a-0380-4fa6-b520-5798c7965ad9
+  :END:
 #+BEGIN_SRC go
   func findDiagonalOrder(matrix [][]int) []int {
     rst_arr := make([]int, 0)
@@ -412,6 +300,9 @@ func twoSum(nums []int, target int) []int {
 #+END_SRC
 
 * thirdMax
+  :PROPERTIES:
+  :ID:       73922e93-05b4-4f85-84ee-46dd3aa53c32
+  :END:
 #+NAME: third-max
 #+BEGIN_SRC go
   func parent(i int) int {
@@ -515,7 +406,13 @@ func twoSum(nums []int, target int) []int {
 : 4
 
 * combinationSum
+  :PROPERTIES:
+  :ID:       ccffae10-c143-45a3-978d-93250f1561f5
+  :END:
 ** combinationSum
+   :PROPERTIES:
+   :ID:       ee8098fb-3479-4f62-bae8-4bbde43a8c5f
+   :END:
 #+NAME: combin-sum
 #+BEGIN_SRC go
   type PreCombin struct {
@@ -647,6 +544,9 @@ func twoSum(nums []int, target int) []int {
 : [[2 2 3] [7]]
 
 ** combinationSum2
+   :PROPERTIES:
+   :ID:       68a29d63-8ec4-4317-b132-f18daf0f4df9
+   :END:
 #+NAME: combin-sum-2
 #+BEGIN_SRC go
   type PreCombin struct {
@@ -762,6 +662,9 @@ func twoSum(nums []int, target int) []int {
 : [[3 5] [1 1 3 3] [1 1 1 5]]
 
 ** combinationSum3
+   :PROPERTIES:
+   :ID:       32c7b111-4957-46ee-8004-4744610e9b7b
+   :END:
    #+NAME: combin-sum-3
    #+BEGIN_SRC go
      type PreCombin struct {
@@ -880,7 +783,13 @@ func twoSum(nums []int, target int) []int {
     #+END_SRC
 
 ** combinationSum4
+   :PROPERTIES:
+   :ID:       508c0650-b862-443c-8133-a208106f80b1
+   :END:
 *** V1
+    :PROPERTIES:
+    :ID:       31ada6cc-1e8b-42bd-8bac-3010f78b96fc
+    :END:
 #+NAME: combin-sum-4v1
 #+BEGIN_SRC go
   type PreCombin struct {
@@ -1037,6 +946,9 @@ func twoSum(nums []int, target int) []int {
   }
 #+END_SRC
 *** V2
+    :PROPERTIES:
+    :ID:       aed8a550-4f8a-4589-844b-650785649b11
+    :END:
 #+NAME: combin-sum-4v2
 #+BEGIN_SRC go
   func permut_num(num_M map[int]int) int {
@@ -1159,6 +1071,9 @@ func twoSum(nums []int, target int) []int {
 #+END_SRC
 
 *** V3
+    :PROPERTIES:
+    :ID:       76410893-d941-4d45-b5e2-699f9f7f30ce
+    :END:
     动态规划解法
     #+BEGIN_QUOTE
     - dp[i] += dp[i-num]
@@ -1191,6 +1106,9 @@ func twoSum(nums []int, target int) []int {
     #+END_SRC
 
 * combine
+  :PROPERTIES:
+  :ID:       cb405d02-85b3-43a1-b038-88b6514d2e4d
+  :END:
 #+NAME: combine
 #+BEGIN_SRC go
   func combine(n int, k int) [][]int {
@@ -1234,7 +1152,13 @@ func twoSum(nums []int, target int) []int {
 : [[1 2] [1 3] [1 4] [2 3] [2 4] [3 4]]
 
 * pathSum
+  :PROPERTIES:
+  :ID:       bd707923-45c0-4a71-bbe5-6984745418a1
+  :END:
 ** hasPathSum
+   :PROPERTIES:
+   :ID:       1e7a0c31-b352-4497-9c4b-852a5c68839d
+   :END:
    #+NAME: has-path-sum
    #+BEGIN_SRC go
      type TreeNode struct {
@@ -1304,6 +1228,9 @@ func twoSum(nums []int, target int) []int {
    : true
 
 ** pathSum
+   :PROPERTIES:
+   :ID:       e7293432-dffd-4385-88f5-7ea80dc090a5
+   :END:
   #+NAME: path-sum
   #+BEGIN_SRC go
     type TreeNode struct {
@@ -1396,6 +1323,9 @@ func twoSum(nums []int, target int) []int {
   #+END_SRC
 
 ** number of path
+   :PROPERTIES:
+   :ID:       5c24ea93-56b6-4352-8e56-8e8852dbf9ce
+   :END:
    #+NAME: path-sum-number
    #+BEGIN_SRC go
      type TreeNode struct {
@@ -1466,6 +1396,9 @@ func twoSum(nums []int, target int) []int {
    #+RESULTS:
    : 3
 ** min path sum
+   :PROPERTIES:
+   :ID:       c79678d7-7b3d-483d-9f76-4c728f429693
+   :END:
    #+NAME: min-path-sum
    #+BEGIN_SRC  go
      func minPathSum(grid [][]int) int {
@@ -1519,6 +1452,9 @@ func twoSum(nums []int, target int) []int {
    #+RESULTS:
    : 7
 ** binary-tree maximum path sum
+   :PROPERTIES:
+   :ID:       7cca56da-3dab-4258-864c-78990e2840ea
+   :END:
    #+NAME: max-path-sum
    #+BEGIN_SRC go
      type TreeNode struct {
@@ -1614,6 +1550,9 @@ func twoSum(nums []int, target int) []int {
    #+RESULTS:
    : 3
 ** sum root to leaf numbers
+   :PROPERTIES:
+   :ID:       477baf81-ee8a-4cc8-a58f-afefb4aa693c
+   :END:
    #+NAME: sum-numbers
    #+BEGIN_SRC go
      type TreeNode struct {
@@ -1679,6 +1618,9 @@ func twoSum(nums []int, target int) []int {
 
    #+END_SRC
 * poor pigs
+  :PROPERTIES:
+  :ID:       1c457aea-d9d4-435f-a22c-f237315ffed7
+  :END:
   #+BEGIN_SRC go
     func poorPigs(buckets int, minutesToDie int, minutesToTest int) int {
       time := minutesToTest/minutesToDie + 1
@@ -1694,1764 +1636,3 @@ func twoSum(nums []int, target int) []int {
       return res
     }
   #+END_SRC
-* binary tree traversal
-** level order
-  #+NAME: bt-level-order
-  #+BEGIN_SRC go
-    type TreeNode struct {
-      Val   int
-      Left  *TreeNode
-      Right *TreeNode
-    }
-
-    func levelOrder(root *TreeNode) [][]int {
-      if root == nil {
-        return [][]int{}
-      }
-
-      lo_arr := [][]int{
-        []int{root.Val},
-      }
-
-      llo_arr := levelOrder(root.Left)
-      rlo_arr := levelOrder(root.Right)
-
-      if len(llo_arr) > 0 || len(rlo_arr) > 0 {
-        var index int
-        for {
-          if index < len(llo_arr) && index < len(rlo_arr) {
-            lo_arr = append(lo_arr, append(llo_arr[index], rlo_arr[index]...))
-          } else {
-            break
-          }
-          index += 1
-        }
-
-        if len(llo_arr) > index {
-          lo_arr = append(lo_arr, llo_arr[index:]...)
-        }
-
-        if len(rlo_arr) > index {
-          lo_arr = append(lo_arr, rlo_arr[index:]...)
-        }
-      }
-
-      return lo_arr
-    }
-  #+END_SRC
-
-  #+BEGIN_SRC go :imports "fmt" :noweb strip-export
-     <<bt-level-order>>
-     func main() {
-       root := &TreeNode{
-         Val: 1,
-         Left: &TreeNode{
-           Val: 2,
-         },
-         Right: &TreeNode{
-           Val: 3,
-         },
-       }
-
-       fmt.Println(levelOrder(root))
-       root.Left.Left = &TreeNode{Val:4}
-       root.Right.Right = &TreeNode{Val:5}
-       fmt.Println(levelOrder(root))
-     }
-
-   #+END_SRC
-
-   #+RESULTS:
-   : [[1] [2 3]]
-** level order bottom
-   #+NAME: bt-level-order-bottom
-   #+BEGIN_SRC go :noweb stip-export :main no
-     <<bt-level-order>>
-     func levelOrderBottom(root *TreeNode) [][]int {
-       lo_arr := levelOrder(root)
-       lob_arr := make([][]int, 0)
-       for index, _ := range lo_arr {
-         lob_arr = append([][]int{lo_arr[index]}, lob_arr...)
-       }
-
-       return lob_arr
-     }
-   #+END_SRC
-
-   #+BEGIN_SRC go :imports "fmt" :noweb strip-export
-     <<bt-level-order-bottom>>
-     func main() {
-       root := &TreeNode{
-         Val: 1,
-         Left: &TreeNode{
-           Val: 2,
-         },
-         Right: &TreeNode{
-           Val: 3,
-         },
-       }
-
-       fmt.Println(levelOrderBottom(root))
-       root.Left.Left = &TreeNode{Val:4}
-       root.Right.Right = &TreeNode{Val:5}
-       fmt.Println(levelOrderBottom(root))
-     }
-   #+END_SRC
-** zigzag level order
-  #+NAME: bt-zigzag-level-order
-  #+BEGIN_SRC go
-      <<bt-level-order>>
-      func zigzagLevelOrder(root *TreeNode) [][]int {
-      lo_arr := levelOrder(root)
-      zlo_arr := make([][]int, 0)
-      for index, _ := range lo_arr {
-        lo := lo_arr[index]
-        if index % 2 == 1 {
-          zlo := make([]int, 0)
-          for index, _ := range lo {
-            zlo = append([]int{lo[index]}, zlo...)
-          }
-          zlo_arr = append(zlo_arr, zlo)
-        } else {
-          zlo_arr = append(zlo_arr, lo)
-        }
-      }
-
-      return zlo_arr
-    }
-  #+END_SRC
-
-  #+BEGIN_SRC go :imports "fmt" :noweb strip-export
-     <<bt-zigzag-level-order>>
-     func main() {
-       root := &TreeNode{
-         Val: 1,
-         Left: &TreeNode{
-           Val: 2,
-         },
-         Right: &TreeNode{
-           Val: 3,
-         },
-       }
-
-       fmt.Println(zigzagLevelOrder(root))
-       root.Left.Left = &TreeNode{Val:4}
-       root.Right.Right = &TreeNode{Val:5}
-       fmt.Println(zigzagLevelOrder(root))
-     }
-
-   #+END_SRC
-
-   #+RESULTS:
-   : [[1] [3 2]]
-   : [[1] [3 2] [4 5]]
-** inOrder
-   #+NAME: bt-inorder-traver
-   #+BEGIN_SRC go
-     type TreeNode struct {
-       Val   int
-       Left  *TreeNode
-       Right *TreeNode
-     }
-
-     func inorderTraversal(root *TreeNode) []int {
-       if root == nil {
-         return []int{}
-       }
-
-       return append(
-         append(inorderTraversal(root.Left), root.Val),
-         inorderTraversal(root.Right)...)
-     }
-   #+END_SRC
-
-   #+BEGIN_SRC go :imports "fmt" :noweb strip-export
-     <<bt-inorder-traver>>
-     func main() {
-       root := &TreeNode{
-         Val: 1,
-         Left: &TreeNode{
-           Val: 2,
-         },
-         Right: &TreeNode{
-           Val: 3,
-         },
-       }
-
-       fmt.Println(inorderTraversal(root))
-       root.Left.Left = &TreeNode{Val:4}
-       root.Right.Right = &TreeNode{Val:5}
-       fmt.Println(inorderTraversal(root))
-     }
-   #+END_SRC
-** preOrder
-   #+NAME: bt-preorder-traver
-   #+BEGIN_SRC go
-     type TreeNode struct {
-       Val   int
-       Left  *TreeNode
-       Right *TreeNode
-     }
-
-     func preorderTraversal(root *TreeNode) []int {
-       if root == nil {
-         return []int{}
-       }
-
-       return append(
-         append([]int{root.Val}, preorderTraversal(root.Left)...),
-         preorderTraversal(root.Right)...)
-     }
-   #+END_SRC
-
-   #+BEGIN_SRC go :imports "fmt" :noweb strip-export
-     <<bt-preorder-traver>>
-     func main() {
-       root := &TreeNode{
-         Val: 1,
-         Left: &TreeNode{
-           Val: 2,
-         },
-         Right: &TreeNode{
-           Val: 3,
-         },
-       }
-
-       fmt.Println(preorderTraversal(root))
-       root.Left.Left = &TreeNode{Val:4}
-       root.Right.Right = &TreeNode{Val:5}
-       fmt.Println(preorderTraversal(root))
-     }
-   #+END_SRC
-** postOrder
-   #+NAME: bt-postorder-traver
-   #+BEGIN_SRC go
-     type TreeNode struct {
-       Val   int
-       Left  *TreeNode
-       Right *TreeNode
-     }
-
-     func postorderTraversal(root *TreeNode) []int {
-       if root == nil {
-         return []int{}
-       }
-
-       return append(
-         append(postorderTraversal(root.Left), postorderTraversal(root.Right)...),
-         root.Val)
-     }
-   #+END_SRC
-
-   #+BEGIN_SRC go :imports "fmt" :noweb strip-export
-     <<bt-postorder-traver>>
-     func main() {
-       root := &TreeNode{
-         Val: 1,
-         Left: &TreeNode{
-           Val: 2,
-         },
-         Right: &TreeNode{
-           Val: 3,
-         },
-       }
-
-       fmt.Println(postorderTraversal(root))
-       root.Left.Left = &TreeNode{Val:4}
-       root.Right.Right = &TreeNode{Val:5}
-       fmt.Println(postorderTraversal(root))
-     }
-   #+END_SRC
-
-* binary tree
-  #+NAME: bt-node-def
-  #+BEGIN_SRC go
-    type TreeNode struct {
-      Val   int
-      Left  *TreeNode
-      Right *TreeNode
-    }
-  #+END_SRC
-** max depth
-   #+NAME: bt-max-depth
-   #+BEGIN_SRC go
-     type TreeNode struct {
-       Val   int
-       Left  *TreeNode
-       Right *TreeNode
-     }
-
-     func max(a, b int) int {
-       if a > b {
-         return a
-       } else {
-         return b
-       }
-     }
-
-     func maxDepth(root *TreeNode) int {
-       if root == nil {
-         return 0
-       }
-
-       return 1 + max(maxDepth(root.Left), maxDepth(root.Right))
-     }
-   #+END_SRC
-
-   #+BEGIN_SRC go :imports "fmt" :noweb strip-export
-     <<bt-max-depth>>
-     func main() {
-       root := &TreeNode{
-         Val: 1,
-         Left: &TreeNode{
-           Val: 2,
-         },
-         Right: &TreeNode{
-           Val: 3,
-         },
-       }
-
-       fmt.Println(maxDepth(root))
-       root.Left.Left = &TreeNode{Val:4}
-       root.Right.Right = &TreeNode{Val:5}
-       fmt.Println(maxDepth(root))
-     }
-   #+END_SRC
-** paths
-   #+NAME: bt-paths
-   #+BEGIN_SRC go
-     type TreeNode struct {
-       Val   int
-       Left  *TreeNode
-       Right *TreeNode
-     }
-
-     func binaryTreePaths(root *TreeNode) []string {
-       if root == nil {
-         return []string{}
-       }
-
-       str := fmt.Sprintf("%d", root.Val)
-       if root.Left == nil && root.Right == nil {
-         return []string{str}
-       }
-
-       paths := append(
-         binaryTreePaths(root.Left),
-         binaryTreePaths(root.Right)...,
-       )
-       for index, path := range paths {
-         paths[index] = str + "->" + path
-       }
-
-       return paths
-     }
-   #+END_SRC
-
-   #+BEGIN_SRC go :imports "fmt" :noweb strip-export
-     <<bt-paths>>
-     func main() {
-       root := &TreeNode{
-         Val: 1,
-         Left: &TreeNode{
-           Val: 2,
-         },
-         Right: &TreeNode{
-           Val: 3,
-         },
-       }
-
-       fmt.Println(binaryTreePaths(root))
-       root.Left.Left = &TreeNode{Val:4}
-       root.Right.Right = &TreeNode{Val:5}
-       fmt.Println(binaryTreePaths(root))
-     }
-   #+END_SRC
-** isBalanced
-   #+NAME: bt-is-balanced
-   #+BEGIN_SRC go
-     <<bt-max-depth>>
-     func isBalanced(root *TreeNode) bool {
-       if root == nil {
-         return true
-       }
-
-       ldepth := maxDepth(root.Left)
-       rdepth := maxDepth(root.Right)
-       ddepth := ldepth - rdepth
-       if ddepth > 1 || ddepth < -1 {
-         return false
-       }
-
-       return isBalanced(root.Left) && isBalanced(root.Right)
-     }
-   #+END_SRC
-
-   #+BEGIN_SRC go :imports "fmt" :noweb strip-export
-     <<bt-is-balanced>>
-     func main() {
-       root := &TreeNode{
-         Val: 1,
-         Left: &TreeNode{
-           Val: 2,
-         },
-       }
-
-       fmt.Println(isBalanced(root))
-       root.Left.Left = &TreeNode{Val:4}
-       fmt.Println(isBalanced(root))
-     }
-   #+END_SRC
-
-   #+RESULTS:
-   : true
-   : true
-** invert
-   #+NAME: bt-invert
-   #+BEGIN_SRC go
-     type TreeNode struct {
-       Val   int
-       Left  *TreeNode
-       Right *TreeNode
-     }
-
-     func invertTree(root *TreeNode) *TreeNode {
-       if root == nil {
-         return nil
-       }
-
-       root.Left, root.Right = invertTree(root.Right), invertTree(root.Left)
-       return root
-     }
-   #+END_SRC
-
-   #+BEGIN_SRC go :imports "fmt" :noweb strip-export
-     <<bt-invert>>
-     func main() {
-       root := &TreeNode{
-         Val: 1,
-         Left: &TreeNode{
-           Val: 2,
-         },
-         Right: &TreeNode{
-           Val: 3,
-         },
-       }
-
-       fmt.Println(invertTree(root))
-       root.Left.Left = &TreeNode{Val:4}
-       root.Right.Right = &TreeNode{Val:5}
-       fmt.Println(invertTree(root))
-     }
-   #+END_SRC
-** tilt
-   #+NAME: bt-tilt
-   #+BEGIN_SRC go
-     type TreeNode struct {
-       Val   int
-       Left  *TreeNode
-       Right *TreeNode
-     }
-
-     func sumTree(root *TreeNode) int {
-       if root == nil {
-         return 0
-       }
-
-       return root.Val + sumTree(root.Left) + sumTree(root.Right)
-     }
-
-     func abs(num int) int {
-       if num < 0 {
-         return -num
-       } else {
-         return num
-       }
-     }
-
-     func findTilt(root *TreeNode) int {
-       if root == nil {
-         return 0
-       }
-
-       return abs(sumTree(root.Left)-sumTree(root.Right)) +
-         findTilt(root.Left) + findTilt(root.Right)
-     }
-   #+END_SRC
-
-   #+BEGIN_SRC go :imports "fmt" :noweb strip-export
-     <<bt-tilt>>
-     func main() {
-       root := &TreeNode{
-         Val: 1,
-         Left: &TreeNode{
-           Val: 2,
-         },
-         Right: &TreeNode{
-           Val: 3,
-         },
-       }
-
-       fmt.Println(findTilt(root))
-       root.Left.Left = &TreeNode{Val:4}
-       root.Right.Right = &TreeNode{Val:5}
-       fmt.Println(findTilt(root))
-     }
-   #+END_SRC
-
-   #+RESULTS:
-   : 1
-   : 11
-** construct string
-   #+NAME: bt-construct-string
-   #+BEGIN_SRC go
-     func tree2str(t *TreeNode) string {
-       if t == nil {
-         return ""
-       }
-
-       str := fmt.Sprintf("%d", t.Val)
-       if t.Left == nil && t.Right == nil {
-         return str
-       }
-
-       if t.Left != nil {
-         str += fmt.Sprintf("(%s)", tree2str(t.Left))
-       } else {
-         str += "()"
-       }
-
-       if t.Right != nil {
-         str += fmt.Sprintf("(%s)", tree2str(t.Right))
-       }
-
-       return str
-     }
-   #+END_SRC
-** symmetric
-   #+NAME: bt-is-symmetric
-   #+BEGIN_SRC go
-     type TreeNode struct {
-       Val   int
-       Left  *TreeNode
-       Right *TreeNode
-     }
-
-     func isSymmetric(root *TreeNode) bool {
-       if root == nil {
-         return true
-       }
-
-       return isMirror(root.Left, root.Right)
-     }
-
-     func isMirror(lr *TreeNode, rr *TreeNode) bool {
-       if lr == nil && rr == nil {
-         return true
-       }
-
-       if lr == nil || rr == nil {
-         return false
-       }
-
-       if lr.Val != rr.Val {
-         return false
-       }
-
-       return isMirror(lr.Left, rr.Right) && isMirror(lr.Right, rr.Left)
-     }
-   #+END_SRC
-
-   #+BEGIN_SRC go :imports "fmt" :noweb strip-export
-     <<bt-is-symmetric>>
-
-     func main() {
-       root := &TreeNode{
-         Val: 1,
-         Left: &TreeNode{
-           Val: 2,
-         },
-         Right: &TreeNode{
-           Val: 2,
-         },
-       }
-
-       fmt.Println(isSymmetric(root))
-       root.Left.Left = &TreeNode{Val:4}
-       root.Right.Right = &TreeNode{Val:5}
-       fmt.Println(isSymmetric(root))
-     }
-   #+END_SRC
-
-   #+RESULTS:
-   : true
-   : false
-** subtree
-   #+NAME: bt-subtree
-   #+BEGIN_SRC  go
-     type TreeNode struct {
-       Val   int
-       Left  *TreeNode
-       Right *TreeNode
-     }
-
-     func isSubtree(s *TreeNode, t *TreeNode) bool {
-       if t == nil {
-         return true
-       }
-
-       if s == nil {
-         return false
-       }
-
-       if s.Val == t.Val {
-         return isSame(s, t) || isSubtree(s.Left, t) || isSubtree(s.Right, t)
-       } else {
-         return isSubtree(s.Left, t) || isSubtree(s.Right, t)
-
-       }
-     }
-
-     func isSame(s *TreeNode, t *TreeNode) bool {
-       if s == nil && t == nil {
-         return true
-       }
-
-       if s == nil || t == nil {
-         return false
-       }
-
-       if s.Val != t.Val {
-         return false
-       }
-
-       return isSame(s.Left, t.Left) && isSame(s.Right, t.Right)
-     }
-   #+END_SRC
-
-   #+BEGIN_SRC go :imports "fmt" :noweb strip-export
-     <<bt-subtree>>
-
-     func main() {
-       s := &TreeNode{
-         Val: 1,
-         Left: &TreeNode{
-           Val: 4,
-           Left: &TreeNode{
-             Val: 1,
-           },
-           Right: &TreeNode{
-             Val: 2,
-           },
-         },
-         Right: &TreeNode{
-           Val: 5,
-         },
-       }
-
-       t := &TreeNode{
-         Val: 4,
-         Left: &TreeNode{
-           Val: 1,
-         },
-         Right: &TreeNode{
-           Val: 2,
-         },
-       }
-
-       fmt.Println(isSubtree(s, t))
-       s.Left.Right = &TreeNode{
-         Val: 0,
-       }
-       fmt.Println(isSubtree(s, t))
-     }
-   #+END_SRC
-
-   #+RESULTS:
-   : true
-** diameter
-   #+NAME: bt-diameter
-   #+BEGIN_SRC go
-     type TreeNode struct {
-       Val   int
-       Left  *TreeNode
-       Right *TreeNode
-     }
-
-     func diameterOfBinaryTree(root *TreeNode) int {
-       if root == nil {
-         return 0
-       }
-
-       if root.Left == nil && root.Right == nil {
-         return 0
-       }
-
-       if root.Right == nil {
-         return max(1+maxSide(root.Left), diameterOfBinaryTree(root.Left))
-       }
-
-       if root.Left == nil {
-         return max(1+maxSide(root.Right), diameterOfBinaryTree(root.Right))
-       }
-
-       return max(
-         max(
-           (2+maxSide(root.Left)+maxSide(root.Right)),
-           diameterOfBinaryTree(root.Left),
-         ), diameterOfBinaryTree(root.Right))
-     }
-
-     func maxSide(root *TreeNode) int {
-       if root == nil {
-         return 0
-       }
-
-       if root.Left == nil && root.Right == nil {
-         return 0
-       }
-
-       return 1 + max(maxSide(root.Left), maxSide(root.Right))
-     }
-
-     func max(a, b int) int {
-       if a > b {
-         return a
-       } else {
-         return b
-       }
-     }
-   #+END_SRC
-
-   #+BEGIN_SRC go :imports "fmt" :noweb strip-export
-     <<bt-diameter>>
-
-     func main() {
-       s := &TreeNode{
-         Val: 1,
-         Left: &TreeNode{
-           Val: 4,
-           Left: &TreeNode{
-             Val: 1,
-           },
-           Right: &TreeNode{
-             Val: 2,
-           },
-         },
-         Right: &TreeNode{
-           Val: 5,
-         },
-       }
-
-       t := &TreeNode{
-         Val: 4,
-         Left: &TreeNode{
-           Val: 1,
-         },
-         Right: &TreeNode{
-           Val: 2,
-         },
-       }
-
-       fmt.Println(diameterOfBinaryTree(s))
-       fmt.Println(diameterOfBinaryTree(t))
-     }
-   #+END_SRC
-
-   #+RESULTS:
-   : 2
-   : 1
-** count complete tree nodes
-   #+NAME: bt-count-complete
-   #+BEGIN_SRC c++
-     struct TreeNode {
-         int val;
-         TreeNode *left;
-         TreeNode *right;
-         TreeNode(int x) : val(x), left(NULL), right(NULL) {}
-     };
-
-     class Solution {
-     public:
-       int countNodes(TreeNode* root) {
-         if (root == NULL) {
-           return 0;
-         }
-
-         int ldepth = this->getLeftDepth(root);
-         int rdepth = this->getRightDepth(root);
-         if (ldepth == rdepth) {
-           return this->pow(2,ldepth) -1;
-         }
-
-         return countNodes(root->left) + countNodes(root->right)+1;
-       }
-
-       int getLeftDepth(TreeNode *root) {
-         if (root == NULL) {
-           return 0;
-         }
-
-         return 1+getLeftDepth(root->left);
-       }
-
-       int getRightDepth(TreeNode *root) {
-         if (root == NULL) {
-           return 0;
-         }
-
-         return 1+getRightDepth(root->right);
-       }
-
-       int pow(int base, int exp) {
-         int p=1;
-         while (exp>0) {
-           p = p*base;
-           exp = exp- 1;
-         }
-
-         return p;
-       }
-     };
-   #+END_SRC
-
-   #+BEGIN_SRC C++ :includes <iostream>  :noweb strip-export :results output
-   <<bt-count-complete>>
-   int main() {
-     TreeNode* p = new TreeNode(5);
-     p->left = new TreeNode(3);
-     p->right = new TreeNode(7);
-
-     Solution s;
-     std::cout << s.countNodes(p);
-   }
-   #+END_SRC
-
-   #+RESULTS:
-   : 3
-** implement trie
-   #+NAME: imp-trie
-   #+BEGIN_SRC go
-     type Trie struct {
-       is_end int
-       next   map[byte]*Trie
-     }
-
-     /** Initialize your data structure here. */
-     func Constructor() Trie {
-       var trie Trie
-       trie.next = make(map[byte]*Trie)
-       return trie
-     }
-
-     /** Inserts a word into the trie. */
-     func (this *Trie) Insert(word string) {
-       byte_arr := []byte(word)
-       this.insert(byte_arr)
-     }
-
-     func (this *Trie) insert(byte_arr []byte) {
-       if len(byte_arr) < 1 {
-         return
-       }
-
-       if next_trie, ok := this.next[byte_arr[0]]; ok {
-         if len(byte_arr) > 1 {
-           next_trie.insert(byte_arr[1:])
-         } else {
-           next_trie.is_end = 1
-         }
-       } else {
-         trie := Constructor()
-         next_trie := &trie
-         this.next[byte_arr[0]] = next_trie
-         if len(byte_arr) > 1 {
-           next_trie.insert(byte_arr[1:])
-         } else {
-           next_trie.is_end = 1
-         }
-       }
-     }
-
-     /** Returns if the word is in the trie. */
-     func (this *Trie) Search(word string) bool {
-       byte_arr := []byte(word)
-       return this.search(byte_arr)
-     }
-
-     func (this *Trie) search(byte_arr []byte) bool {
-       if len(byte_arr) < 1 {
-         if len(this.next) == 0 {
-           return true
-         } else {
-           return false
-         }
-       }
-
-       if next_trie, ok := this.next[byte_arr[0]]; ok {
-         if len(byte_arr) == 1 && next_trie.is_end == 1 {
-           return true
-         } else {
-           return next_trie.search(byte_arr[1:])
-         }
-       } else {
-         return false
-       }
-     }
-
-     /** Returns if there is any word in the trie that starts with the given prefix. */
-     func (this *Trie) StartsWith(prefix string) bool {
-       byte_arr := []byte(prefix)
-       return this.startsWith(byte_arr)
-     }
-
-     func (this *Trie) startsWith(byte_arr []byte) bool {
-       if len(byte_arr) < 1 {
-         return true
-       }
-
-       if next_trie, ok := this.next[byte_arr[0]]; ok {
-         return next_trie.startsWith(byte_arr[1:])
-       } else {
-         return false
-       }
-     }
-
-     /**
-      ,* Your Trie object will be instantiated and called as such:
-      ,* obj := Constructor();
-      ,* obj.Insert(word);
-      ,* param_2 := obj.Search(word);
-      ,* param_3 := obj.StartsWith(prefix);
-      ,*/
-   #+END_SRC
-
-   #+BEGIN_SRC go :imports "fmt" :noweb strip-export
-     <<imp-trie>>
-
-     func main() {
-       trie := Constructor()
-       trie.Insert("hello")
-       fmt.Println(trie.Search("hello"))
-       fmt.Println(trie.StartsWith("hello"))
-     }
-   #+END_SRC
-** merge two binary tree
-   #+NAME: merge-two-bt
-   #+BEGIN_SRC go
-     func mergeTrees(t1 *TreeNode, t2 *TreeNode) *TreeNode {
-       if t1 == nil && t2 == nil {
-         return nil
-       }
-
-       if t2 == nil {
-         return &TreeNode{
-           Val:   t1.Val,
-           Left:  mergeTrees(t1.Left, nil),
-           Right: mergeTrees(t1.Right, nil),
-         }
-       }
-
-       if t1 == nil {
-         return &TreeNode{
-           Val:   t2.Val,
-           Left:  mergeTrees(nil, t2.Left),
-           Right: mergeTrees(nil, t2.Right),
-         }
-       }
-
-       return &TreeNode{
-         Val:   t1.Val + t2.Val,
-         Left:  mergeTrees(t1.Left, t2.Left),
-         Right: mergeTrees(t1.Right, t2.Right),
-       }
-     }
-   #+END_SRC
-
-   #+BEGIN_SRC go :imports "fmt" :noweb strip-export
-     <<bt-node-def>>
-
-     <<bt-construct-string>>
-
-     <<merge-two-bt>>
-
-     func main() {
-       t1 := &TreeNode{
-         Val: 1,
-         Left: &TreeNode{Val: 3},
-       }
-
-       t2 := &TreeNode{
-         Val: 2,
-         Right: &TreeNode{Val: 3},
-       }
-
-       fmt.Println(tree2str(mergeTrees(t1, t2)))
-     }
-   #+END_SRC
-
-   #+RESULTS:
-   : 3(3)(3)
-
-* BST
-** BSTIterator
- #+NAME: bst-iterator
- #+BEGIN_SRC C++
-   /**
-    ,* Definition for binary tree
-    ,* struct TreeNode {
-    ,*     int val;
-    ,*     TreeNode *left;
-    ,*     TreeNode *right;
-    ,*     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
-    ,* };
-    ,*/
-
-   struct TreeNode {
-     int val;
-     TreeNode *left;
-     TreeNode *right;
-     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
-   };
-
-   struct Node {
-     int val;
-     Node *next;
-     Node(int x) : val(x), next(NULL) {}
-   };
-
-   Node* convertBST2SortedLst(TreeNode *lct,TreeNode *pn, TreeNode *rct) {
-     Node *lhead = NULL;
-     if (lct != NULL) {
-       lhead = convertBST2SortedLst(lct->left, lct, lct->right);
-     }
-
-     Node *pln = new Node(pn->val);
-
-     Node *rhead = NULL;
-     if (rct != NULL){
-       rhead = convertBST2SortedLst(rct->left, rct, rct->right);
-     }
-
-     Node *head = NULL;
-     if (lhead != NULL) {
-       pln->next = rhead;
-       head = lhead;
-       while (lhead->next != NULL) {
-         lhead = lhead->next;
-       }
-       lhead->next = pln;
-     } else {
-       pln->next = rhead;
-       head = pln;
-     }
-     return head;
-   }
-
-   class BSTIterator {
-     Node* head;
-   public:
-     BSTIterator(TreeNode *root) {
-       if (root != NULL) {
-         head = convertBST2SortedLst(root->left, root, root->right);
-       } else {
-         head = NULL;
-       }
-     }
-
-     /** @return whether we have a next smallest number */
-     bool hasNext() {
-       if (this->head != NULL) {
-         return true;
-       } else {
-         return false;
-       }
-     }
-
-     /** @return the next smallest number */
-     int next() {
-       if (this->head== NULL) {
-         return 0;
-       }
-
-       Node *oldHead = head;
-       head = head->next;
-       int num = oldHead->val;
-       delete oldHead;
-       oldHead = NULL;
-       return num;
-     }
-
-     ~BSTIterator(){
-       Node *oldHead = NULL;
-       while (head != NULL){
-         oldHead = head;
-         head = head->next;
-         delete oldHead;
-         oldHead = NULL;
-       }
-     }
-   };
-
-   /**
-    ,* Your BSTIterator will be called like this:
-    ,* BSTIterator i = BSTIterator(root);
-    ,* while (i.hasNext()) cout << i.next();
-    ,*/
- #+END_SRC
-
- #+BEGIN_SRC C++ :includes <iostream>  :noweb strip-export :results output
-   <<bst-iterator>>
-   int main() {
-     TreeNode* p = new TreeNode(5);
-     p->left = new TreeNode(3);
-     p->right = new TreeNode(7);
-
-     BSTIterator i = BSTIterator(p);
-     while (i.hasNext())
-       std::cout << i.next();
-     return 0;
-   }
- #+END_SRC
-
- #+RESULTS:
-** to greater tree
-   #+NAME: bst-to-greater
-   #+BEGIN_SRC go
-     type TreeNode struct {
-       Val   int
-       Left  *TreeNode
-       Right *TreeNode
-     }
-
-     func convertBST(root *TreeNode) *TreeNode {
-       if root == nil {
-         return nil
-       }
-
-       return convertBSTHelper(root, 0)
-     }
-
-     func convertBSTHelper(root *TreeNode, upper int) *TreeNode {
-       if root == nil {
-         return nil
-       }
-
-       if root.Left == nil && root.Right == nil {
-         root.Val += upper
-         return root
-       }
-
-       if root.Right != nil {
-         minNode := findMinBST(root.Right)
-         root.Right = convertBSTHelper(root.Right, upper)
-         root.Val += minNode.Val
-       } else {
-         root.Val += upper
-       }
-
-       if root.Left != nil {
-         root.Left = convertBSTHelper(root.Left, root.Val)
-       }
-
-       return root
-     }
-
-     func findMinBST(root *TreeNode) *TreeNode {
-       if root == nil || root.Left == nil {
-         return root
-       }
-
-       return findMinBST(root.Left)
-     }
-   #+END_SRC
-
-   #+BEGIN_SRC go :imports "fmt" :noweb strip-export
-     <<bst-to-greater>>
-
-     func main() {
-       root := &TreeNode{
-         Val: 0,
-         Left: &TreeNode{
-           Val: -1,
-           Left: &TreeNode{
-             Val: -3,
-           },
-         },
-         Right: &TreeNode{
-           Val: 2,
-           Right: &TreeNode{
-             Val: 4,
-           },
-         },
-       }
-
-       fmt.Println(convertBST(root))
-       fmt.Println(root.Left)
-       fmt.Println(root.Left.Left)
-       fmt.Println(root.Right.Right)
-     }
-   #+END_SRC
-** validate
-   #+NAME: bst-validate
-   #+BEGIN_SRC go
-     type TreeNode struct {
-       Val   int
-       Left  *TreeNode
-       Right *TreeNode
-     }
-
-     func isValidBST(root *TreeNode) bool {
-       if root == nil {
-         return true
-       }
-
-       return isValidLeftBST(root.Left, root.Val) && isValidRightBST(root.Right, root.Val)
-     }
-
-     func isValidLeftBST(root *TreeNode, upper int) bool {
-       if root == nil {
-         return true
-       }
-
-       if root.Val >= upper {
-         return false
-       }
-
-       return isValidLeftBST(root.Left, root.Val) && isValidSubBST(root.Right, root.Val, upper)
-     }
-
-     func isValidRightBST(root *TreeNode, lower int) bool {
-       if root == nil {
-         return true
-       }
-
-       if root.Val <= lower {
-         return false
-       }
-
-       return isValidRightBST(root.Right, root.Val) && isValidSubBST(root.Left, lower, root.Val)
-     }
-
-     func isValidSubBST(root *TreeNode, lower int, upper int) bool {
-       if root == nil {
-         return true
-       }
-
-       if root.Val >= upper || root.Val <= lower {
-         return false
-       }
-
-       return isValidSubBST(root.Left, lower, root.Val) && isValidSubBST(root.Right, root.Val, upper)
-     }
-   #+END_SRC
-
-   #+BEGIN_SRC go :imports "fmt" :noweb strip-export
-     <<bst-validate>>
-     func main() {
-       root := &TreeNode{
-         Val: 1,
-         Left: &TreeNode{
-           Val: 2,
-         },
-         Right: &TreeNode{
-           Val: 3,
-         },
-       }
-
-       fmt.Println(isValidBST(root))
-
-       root = &TreeNode{
-         Val: 2,
-         Left: &TreeNode{
-           Val: 1,
-         },
-         Right: &TreeNode{
-           Val: 3,
-         },
-       }
-       fmt.Println(isValidBST(root))
-     }
-   #+END_SRC
-
-   #+RESULTS:
-   : false
-   : true
-** find mode
-   #+NAME: bst-find-mode
-   #+BEGIN_SRC go
-     type TreeNode struct {
-       Val   int
-       Left  *TreeNode
-       Right *TreeNode
-     }
-
-     func findMode(root *TreeNode) []int {
-       if root == nil {
-         return []int{}
-       }
-
-       modes := collect(root)
-       if len(modes) < 1 {
-         return modes
-       }
-
-       for i := 1; i < len(modes); i += 1 {
-         for j := i; j > 0; j -= 1 {
-           if modes[j] < modes[j-1] {
-             modes[j], modes[j-1] = modes[j-1], modes[j]
-           }
-         }
-       }
-
-       var max_count int
-       var count int
-       var pre int
-       n_modes := make([]int, 0)
-       for index, mode := range modes {
-         if index == 0 {
-           max_count = 1
-           pre = mode
-           count = 1
-           n_modes = append(n_modes, mode)
-           continue
-         }
-
-         if mode == pre {
-           count += 1
-         }
-
-         if mode != pre {
-           pre = mode
-           count = 1
-         }
-
-         if count == max_count {
-           n_modes = append(n_modes, mode)
-         }
-         if count > max_count {
-           max_count = count
-           n_modes = []int{mode}
-         }
-       }
-
-       return n_modes
-     }
-
-     func collect(root *TreeNode) []int {
-       if root == nil {
-         return []int{}
-       }
-
-       return append(append(collect(root.Left), root.Val), collect(root.Right)...)
-     }
-   #+END_SRC
-
-   #+BEGIN_SRC go :imports "fmt" :noweb strip-export
-     <<bst-find-mode>>
-
-     func main() {
-       root := &TreeNode{
-         Val: 0,
-         Left: &TreeNode{
-           Val: -1,
-           Left: &TreeNode{
-             Val: -1,
-           },
-         },
-         Right: &TreeNode{
-           Val: 2,
-           Right: &TreeNode{
-             Val: 2,
-           },
-         },
-       }
-
-       fmt.Println(findMode(root))
-     }
-   #+END_SRC
-
-   #+RESULTS:
-   : [-1 -1 0 2 2]
-   : [-1 -1 0 2 2]
-   : [-1]
-** convert sorted array to bst
-   #+NAME: sorted-array-to-bst
-   #+BEGIN_SRC go
-     func sortedArrayToBST(nums []int) *TreeNode {
-       if len(nums) == 0 {
-         return nil
-       }
-
-       if len(nums) == 1 {
-         return &TreeNode{
-           Val: nums[0],
-         }
-       }
-
-       if len(nums) == 2 {
-         return &TreeNode{
-           Val: nums[1],
-           Left: &TreeNode{
-             Val: nums[0],
-           },
-         }
-       }
-
-       mid := len(nums) / 2
-       return &TreeNode{
-         Val:   nums[mid],
-         Left:  sortedArrayToBST(nums[:mid]),
-         Right: sortedArrayToBST(nums[mid+1:]),
-       }
-     }
-   #+END_SRC
-
-   #+BEGIN_SRC go :imports "fmt" :noweb strip-export
-     <<bt-construct-string>>
-
-     <<sorted-array-to-bst>>
-
-     func main() {
-       fmt.Println(tree2str(sortedArrayToBST([]int{1,2,3})))
-       fmt.Println(tree2str(sortedArrayToBST([]int{1,2,3,4,5,6})))
-       fmt.Println(tree2str(sortedArrayToBST([]int{1,2,3,4,5,6,7,8})))
-     }
-   #+END_SRC
-
-   #+RESULTS:
-   : 2(1)(3(2))
-   : 4(2(1)(3(2)))(5(4)(6(5)))
-   : 5(3(2(1))(4(3)))(7(6(5))(8(7)))
-** lowest common ancestor
-   #+NAME: bst-lca
-   #+BEGIN_SRC c++
-     struct TreeNode {
-       int val;
-       TreeNode *left;
-       TreeNode *right;
-       TreeNode(int x) : val(x), left(NULL), right(NULL) {}
-     };
-
-     class Solution {
-     public:
-       TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
-         if (root == NULL) {
-           return NULL;
-         }
-
-         if (p->val > q->val) {
-           TreeNode *tmp = p;
-           p=q;
-           q=tmp;
-         }
-
-         if (root->val>p->val && root->val<q->val) {
-           return root;
-         }
-
-         if (root->val < p->val) {
-           return lowestCommonAncestor(root->right, p, q);
-         }
-
-         if (root->val > q->val) {
-           return lowestCommonAncestor(root->left, p, q);
-         }
-
-         if (root->val == p->val) {
-           return root;
-         }
-
-         if (root->val == q->val) {
-           return root;
-         }
-
-         return NULL;
-       }
-     };
-   #+END_SRC
-
-   #+BEGIN_SRC C++ :includes <iostream>  :noweb strip-export :results output
-     <<bst-lca>>
-
-     int main() {
-       TreeNode* p = new TreeNode(5);
-       p->left = new TreeNode(3);
-       p->right = new TreeNode(7);
-
-       Solution  s;
-       std::cout << s.lowestCommonAncestor(p, p->left, p->right)->val;
-     }
-   #+END_SRC
-
-   #+RESULTS:
-   : 5
-** recover binary search tree
-   #+NAME: recover-bst
-   #+BEGIN_SRC go
-     type TreeNode struct {
-       Val   int
-       Left  *TreeNode
-       Right *TreeNode
-     }
-
-     type RecoverNode struct {
-       Pre        *TreeNode
-       Ppre       *TreeNode
-       Is_recover int
-       Illegal    *TreeNode
-     }
-
-     type traversalFunc func(*TreeNode)
-
-     func recoverTree(root *TreeNode) {
-       if root == nil {
-         return
-       }
-
-       rNode := &RecoverNode{}
-       tfunc := func(rnode *RecoverNode) traversalFunc {
-         return func(node *TreeNode) {
-           recoverFunc(node, rnode)
-         }
-       }(rNode)
-       inorderTraversal(root, tfunc)
-       if rNode.Is_recover == 0 && rNode.Illegal != nil {
-         rNode.Pre.Val, rNode.Illegal.Val = rNode.Illegal.Val, rNode.Pre.Val
-       }
-     }
-
-     func inorderTraversal(root *TreeNode, tfunc traversalFunc) {
-       if root == nil {
-         return
-       }
-
-       inorderTraversal(root.Left, tfunc)
-       tfunc(root)
-       inorderTraversal(root.Right, tfunc)
-     }
-
-     func recoverFunc(node *TreeNode, rnode *RecoverNode) {
-       if node == nil {
-         return
-       }
-
-       if rnode.Is_recover == 1 {
-         return
-       }
-
-       if rnode.Pre == nil {
-         rnode.Pre = node
-         return
-       }
-
-       if node.Val < rnode.Pre.Val {
-         if rnode.Illegal == nil {
-           rnode.Illegal = rnode.Pre
-         } else {
-           rnode.Illegal.Val, node.Val = node.Val, rnode.Illegal.Val
-           rnode.Is_recover = 1
-         }
-       } else {
-         if rnode.Illegal != nil {
-           if rnode.Illegal.Val < node.Val {
-             rnode.Illegal.Val, rnode.Pre.Val = rnode.Pre.Val, rnode.Illegal.Val
-             rnode.Is_recover = 1
-           }
-         }
-       }
-
-       rnode.Ppre = rnode.Pre
-       rnode.Pre = node
-     }
-   #+END_SRC
-
-   #+BEGIN_SRC go :imports "fmt" :noweb strip-export
-     <<recover-bst>>
-
-     <<bt-construct-string>>
-
-     func main() {
-       s := &TreeNode{
-         Val: 2,
-         Left: &TreeNode{
-           Val: 3,
-         },
-         Right: &TreeNode{
-           Val: 1,
-         },
-       }
-
-       fmt.Println(tree2str(s))
-       recoverTree(s)
-       fmt.Println(tree2str(s))
-     }
-   #+END_SRC
-
-   #+RESULTS:
-   : 2(3)(1)
-   : 2(1)(3)
-** delete node
-   #+NAME: bst-delete-node
-   #+BEGIN_SRC go
-     type TreeNode struct {
-       Val   int
-       Left  *TreeNode
-       Right *TreeNode
-     }
-
-     func deleteNode(root *TreeNode, key int) *TreeNode {
-       if root == nil {
-         return nil
-       }
-
-       if root.Val == key {
-         if root.Left == nil || root.Right == nil {
-           if root.Left != nil {
-             return root.Left
-           } else if root.Right != nil {
-             return root.Right
-           } else {
-             return nil
-           }
-         } else {
-           successor := treeMinimum(root.Right)
-           root.Val = successor.Val
-           root.Right = deleteNode(root.Right, successor.Val)
-         }
-       }
-
-       if root.Val < key {
-         root.Right = deleteNode(root.Right, key)
-       } else {
-         root.Left = deleteNode(root.Left, key)
-       }
-       return root
-     }
-
-     func treeMinimum(node *TreeNode) *TreeNode {
-       if node.Left != nil {
-         return treeMinimum(node.Left)
-       } else {
-         return node
-       }
-     }
-   #+END_SRC
-
-   #+BEGIN_SRC go :imports "fmt" :noweb strip-export
-     <<bst-delete-node>>
-
-     <<bt-construct-string>>
-
-     func main() {
-       s := &TreeNode{
-         Val: 2,
-         Left: &TreeNode{
-           Val: 1,
-         },
-         Right: &TreeNode{
-           Val: 3,
-         },
-       }
-
-       fmt.Println(tree2str(s))
-       s = deleteNode(s, 1)
-       fmt.Println(tree2str(s))
-     }
-   #+END_SRC
-
-   #+RESULTS:
-   : 2(1)(3)
-   : 2()(3)
-** convert sorted list to bst
-   #+NAME: sorted-list-to-bst
-   #+BEGIN_SRC go
-     type ListNode struct {
-       Val  int
-       Next *ListNode
-     }
-
-     type TreeNode struct {
-       Val   int
-       Left  *TreeNode
-       Right *TreeNode
-     }
-
-     func sortedListToBST(head *ListNode) *TreeNode {
-       if head == nil {
-         return nil
-       }
-       length := getListLength(head)
-       return sortedListToBSTHelper(head, length)
-     }
-
-     func getListLength(head *ListNode) int {
-       if head == nil {
-         return 0
-       }
-
-       return 1 + getListLength(head.Next)
-     }
-
-     func getListNth(head *ListNode, nth int) *ListNode {
-       if head == nil {
-         return nil
-       }
-       if nth < 1 {
-         return head
-       }
-
-       return getListNth(head.Next, nth-1)
-     }
-
-     func sortedListToBSTHelper(head *ListNode, length int) *TreeNode {
-       if length < 1 {
-         return nil
-       }
-
-       if length == 1 {
-         return &TreeNode{
-           Val: head.Val,
-         }
-       }
-
-       if length == 1 {
-         return &TreeNode{
-           Val: head.Val,
-           Right: &TreeNode{
-             Val: head.Next.Val,
-           },
-         }
-       }
-
-       mid := length / 2
-       mid_node := getListNth(head, mid)
-       return &TreeNode{
-         Val:   mid_node.Val,
-         Left:  sortedListToBSTHelper(head, mid),
-         Right: sortedListToBSTHelper(mid_node.Next, length-1-mid),
-       }
-     }
-   #+END_SRC
-
-   #+BEGIN_SRC go :imports "fmt" :noweb strip-export
-     <<bt-construct-string>>
-
-     <<sorted-list-to-bst>>
-
-     func main() {
-       sortedLst := &ListNode{
-         Val: 1,
-         Next: &ListNode{
-           Val:2,
-           Next: &ListNode{
-             Val:3,
-           },
-         },
-       }
-       fmt.Println(tree2str(sortedListToBST(sortedLst)))
-     }
-   #+END_SRC
-
-   #+RESULTS:
-   : 2(1)
