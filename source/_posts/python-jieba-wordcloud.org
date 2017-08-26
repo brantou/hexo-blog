@@ -459,6 +459,7 @@
 ** 阿里招聘的词云
    招聘信息是我使用爬虫趴下来的的，这里只做数据的分析。
    #+BEGIN_SRC python :preamble "# -*- coding: utf-8 -*-" :results output slient
+     # -*- coding: utf-8 -*-
      import jieba
      import jieba.analyse
      from wordcloud import WordCloud
@@ -466,19 +467,20 @@
      from PIL import Image
      from pymongo import MongoClient
 
-     font_path = '../resource/tyzkaishu.ttf'
+     font_path = '../resource/zhengkaishu.ttf'
      width = 640
      height = 480
 
      client = MongoClient('mongodb://localhost:27017/')
      jobs = client.jobs.alibaba
      text = ''
-     for job in jobs.find():
+     for job in jobs.find({u'firstCategory': u'技术类'}):
          if job.get('description'):
              text += job.get('description').replace('<br/>', ' ') + '\n'
 
      jieba.load_userdict('../resource/userdict.txt')
-     words = jieba.analyse.extract_tags(text, topK=200, withWeight=True)
+     words = jieba.analyse.textrank(
+         text, topK=200, withWeight=True, allowPOS=('nz'))
      word_freqs = {}
      for word in words:
          word_freqs[word[0]] = word[1]
