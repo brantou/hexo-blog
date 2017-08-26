@@ -459,8 +459,8 @@
 ** 阿里招聘的词云
    招聘信息是我使用爬虫趴下来的的，这里只做数据的分析。
    #+BEGIN_SRC python :preamble "# -*- coding: utf-8 -*-" :results output slient
-     import jieba.analyse
      import jieba
+     import jieba.analyse
      from wordcloud import WordCloud
      import numpy as np
      from PIL import Image
