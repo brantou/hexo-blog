@@ -71,7 +71,7 @@ deploy:
     type: git
     repo:
       github: git@github.com:brantou/brantou.github.io.git
-      coding: git@git.coding.net:brantou/brantou.git
+      #coding: git@git.coding.net:brantou/brantou.git
     branch: master
 
 # Org-mode
