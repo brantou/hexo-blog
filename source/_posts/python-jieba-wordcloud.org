@@ -458,7 +458,7 @@
 
 ** 阿里招聘的词云
    招聘信息是我使用爬虫趴下来的的，这里只做数据的分析。
-   #+BEGIN_SRC python :preamble "# -*- coding: utf-8 -*-" :results output slient
+   #+BEGIN_SRC python :preamble "# -*- coding: utf-8 -*-" :results output slient :tangle alibaba.py
      # -*- coding: utf-8 -*-
      import jieba
      import jieba.analyse
@@ -480,7 +480,7 @@
 
      jieba.load_userdict('../resource/userdict.txt')
      words = jieba.analyse.textrank(
-         text, topK=200, withWeight=True, allowPOS=('nz'))
+         text, topK=200, withWeight=True, allowPOS=('nz', 'eng'))
      word_freqs = {}
      for word in words:
          word_freqs[word[0]] = word[1]
