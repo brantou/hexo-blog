@@ -475,15 +475,18 @@
      jobs = client.jobs.alibaba
      text = ''
      for job in jobs.find({u'firstCategory': u'技术类'}):
-         if job.get('description'):
-             text += job.get('description').replace('<br/>', ' ') + '\n'
+         if job.get('requirement'):
+             text += job.get('requirement').replace('<br/>', ' ') + '\n'
 
      jieba.load_userdict('../resource/userdict.txt')
-     words = jieba.analyse.textrank(
-         text, topK=200, withWeight=True, allowPOS=('nz', 'eng'))
+     words = jieba.analyse.extract_tags(text, topK=2000, withWeight=True)
      word_freqs = {}
      for word in words:
-         word_freqs[word[0]] = word[1]
+         _word = word[0].lower().capitalize()
+         if _word not in word_freqs:
+             word_freqs[_word] = word[1]
+         else:
+             word_freqs[_word] += word[1]
 
      mask = np.array(Image.open('../resource/stormtrooper_mask.png'))
      wordcloud = WordCloud(
@@ -491,3 +494,7 @@
          mask=mask).generate_from_frequencies(word_freqs)
      wordcloud.to_file('../images/alibaba-mask.png')
    #+END_SRC
+
+   #+BEGIN_EXPORT html
+   <img src="/images/alibaba-mask.png" />
+   #+END_EXPORT
