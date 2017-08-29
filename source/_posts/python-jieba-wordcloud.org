@@ -6,7 +6,7 @@
 #+CATEGORIES: 技术积累
 #+STARTUP: content
 
-* jieba中文分词--做最好的Python中文分词组件
+* jieba中文分词
   :PROPERTIES:
   :ID:       681fffd0-61dc-44eb-860a-82cfbfe2c080
   :END:
@@ -207,7 +207,7 @@
 
    #+call: jieba-posseg(srcWd="1. 扎实的计算机学科基础 2. 数据仓库和数据建模工作经验三年以上，良好的业务理解能力和模型抽象能力 3. 有海量大数据平台使用经验，熟悉hadoop、odps、hive等平台的使用 4. 有数据挖掘经验的优先考虑 5. 具有良好的沟通和团队协作能力，对业务有良好的理解能力和敏锐度")
 
-* 词云
+* wordcloud词云
   :PROPERTIES:
   :ID:       d3a8f6d2-c043-4104-9f83-08e71a7a5c7a
   :END:
@@ -457,6 +457,9 @@
    #+END_EXPORT
 
 ** 阿里招聘的词云
+   :PROPERTIES:
+   :ID:       6fe64167-7458-4049-8b65-94910c927f1d
+   :END:
    招聘信息是我使用爬虫趴下来的的，这里只做数据的分析。
    #+BEGIN_SRC python :preamble "# -*- coding: utf-8 -*-" :results output slient :tangle alibaba.py
      # -*- coding: utf-8 -*-
