@@ -38,11 +38,17 @@
   =Org-mode= 通过 ~Babel~ 执行代码，对此不熟悉的读者， 可阅读我之前[[https://brantou.github.io/2017/04/01/babel-intro/][翻译的文档]]。
 
 * ob-go
+  :PROPERTIES:
+  :ID:       7833b08e-6e45-4aa0-bf51-408bf3e8933b
+  :END:
   ~Babel~ 可执行[[http://orgmode.org/worg/org-contrib/babel/languages.html][多种语言的代码]]， 但官方的收录的语言支持中，没有Go。
   但Go是如此的炙手可热，没有官方支持，肯定也会有先行者实现支持。
   感谢 [[https://github.com/pope][pope]] 在 [[http://orgmode.org/worg/org-contrib/babel/languages/ob-doc-C.html][ob-C]] 实现了ob-go , 实现了 ~Babel~ 对于Go的支持。
 
 ** 简介
+   :PROPERTIES:
+   :ID:       7637b028-9f26-49f5-a833-49b4275f0ab8
+   :END:
   [[https://github.com/pope/ob-go][ob-go]] 使[[https://brantou.github.io/2017/04/01/babel-intro/][ Org-babel]] 可执行Go代码。
   与解释语言可直接执行不同，Go需要先编译为可执行文件，然后运行。
   Go代码通过 ~go run~ 命令编译和运行。
@@ -65,6 +71,9 @@
   #+END_EXPORT
 
 ** Go特定的头参数(Header Arguments)
+   :PROPERTIES:
+   :ID:       b1f03234-2e94-4371-aa89-325e9cb3eebe
+   :END:
    除了 ~Babel~ 的常规头参数之外，下面是一些Go语言特定的头文件。
    - =:args= ::
             传递命令行参数到代码编译后的可执行文件，传递超过多参数，需要使用 ~list~ 。
@@ -79,8 +88,10 @@
    - =:var= ::
             =ob-go= 支持 ~Babel~ 的变量，不过目前还不完备。
 
-
 * 配置
+  :PROPERTIES:
+  :ID:       92d63e46-c8e6-445f-979a-f55e4664a632
+  :END:
   这里假设Go的开发环境已经配置完毕，同时你的机器上的 =Emacs= 和 =Org-mode= 都是最近的版本，对于 ~Babel~ 都是完整支持的。
   由于 ~ob-go~ 没有并入 ~Org-mode~ 所以需要单独配置。 步骤如下：
   - ~M-x find-library ob-C~ , 找到的目录 ~org-plus-contrib~
@@ -97,6 +108,9 @@
     #+END_SRC
 
 * 编码流程
+  :PROPERTIES:
+  :ID:       874bcc5c-b558-4afb-9610-1277a8886b34
+  :END:
   最近在 [[https://leetcode.com/brantou89/][LeetCode]] 上做编程训练，这里就以解决上面的问题的流程来做说明。
   - 在LeetCode页面上，仔细阅读和理解问题，这里以 [[https://leetcode.com/problems/merge-two-binary-trees/][Merge Two Binary Trees]] 为例
   - 跳转到 /leetcode.org/ ， 创建 /merge two binary trees/ 子目录
@@ -112,8 +126,14 @@
     #+END_EXPORT
 
 * 使用示例
+  :PROPERTIES:
+  :ID:       431ab3b1-5167-4291-9052-8cfdf59a46b6
+  :END:
 
 ** 导入多个包
+   :PROPERTIES:
+   :ID:       02c50881-cbba-4a4b-b4b4-c795a68230a2
+   :END:
    : #+BEGIN_SRC go :imports '("fmt" "time")
    :   fmt.Println("当前时间：", time.Now())
    : #+END_SRC
@@ -121,6 +141,9 @@
    : #+RESULTS:
    : : 当前时间： 2017-06-12 18:04:20.562355811 +0800 CST
 ** 命令行参数传递
+   :PROPERTIES:
+   :ID:       dcfbf20f-9a74-44f0-b9f6-a54161937d0a
+   :END:
    : #+BEGIN_SRC go :imports '("fmt" "os") :args '("bable" "golang")
    :   fmt.Println(os.Args[1], os.Args[2])
    : #+END_SRC
@@ -128,6 +151,9 @@
    : #+RESULTS:
    : : bable golang
 ** 多入参
+   :PROPERTIES:
+   :ID:       5062984d-dc0e-413d-a226-6b20e4ea44f0
+   :END:
    : #+NAME: sum
    : #+BEGIN_SRC go :imports "fmt" :var a=12 b=13
    :   fmt.Println(a+b)
@@ -141,6 +167,9 @@
    : #+RESULTS:
    : : 45
 ** 代码组织
+   :PROPERTIES:
+   :ID:       bb583b9e-9294-4a4b-84d7-24ebfddbfc6d
+   :END:
    : #+NAME: min
    : #+BEGIN_SRC  go
    :   func min(a, b int) int {
@@ -167,6 +196,9 @@
    : : 23
 
 * 总结
+  :PROPERTIES:
+  :ID:       0cdd3e45-27dc-448c-a9a8-f62a21ed0a6e
+  :END:
   Org-mode于我来说，就是一个神器，打破了我对一个编辑器的认知，打破了我对一个信息收集器的认知。
   Org-mode依托于强大的 /Emacs/, 借助于 /Babel/,  使文档和代码无缝的结合在了一起, 一会编码，一会记录，
   一会调试，一会执行。 不失为，学习语言，尝试新工具的不二神器。
