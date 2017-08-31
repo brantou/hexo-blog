@@ -1,5 +1,5 @@
 #+TITLE: 玩转词云
-#+DATE: <2017-08-22 Tue>
+#+DATE: <2017-08-25 Fri>
 #+LAYOUT: post
 #+OPTIONS: ':t author:nil ^:{}
 #+TAGS: python, jieba, wordcloud

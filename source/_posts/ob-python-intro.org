@@ -1,4 +1,4 @@
-#+TITLE: 学习Python新方式
+#+TITLE: 写Python的新方式
 #+DATE: <2017-08-30 Wed>
 #+LAYOUT: post
 #+OPTIONS: ':t author:nil ^:{}
@@ -15,10 +15,18 @@ and authoring documents with a fast and effective plain-text system.
 曾有小伙伴说过， ~Org-mode~ 是 ~Markdown~ 的封神模式， 个人觉得这话一点不夸张，
 相比较而言， ~Markdown~ 只是一套简洁的文档格式， 而 ~Org-mode~ 除了涵盖作为文档格式的简洁之外，
 还可用于记笔记，维护 *TODO* 列表， 工程管理,以及可用于元编程。
-对于元编程的支持请参与，我之前的文章， Babel: org-mode的元编程。
+对于元编程的支持请阅读我之前的译文， [[https://brantou.github.io/2017/04/01/babel-intro/][Babel: org-mode的元编程]]。
 
-所谓的元编程，即是 ~Org-mode~ 搭建了一个多语言可以交互执行的环境，
-在这个环境中，可选用各语言的特性，来分解执行一个大型任务。
+所谓的元编程，即是 ~Org-mode~ 搭建了一个多语言可以交互执行的环境， 在这个环境中，可选用各语言的特性，来分解执行一个大型任务。
+
+#+BEGIN_EXPORT html
+<img src="/images/babel-fish.jpg" />
+#+END_EXPORT
+#+BEGIN_QUOTE
+The Babel Fish is small, yellow, and simultaneously translates from \\
+one spoken language to another.  \\
+– The Hitchhiker's Guide to the Galaxy, Douglas Adams
+#+END_QUOTE
 
 ~Org-mode~ 对于比较流行的语言都有很好的支持，
 而且对于新语言，也可以很容易添加支持，本人就给两种语言添加过支持。
@@ -238,7 +246,7 @@ and authoring documents with a fast and effective plain-text system.
       | b | 2 |
     #+end_example
 
-  - 绘画
+  - 绘图
     #+BEGIN_EXAMPLE
       ,#+begin_src python :results file
         import matplotlib, numpy
@@ -257,7 +265,7 @@ and authoring documents with a fast and effective plain-text system.
     #+END_EXAMPLE
 
     #+BEGIN_EXPORT html
-    <img src="/images//images/python-matplot-fig.png" />
+    <img src="/images/python-matplot-fig.png" />
     #+END_EXPORT
 
   - 词云
@@ -338,3 +346,12 @@ and authoring documents with a fast and effective plain-text system.
 
    : #+RESULTS: ok-in-passing-var
    : : “this string is not ascii!”
+* 参考文档
+  :PROPERTIES:
+  :ID:       86504328-89bc-461b-805b-ab7d0f252ad6
+  :END:
+  - [[http://orgmode.org/worg/org-contrib/babel/languages/ob-doc-python.html][Python Source Code Blocks in Org Mode]]
+  - [[https://brantou.github.io/2017/04/01/babel-intro/][Babel: org-mode的元编程]]
+  - [[https://brantou.github.io/2017/06/12/go-source-code-block-in-org/][在Org-mode中执行Go代码]]
+  - [[http://orgmode.org/manual/Working-With-Source-Code.html#Working-With-Source-Code][Working with source code]]
+  - [[http://orgmode.org/worg/org-contrib/babel/][Babel: active code in Org-mode]]
