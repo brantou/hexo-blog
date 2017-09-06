@@ -11,15 +11,27 @@
 分三步阐述出来：问题描述，解题思路，实际编程。
 
 * 交替打印数字和字母
+  :PROPERTIES:
+  :ID:       17c86ad6-2b61-42bb-8e49-6e4bc060e259
+  :END:
 
 ** 问题描述
+   :PROPERTIES:
+   :ID:       317c050f-3b8f-4bfb-b096-064a8f45c0e1
+   :END:
    使用两个 ~goroutine~ 交替打印序列，一个 ~goroutinue~ 打印数字，
    另外一个goroutine打印字母， 最终效果如下 /12AB34CD56EF78GH910IJ/ 。
 ** 解题思路
+   :PROPERTIES:
+   :ID:       f472cfd1-12e4-4d0b-b2a2-f8bad5b29086
+   :END:
    问题很简单，使用 ~channel~ 来控制打印的进度。使用两个 ~channel~ ，来分别控制数字和字母的打印序列，
    数字打印完成后通过 ~channel~ 通知字母打印, 字母打印完成后通知数字打印，然后周而复始的工作。
 ** 实际编码
-   #+BEGIN_SRC go :results output :imports '("fmt" "runtime") :exports both
+   :PROPERTIES:
+   :ID:       e6831f76-c231-4f4e-ba31-c1df9f7a261c
+   :END:
+   #+BEGIN_SRC go :results output :imports '("fmt" "runtime") :exports both :eval no-export
      runtime.GOMAXPROCS(runtime.NumCPU())
      chan_n := make(chan bool)
      chan_c := make(chan bool, 1)
@@ -53,7 +65,13 @@
    #+RESULTS:
    : 12AB34CD56EF78GH910IJ
 * 随机抽奖
+  :PROPERTIES:
+  :ID:       c9c5fb3f-eef3-427e-9f4c-032eb6dd3df1
+  :END:
 ** 问题描述
+   :PROPERTIES:
+   :ID:       66acfc33-6729-481b-a9aa-f7bbc54928e4
+   :END:
    用户随机抽奖，数据结构如下所示：
    #+BEGIN_SRC go
      // map中，key代表名称，value代表成交单数
@@ -66,10 +84,16 @@
      }
    #+END_SRC
 ** 解决思路
+   :PROPERTIES:
+   :ID:       22985cf6-155a-4443-adce-6209fc40df69
+   :END:
    从map中选取随机用户，拿到这个编码问题，有点懵逼,但仔细一想，只需把关注用户的区间，转变一下数据结构即解题。
    把map转成array，思考起来就简单多了，原有问题变成了从0至n-1中选取一个数字，数字对应的用户即中奖用户。
 ** 实际编码
-   #+BEGIN_SRC go :exports both
+   :PROPERTIES:
+   :ID:       f7838473-b75c-4011-94a4-18e52866ac9e
+   :END:
+   #+BEGIN_SRC go :exports both :eval no-export
      package main
 
      import (
@@ -131,7 +155,13 @@
    : user: c, award count: 170
    : user: a, award count: 159
 * 权重抽奖
+  :PROPERTIES:
+  :ID:       12c70fe7-cd5c-4fb1-ae9c-f9f79cadbce1
+  :END:
 ** 问题描述
+   :PROPERTIES:
+   :ID:       0d909edb-37e7-4e57-a93f-9d5a96dfdcff
+   :END:
    数据结构和上面一致，只是问题发生变化，需要更加用户的成单数来抽奖，用户成单越多，中奖概率越高，结构如下所示：
    #+BEGIN_SRC go
      // map中，key代表名称，value代表成交单数
@@ -144,11 +174,17 @@
      }
    #+END_SRC
 ** 解决思路
+   :PROPERTIES:
+   :ID:       bd39ec8c-bee0-44a5-a079-0417271794f6
+   :END:
    这一题是上一题的延伸，加了订单数进去，做为权重来为用户抽奖。此题和上面的问题如此的相似，可把上面的问题，
    理解成所有的用户权重都相同的抽奖，而此题是权重不同的抽奖。解决此问题，依旧是把map转为数组来思考，
    把各用户的权重，从前到后依次拼接到数轴上，数轴的起点到终点即时中奖区间，而随机数落到的那个用户的区间，那个用户即为中奖用户。
 ** 实际编码
-   #+BEGIN_SRC go :exports both
+   :PROPERTIES:
+   :ID:       02dc1488-c9fa-4b95-9aea-d70daa8a05f5
+   :END:
+   #+BEGIN_SRC go :exports both :eval no-export
      package main
 
      import (
@@ -225,6 +261,298 @@
    : user: d, award count: 2276
    : user: b, award count: 549
    : user: a, award count: 1099
+
+   #+BEGIN_QUOTE
+   感谢各位的评论，让我受益匪浅，上面代码确实有太多的槽点，感谢吐槽，代码更正如下：
+   #+END_QUOTE
+
+   #+BEGIN_SRC go :exports both :eval no-export
+     func GetAwardUserName(users map[string]int64) (name string) {
+       var sum_num int64
+       for _, num := range users {
+         sum_num += num
+       }
+
+       award_num := rand.Int63n(sum_num)
+
+       var offset_num int64
+       for _name, num := range a_user_arr {
+         offset_num += num
+         if award_num < offset_num {
+           name = _name
+           return
+         }
+       }
+       return
+     }
+   #+END_SRC
+
+   #+BEGIN_QUOTE
+   由于一直以为Golang的map =for range= 是可重入的，但现实是前后两轮遍历到的 =key= 的顺序居然是被随机化的，
+   代码示例如下：
+   #+END_QUOTE
+
+   #+BEGIN_SRC go :exports both :eval no-export :imports "fmt"
+     n_map := make(map[int]bool)
+     for i := 1; i <= 10; i++ {
+       n_map[i] = true
+     }
+
+     for num, _ := range n_map {
+       fmt.Print(num)
+     }
+     fmt.Print("\n")
+     for num, _ := range n_map {
+       fmt.Print(num)
+     }
+   #+END_SRC
+
+   #+RESULTS:
+   : 91257103468
+   : 46810325791
+
+   #+BEGIN_QUOTE
+   由于map的不可重入性， 以及 [[http://www.jianshu.com/u/53c9aad81bbb][liguoqinjim]] 给出的[[https://imgur.com/sG4nh4v][ 示例代码]] 和 [[https://imgur.com/Gq95IYP][运行结果]] 证明了map的 =for range= 的伪随机性，
+   代码修改如下(在[[https://play.golang.org/p/mf-40sHFzc][Playground]] 中可查看完整代码):
+   #+END_QUOTE
+
+   #+NAME: award-username
+   #+BEGIN_SRC go :exports both :eval no-export
+     func GetAwardUserName(users map[string]int64) (name string) {
+       var sum_num int64
+       name_arr := make([]string, len(users))
+       for u_name, num := range users {
+         sum_num += num
+         name_arr = append(name_arr, u_name)
+       }
+
+       award_num := rand.Int63n(sum_num)
+
+       var offset_num int64
+       for _, u_name := range name_arr {
+         offset_num += users[u_name]
+         if award_num < offset_num {
+           name = u_name
+           return
+         }
+       }
+       return
+     }
+   #+END_SRC
+
+   #+BEGIN_SRC go :exports none :eval no-export :noweb strip-export
+     package main
+
+     import (
+       "fmt"
+       "math/rand"
+       "time"
+     )
+
+     <<award-username>>
+
+     func main() {
+       var users map[string]int64 = map[string]int64{
+         "a": 10,
+         "b": 5,
+         "c": 15,
+         "d": 20,
+         "e": 10,
+         "f": 30,
+       }
+
+       rand.Seed(time.Now().Unix())
+       award_stat := make(map[string]int64)
+       for i := 0; i < 10000; i += 1 {
+       name:= GetAwardUserName(users)
+         if count, ok := award_stat[name]; ok {
+           award_stat[name] = count + 1
+         } else {
+           award_stat[name] = 1
+         }
+       }
+
+       for name, count := range award_stat {
+         fmt.Printf("user: %s, award count: %d\n", name, count)
+       }
+
+       return
+     }
+   #+END_SRC
+
+   #+BEGIN_QUOTE
+   上面代码，对于多次调用会有性能问题，每次都要重新计算 =sum_num= 和创建 =name_arr=, 使用闭包优化实现，
+   代码如下(在[[https://play.golang.org/p/dgc07E_Z1j][Playground]] 中可查看完整代码):
+   #+END_QUOTE
+
+   #+NAME: award-generator
+   #+BEGIN_SRC go :exports both :eval no-export
+     func GetAwardGenerator(users map[string]int64) (generator func() string) {
+       var sum_num int64
+       name_arr := make([]string, len(users))
+       for u_name, num := range users {
+         sum_num += num
+         name_arr = append(name_arr, u_name)
+       }
+
+       generator = func() string {
+         award_num := rand.Int63n(sum_num)
+
+         var offset_num int64
+         for _, u_name := range name_arr {
+           offset_num += users[u_name]
+           if award_num < offset_num {
+             return u_name
+           }
+         }
+         // 缺省返回，正常情况下，不会运行到此处
+         return name_arr[0]
+       }
+       return
+     }
+   #+END_SRC
+
+   #+BEGIN_SRC go :exports none :eval no-export :noweb strip-export
+     package main
+
+     import (
+       "fmt"
+       "math/rand"
+       "time"
+     )
+
+     <<award-generator>>
+
+     func main() {
+       var users map[string]int64 = map[string]int64{
+         "a": 10,
+         "b": 5,
+         "c": 15,
+         "d": 20,
+         "e": 10,
+         "f": 30,
+       }
+
+       rand.Seed(time.Now().Unix())
+       award_stat := make(map[string]int64)
+       generator := GetAwardGenerator(users)
+       for i := 0; i < 10000; i += 1 {
+         name := generator()
+         if count, ok := award_stat[name]; ok {
+           award_stat[name] = count + 1
+         } else {
+           award_stat[name] = 1
+         }
+       }
+
+       for name, count := range award_stat {
+         fmt.Printf("user: %s, award count: %d\n", name, count)
+       }
+
+       return
+     }
+   #+END_SRC
+
+   #+BEGIN_SRC go :exports none :eval no-export
+     package main
+
+     import (
+       "fmt"
+       "math/rand"
+       "time"
+     )
+
+     //return res[0]: userid, res[1]: weight
+     func GetRandomByWeight(m map[int64]int64, max_weight int64) (res [2]int64) {
+       rand.Seed(time.Now().UnixNano())
+       for uid, weight := range m {
+         r := rand.Int63n(max_weight) + 1
+         if r <= weight {
+           res[0] = uid
+           res[1] = weight
+           return res
+         }
+       }
+       return res
+     }
+
+     func mock_user(user_count, max_weight int64) map[int64]int64 {
+       rand.Seed(time.Now().UnixNano())
+       m := make(map[int64]int64)
+       for i := int64(0); i < user_count; i++ {
+         m[i] = rand.Int63n(max_weight) + 1
+       }
+       return m
+     }
+
+     //测试模型是否正确，抽奖10w次,权重和中奖次数应该大致上成正比
+     func test_model() {
+       user_count := int64(100000)
+       max_weight := int64(20)
+       weight_map := make(map[int64]int64)
+       mock_user := mock_user(user_count, max_weight)
+       for i := 0; i < 100000; i++ {
+         tmp := GetRandomByWeight(mock_user, max_weight)
+         weight_map[tmp[1]] += 1
+       }
+       for i := int64(1); i < max_weight+1; i++ {
+         fmt.Println("权重：", i, "此权重中奖次数：", weight_map[i])
+       }
+     }
+
+     func main() {
+       //验证模型是否可用
+       //test_model()
+
+       //模拟1亿用户抽奖,用户权重范围为1...10000
+       user_count := int64(100000000)
+       max_weight := int64(10000)
+       mock_user := mock_user(user_count, max_weight)
+       //开始抽奖
+       begin := time.Now().UnixNano()
+       res := GetRandomByWeight(mock_user, max_weight)
+       end := time.Now().UnixNano()
+       fmt.Println("中奖用户ID：", res[0], "权重：", res[1], "抽奖耗时(纳秒)：", end-begin)
+     }
+   #+END_SRC
+
+   #+BEGIN_QUOTE
+   在已知长度的情况下，应使用 =array[index]=num= 而避免使用 =array=append(array, num)=, 代码和测试如下：
+   #+END_QUOTE
+   #+NAME: array-slice-test
+   #+BEGIN_SRC go :exports both :eval no-export :tangle ../src/interview-code/array_slice.go :mkdirp yes
+     package main
+
+     import (
+       "fmt"
+       "time"
+     )
+
+     func main() {
+       test_len := 10000000
+       start := time.Now()
+       s := make([]int, test_len, test_len)
+       for i := 0; i < test_len; i++ {
+         s = append(s, i)
+       }
+       fmt.Println(time.Now().Sub(start).String())
+
+       start = time.Now()
+       s1 := make([]int, test_len)
+       for i := 0; i < test_len; i++ {
+         s1[i] = i
+       }
+       fmt.Println(time.Now().Sub(start).String())
+     }
+   #+END_SRC
+
+   #+RESULTS:
+   : 132.123121ms
+   : 27.453897ms
+
 * 总结
+  :PROPERTIES:
+  :ID:       3e4019ba-085f-486b-9492-8947c297fba5
+  :END:
   问题一来自一家公司 , 侧重于语言特性；问题二三来自另外一家公司 ，侧重于解决问题的思路；本人更喜欢第二种，很有启发性。
   我之后会把其他自己认为比较有趣的编程任务，整理到此篇文章中，敬请期待。
