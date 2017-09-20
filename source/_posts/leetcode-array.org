@@ -2205,3 +2205,43 @@
     func threeSum(nums []int) [][]int {
     }
   #+END_SRC
+* DONE Image Smoother
+  CLOSED: [2017-09-20 Wed 10:27]
+  :PROPERTIES:
+  :ID:       087cc323-659d-479e-bb6e-d78d9ac72fc1
+  :END:
+  - State "DONE"       from "STARTED"    [2017-09-20 Wed 10:27]
+  #+NAME: image-smooter
+  #+BEGIN_SRC go
+    func imageSmoother(M [][]int) [][]int {
+      m := len(M)
+      n := len(M[0])
+      if m == 0 || n == 0 {
+        return [][]int{}
+      }
+      dirs := [][]int{
+        []int{0, 1}, []int{0, -1}, []int{1, 0}, []int{-1, 0},
+        []int{-1, -1}, []int{1, 1}, []int{-1, 1}, []int{1, -1}}
+
+      sM := make([][]int, m)
+      for i := 0; i < m; i += 1 {
+        ar := make([]int, n)
+        for j := 0; j < n; j += 1 {
+          sum := M[i][j]
+          cnt := 1
+          for k := 0; k < len(dirs); k += 1 {
+            x := i + dirs[k][0]
+            y := j + dirs[k][1]
+            if x < 0 || x > m-1 || y < 0 || y > n-1 {
+              continue
+            }
+            sum += M[x][y]
+            cnt++
+          }
+          ar[j] = sum / cnt
+        }
+        sM[i] = ar
+      }
+      return sM
+    }
+  #+END_SRC
